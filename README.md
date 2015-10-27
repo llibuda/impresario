@@ -1,8 +1,8 @@
-```
+<p style="color:darkred">
 Please note: This project is work in progress! 
 And as I do this in my spare time besides other 
 interests it will develop steadily but slowly.
-```
+</p>
 
 # Welcome to Impresario
 
