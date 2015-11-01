@@ -3,7 +3,6 @@ And as I do this in my spare time besides other
 interests it will develop steadily but slowly.**
 
 # Welcome to Impresario
-
 **Impresario** is the acronym for "**Im**age **Pr**ocessing **E**ngineering **S**ystem **A**pplying **R**eusable 
 **I**nteractive **O**bjects".
 It is designed for rapid prototyping of image processing solutions and testing of image processing algorithms
@@ -22,3 +21,10 @@ on the web at [http://www.gnu.org/licenses/gpl-3.0.html](http://www.gnu.org/lice
 
 However, the GPLv3 does not apply to the libraries containing the image processing algorithms, etc. These libraries
 may be licensed under any license the library developers choose, even closed source ones. 
+
+## Related repositories
+The following repositories are related to Impresario:
+* [impresario-macros](https://github.com/llibuda/impresario-macros) provides code examples for Impresario macro libraries. 
+  They can be used as starting point for own libraries.
+  
+  
