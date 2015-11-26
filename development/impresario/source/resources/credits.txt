@@ -1,0 +1,87 @@
+<html>
+<body>
+<h1>CREDITS</h1>
+<p>
+<span style="font-variant: small-caps">Impresario</span> uses the following libraries and components:
+<ul>
+<li>Qt Toolkit 5.5.1</li>
+<li>QtSingleApplication and QtPropertyBrowser</li>
+<li>libavoid</li>
+<li>Silk icon set 1.3</li>
+</ul>
+</p>
+<h2>Qt Toolkit 5.5.1</h2>
+<p>
+Copyright (C) 2015 The Qt Company Ltd.<br>
+<br>
+Contact: <a href="http://www.qt.io/licensing/">http://www.qt.io/licensing/</a><br>
+<br>
+The Qt Toolkit is used under the terms of the GNU Lesser General Public
+License version 3 as published by the Free Software Foundation
+(<a href="http://www.gnu.org/licenses/lgpl-3.0.html">
+http://www.gnu.org/licenses/lgpl-3.0.html</a>). A copy of this license 
+is also shipped with <span style="font-variant: small-caps">Impresario</span> in subdirectory "licenses", file "LICENSE.LGPLv3".
+</p>
+<h2>QtSingleApplication and QtPropertyBrowser</h2>
+<p>
+QtSingleApplication and QtPropertyBrowser are part of the Qt Solutions 
+Archive (<a href="http://qt.gitorious.org/qt-solutions">
+http://qt.gitorious.org/qt-solutions</a>)
+and used under the terms of the BSD license as follows:
+</p>
+<p>
+Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).<br>
+Contact: <a href="http://www.qt-project.org/legal">http://www.qt-project.org/legal</a><br>
+<br>
+"Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+<ul>
+<li>Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+</li>    
+<li>Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the
+    distribution.
+</li>    
+<li>Neither the name of Digia Plc and its Subsidiary(-ies) nor the names
+    of its contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+</li>
+</ul>
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
+</p>
+<h2>libavoid</h2>
+<p>
+Object-avoiding orthogonal and polyline connector routing library
+(<a href="http://adaptagrams.sourceforge.net/libavoid/index.html">
+http://adaptagrams.sourceforge.net/libavoid/index.html</a>)<br><br>
+Copyright (C) 2004-2009  Monash University<br><br>
+libavoid is licensed under the terms of the GNU Lesser General Public
+License version 2.1 as published by the Free Software Foundation
+(<a href="http://www.gnu.org/licenses/lgpl-2.1.html">
+http://www.gnu.org/licenses/lgpl-2.1.html</a>). A copy of this license 
+is also shipped with <span style="font-variant: small-caps">Impresario</span> in subdirectory "licenses", file "LICENSE.LGPLv21".<br><br>
+Many thanks to the author Michael Wybrow.
+</p>
+<h2>Silk icon set 1.3</h2>
+<p>
+Most of the used icons in <span style="font-variant: small-caps">Impresario</span> are taken from Mark James' Silk icon set. Thanks for your work!
+<hr>
+Mark James<br>
+<a href="http://www.famfamfam.com/lab/icons/silk/">http://www.famfamfam.com/lab/icons/silk/</a>
+<hr>
+</p>
+</body>
+</html>

@@ -2,19 +2,31 @@
 *.slo
 *.lo
 *.o
+*.d
 *.obj
 
 # Precompiled Headers
 *.gch
 *.pch
 
+# Log and debug files (MSVC)
+*.exp
+*.pdb
+*.ilk
+*.log
+*.tlog
+*.lastbuildstate
+*.suo
+*.sdf
+*.vcxproj.*
+*.idb
+*.res
+
 # Compiled Dynamic libraries
 *.so
+*.so.*
 *.dylib
 *.dll
-
-# Fortran module files
-*.mod
 
 # Compiled Static libraries
 *.lai
@@ -26,3 +38,37 @@
 *.exe
 *.out
 *.app
+
+# Qt-es
+
+/.qmake.cache
+/.qmake.stash
+*.pro.user
+*.pro.user.*
+*.qbs.user
+*.qbs.user.*
+*.moc
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+Makefile*
+*-build-*
+
+# QtCreator
+
+*.autosave
+
+#QtCtreator Qml
+*.qmlproject.user
+*.qmlproject.user.*
+
+# directories to be ignored
+/bin*/*
+/doc/*
+/lib*/*
+/processgraphs/*
+/development/impresario/build/*
+/development/impresario/components/*
+
+# special files to be ignored
+/resources/PropertyWidgetConvolution.qml

@@ -1,0 +1,284 @@
+﻿<?xml version="1.0"?>
+<!--****************************************************************************************
+**   Impresario - Image Processing Engineering System applying Reusable Interactive Objects
+**   Copyright (C) 2015  Lars Libuda
+**
+**   This file is part of Impresario.
+**
+**   Impresario is free software: you can redistribute it and/or modify
+**   it under the terms of the GNU General Public License as published by
+**   the Free Software Foundation, either version 3 of the License, or
+**   (at your option) any later version.
+**
+**   Impresario is distributed in the hope that it will be useful,
+**   but WITHOUT ANY WARRANTY; without even the implied warranty of
+**   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**   GNU General Public License for more details.
+**
+**   You should have received a copy of the GNU General Public License
+**   along with Impresario in subdirectory "licenses", file "LICENSE.GPLv3".
+**   If not, see <http://www.gnu.org/licenses/>.
+*****************************************************************************************-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+<xs:element name="graph">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="name" type="xs:token"/>
+      <xs:element name="visualization" type="graphscenetype" />
+      <xs:element name="autoUpdateTopologicalOrder" type="booltype"/>
+      <xs:element name="autoUpdateStrongComponents" type="booltype"/>
+      
+      <xs:element name="vertices">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="vertex"  minOccurs="0" maxOccurs="unbounded" type="vertextype"/>
+          </xs:sequence>  
+        </xs:complexType>
+      </xs:element>
+      
+      <xs:element name="edges">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="edge"  minOccurs="0" maxOccurs="unbounded" type="edgetype"/>
+          </xs:sequence>  
+        </xs:complexType>
+      </xs:element>
+      
+    </xs:sequence>
+    <xs:attribute name="class" type="impresariographclass" use="required"/>
+    <xs:attribute name="id" type="idtype" use="required"/>
+  </xs:complexType>
+  
+  <xs:unique name="elementid">
+    <xs:selector xpath=".|vertices/vertex|edges/edge|vertices/vertex/pins/pin"/>
+    <xs:field xpath="@id"/>
+  </xs:unique>
+  
+  <xs:key name="pinsrcid">
+    <xs:selector xpath="vertices/vertex/pins/pin[data/output]"/>
+    <xs:field xpath="@id"/>
+  </xs:key>
+  <xs:key name="pindstid">
+    <xs:selector xpath="vertices/vertex/pins/pin[data/input]"/>
+    <xs:field xpath="@id"/>
+  </xs:key>
+  
+  <xs:keyref name="pinsrcref" refer="pinsrcid">
+    <xs:selector xpath="edges/edge"/>
+    <xs:field xpath="@srcPinId"/>
+  </xs:keyref>
+  <xs:keyref name="pindstref" refer="pindstid">
+    <xs:selector xpath="edges/edge"/>
+    <xs:field xpath="@destPinId"/>
+  </xs:keyref>
+  
+</xs:element>
+
+<xs:complexType name="graphscenetype">
+  <xs:sequence>
+    <xs:element name="layout" type="layouttype"/>
+  </xs:sequence>  
+  <xs:attribute name="class" type="impresariosceneclass" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="vertextype">
+  <xs:sequence>
+    <xs:element name="data"           type="vertexdatatype" />
+    <xs:element name="visualization"  type="vertexitemtype" />
+    <xs:element name="topologyForced" type="booltype" />
+    <xs:element name="pins">
+      <xs:complexType>
+        <xs:sequence>
+          <xs:element name="pin"  minOccurs="0" maxOccurs="unbounded" type="pintype"/>
+        </xs:sequence>  
+      </xs:complexType>
+    </xs:element>
+  </xs:sequence>
+  <xs:attribute name="class" type="impresariovertexclass" use="required"/>
+  <xs:attribute name="id" type="idtype" use="required"/>
+  <xs:attribute name="dataTypeSignature" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="vertexitemtype">
+  <xs:sequence>
+    <xs:element name="position"  type="positiontype" />
+    <xs:element name="size"      type="sizetype" />
+  </xs:sequence>
+  <xs:attribute name="class" type="impresariovertexitemclass" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="vertexdatatype">
+  <xs:sequence>
+    <xs:element name="parameters">
+      <xs:complexType>
+        <xs:sequence>
+          <xs:element name="parameter"  minOccurs="0" maxOccurs="unbounded" type="parametertype"/>
+        </xs:sequence>  
+      </xs:complexType>
+    </xs:element>
+  </xs:sequence>
+  <xs:attribute name="class" type="impresariomacroclass" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="parametertype">
+  <xs:simpleContent>
+    <xs:extension base="xs:token">
+      <xs:attribute name="name"  type="xs:token" use="required"/>
+      <xs:attribute name="type"  type="xs:token" use="required"/>
+    </xs:extension>
+  </xs:simpleContent>
+</xs:complexType>
+
+<xs:complexType name="pintype">
+  <xs:sequence>
+    <xs:element name="data"           type="pindatatype" />  
+    <xs:element name="visualization"  type="pinitemtype" />
+   </xs:sequence>
+  <xs:attribute name="class" type="impresariopinclass" use="required"/>
+  <xs:attribute name="id" type="idtype" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="pinitemtype">
+  <xs:attribute name="class" type="impresariopinitemclass" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="pindatatype">
+  <xs:sequence>
+    <xs:element name="name" type="xs:token" />
+    <xs:choice>
+      <xs:element name="input"  type="xs:token" />
+      <xs:element name="output" type="xs:token" />
+    </xs:choice>
+  </xs:sequence>
+  <xs:attribute name="class" type="impresariomacropinclass" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="edgetype">
+  <xs:sequence>
+    <xs:element name="data"           type="edgedatatype" />  
+    <xs:element name="visualization"  type="edgeitemtype" />
+  </xs:sequence>
+  <xs:attribute name="class" type="impresarioedgeclass" use="required"/>
+  <xs:attribute name="id" type="idtype" use="required"/>
+  <xs:attribute name="dataTypeSignature" type="impresarioedgetype" use="required"/>
+  <xs:attribute name="srcPinId" type="idtype" use="required"/>
+  <xs:attribute name="destPinId" type="idtype" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="edgeitemtype">
+  <xs:attribute name="class" type="impresarioedgeitemclass" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="edgedatatype">
+  <xs:attribute name="class" type="impresariolinkclass" use="required"/>
+</xs:complexType>
+
+<xs:simpleType name="idtype">
+  <xs:restriction base="xs:token">
+    <xs:pattern value="\{[0-9a-f]{8}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{12}\}"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="booltype">
+  <xs:restriction base="xs:token">
+    <xs:pattern value="true|false"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="layouttype">
+  <xs:restriction base="xs:string">
+    <xs:enumeration value="TopToBottom" />
+    <xs:enumeration value="LeftToRight" />
+    <xs:enumeration value="RightToLeft" />
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="positiontype">
+  <xs:restriction base="xs:token">
+    <xs:pattern value="\{\-?[0-9]+(\.[0-9]+)?;\-?[0-9]+(\.[0-9]+)?\}"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="sizetype">
+  <xs:restriction base="xs:token">
+    <xs:pattern value="\{[0-9]+(\.[0-9]+)?;[0-9]+(\.[0-9]+)?\}"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="impresariographclass">
+  <xs:restriction base="xs:token">
+    <xs:enumeration value="app::ProcessGraph"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="impresariosceneclass">
+  <xs:restriction base="xs:token">
+    <xs:enumeration value="graph::Scene"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="impresariovertexclass">
+  <xs:restriction base="xs:token">
+    <xs:enumeration value="graph::Vertex"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="impresariovertexitemclass">
+  <xs:restriction base="xs:token">
+    <xs:enumeration value="graph::VertexItem"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="impresariopinclass">
+  <xs:restriction base="xs:token">
+    <xs:enumeration value="graph::Pin"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="impresariopinitemclass">
+  <xs:restriction base="xs:token">
+    <xs:enumeration value="graph::PinItem"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="impresarioedgeclass">
+  <xs:restriction base="xs:token">
+    <xs:enumeration value="graph::Edge"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="impresarioedgeitemclass">
+  <xs:restriction base="xs:token">
+    <xs:enumeration value="graph::EdgeItem"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="impresariomacroclass">
+  <xs:restriction base="xs:token">
+    <xs:enumeration value="app::Macro"/>
+    <xs:enumeration value="app::MacroDLL"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="impresariomacropinclass">
+  <xs:restriction base="xs:token">
+    <xs:enumeration value="app::MacroInput"/>
+    <xs:enumeration value="app::MacroOutput"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="impresariolinkclass">
+  <xs:restriction base="xs:token">
+    <xs:enumeration value="app::MacroLink"/>
+  </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="impresarioedgetype">
+  <xs:restriction base="xs:token">
+    <xs:enumeration value="Impresario::DataFlowEdge"/>
+  </xs:restriction>
+</xs:simpleType>
+
+</xs:schema>

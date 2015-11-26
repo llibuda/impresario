@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Settings>
+    <Data>
+        <Paths>
+            <Macros>../lib</Macros>
+            <ProcessGraphs>../processgraphs</ProcessGraphs>
+            <Resources>../resources</Resources>
+        </Paths>
+    </Data>
+    <GUI>
+        <DB>
+            <ShowViewers>true</ShowViewers>
+        </DB>
+        <PropertyWindow>
+            <DefaultWidget>../resources/PropertyWidget.qml</DefaultWidget>
+        </PropertyWindow>
+    </GUI>
+</Settings>
