@@ -41,11 +41,11 @@ namespace graph
     edgeRouter(Avoid::OrthogonalRouting), dropPosition(), edgeCreationMode(false),
     edgeValid(false), edgeStartItem(0), edgeEndItem(0), edgeItem(0), layoutDir(Defines::TopToBottom), scenePalette(), blocked(false)
   {
-    edgeRouter.setOrthogonalNudgeDistance(10.0);
-    edgeRouter.setRoutingPenalty(Avoid::segmentPenalty,0.0);
+    edgeRouter.setRoutingParameter(Avoid::idealNudgingDistance,10.0);
+    edgeRouter.setRoutingParameter(Avoid::segmentPenalty,1.0);
+    //edgeRouter.setRoutingParameter(Avoid::fixedSharedPathPenalty,5.0);
     //edgeRouter.setRoutingOption(Avoid::nudgeOrthogonalSegmentsConnectedToShapes,true);
     //edgeRouter.setRoutingOption(Avoid::penaliseOrthogonalSharedPathsAtConnEnds,true);
-    //edgeRouter.setRoutingPenalty(Avoid::fixedSharedPathPenalty,5.0);
   }
 
   Scene::~Scene()

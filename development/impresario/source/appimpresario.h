@@ -22,15 +22,16 @@
 #define APPIMPRESARIO_H
 
 #include "resources.h"
-#include <QtSingleApplication>
+#include "singleapplication.h"
 #include <QString>
 #include <QIODevice>
 #include <QSettings>
 #include <QQmlEngine>
+#include <QWidget>
 
 namespace app
 {
-  class Impresario : public QtSingleApplication
+  class Impresario : public SingleApplication
   {
     Q_OBJECT
   public:
@@ -40,6 +41,11 @@ namespace app
 
     bool initCritical();
     bool initNonCritical();
+
+    void setActivationWindow(QWidget* actWin)
+    {
+      wndActWindow = actWin;
+    }
 
     QQmlEngine& qmlEngine()
     {
@@ -53,9 +59,10 @@ namespace app
   signals:
     void initCriticalSuccessful();
     void initNonCriticalSuccessful();
+    void raiseMainWindow();
 
   private slots:
-    void messageFromOtherInstance(const QString& msg);
+    void activatedByAnotherInstance();
 
   private:
     static bool readXmlFile(QIODevice &device, QSettings::SettingsMap &map);
@@ -74,6 +81,7 @@ namespace app
     static Impresario* appInstance;
 
     QQmlEngine qmlEngineInstance;
+    QWidget*   wndActWindow;
   };
 }
 #endif // APPIMPRESARIO_H

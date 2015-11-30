@@ -11,8 +11,8 @@ QMAKE_TARGET_DESCRIPTION = "Image Processing Engineering System applying Reusabl
 QMAKE_TARGET_COPYRIGHT = "Copyright 2015 Lars Libuda"
 
 INCLUDEPATH += $$quote(../components/qtpropertybrowser/src)
-INCLUDEPATH += $$quote(../components/qtsingleapplication/src)
-INCLUDEPATH += $$quote(../components/libavoid/include)
+INCLUDEPATH += $$quote(../components/libavoid/source)
+INCLUDEPATH += $$quote(../components/singleapplication)
 
 SOURCES += main.cpp \
     appimpresario.cpp \
@@ -50,7 +50,8 @@ SOURCES += main.cpp \
     pgewndprops.cpp \
     graphresources.cpp \
     graphserializer.cpp \
-    stdconsoleinterface.cpp
+    stdconsoleinterface.cpp \
+    ../components/singleapplication/singleapplication.cpp
 
 HEADERS  += appimpresario.h \
     framemainwindow.h \
@@ -89,7 +90,8 @@ HEADERS  += appimpresario.h \
     pgewndprops.h \
     graphresources.h \
     graphserializer.h \
-    stdconsoleinterface.h
+    stdconsoleinterface.h \
+    ../components/singleapplication/singleapplication.h
 
 RESOURCES += \
     resources.qrc
@@ -97,18 +99,15 @@ RESOURCES += \
 win32 {
   RC_ICONS += ../misc/impresario.ico
   DEFINES += QT_QTPROPERTYBROWSER_IMPORT
-  DEFINES += QT_QTSINGLEAPPLICATION_IMPORT
   contains(QT_ARCH, i386) {
     CONFIG(release, release|debug) {
       DESTDIR = ../../../../bin-win32-release
       LIBS += $$quote(-L../../components/qtpropertybrowser/lib/win32) -lQt5PropertyBrowser
-      LIBS += $$quote(-L../../components/qtsingleapplication/lib/win32) -lQt5SingleApplication
       LIBS += $$quote(-L../../components/libavoid/lib/win32) -llibavoid
     }
     CONFIG(debug, release|debug) {
       DESTDIR = ../../../../bin-win32-debug
       LIBS += $$quote(-L../../components/qtpropertybrowser/lib/win32) -lQt5PropertyBrowserd
-      LIBS += $$quote(-L../../components/qtsingleapplication/lib/win32) -lQt5SingleApplicationd
       LIBS += $$quote(-L../../components/libavoid/lib/win32) -llibavoidd
     }
   }
@@ -116,13 +115,11 @@ win32 {
     CONFIG(release, release|debug) {
       DESTDIR = ../../../../bin-win64-release
       LIBS += $$quote(-L../../components/qtpropertybrowser/lib/win64) -lQt5PropertyBrowser
-      LIBS += $$quote(-L../../components/qtsingleapplication/lib/win64) -lQt5SingleApplication
       LIBS += $$quote(-L../../components/libavoid/lib/win64) -llibavoid
     }
     CONFIG(debug, release|debug) {
       DESTDIR = ../../../../bin-win64-debug
       LIBS += $$quote(-L../../components/qtpropertybrowser/lib/win64) -lQt5PropertyBrowserd
-      LIBS += $$quote(-L../../components/qtsingleapplication/lib/win64) -lQt5SingleApplicationd
       LIBS += $$quote(-L../../components/libavoid/lib/win64) -llibavoidd
     }
   }
@@ -132,30 +129,24 @@ unix {
   CONFIG(release, release|debug) {
     DESTDIR = ../../../../bin-unix64-release
     LIBS += $$quote(-L../../components/qtpropertybrowser/lib/unix64) -lQt5PropertyBrowser
-    LIBS += $$quote(-L../../components/qtsingleapplication/lib/unix64) -lQt5SingleApplication
     LIBS += $$quote(-L../../components/libavoid/lib/unix64) -lavoid
   }
   CONFIG(debug, release|debug) {
     DESTDIR = ../../../../bin-unix64-debug
     LIBS += $$quote(-L../../components/qtpropertybrowser/lib/unix64) -lQt5PropertyBrowser
-    LIBS += $$quote(-L../../components/qtsingleapplication/lib/unix64) -lQt5SingleApplication
     LIBS += $$quote(-L../../components/libavoid/lib/unix64) -lavoidd
   }
 }
 
 OTHER_FILES += \
-    ../../../resources/properties.qml \
     ../../../resources/PropertyWidget.qml \
     ../../../resources/IntSpinBox.qml \
     ../../../resources/StringLineEdit.qml \
     ../../../resources/BoolComboBox.qml \
     ../../../resources/StringDirSelector.qml \
     ../../../resources/IntComboBox.qml \
-    ../../../resources/RealSpinBox.qml
-
-DISTFILES += \
+    ../../../resources/RealSpinBox.qml \
     ../../../resources/StringFileSelector.qml \
-    ../../../resources/PropertyWidgetConvolution.qml
 
 
 

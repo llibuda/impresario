@@ -68,7 +68,8 @@ Makefile*
 /lib*/*
 /processgraphs/*
 /development/impresario/build/*
-/development/impresario/components/*
+/development/impresario/components/build/*
+/development/impresario/components/qtpropertybrowser/*
 
 # special files to be ignored
 /resources/PropertyWidgetConvolution.qml

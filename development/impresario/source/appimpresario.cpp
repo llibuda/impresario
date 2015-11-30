@@ -151,7 +151,7 @@ namespace app
     }
   }
 
-  Impresario::Impresario(int & argc, char ** argv) : QtSingleApplication(argc,argv)
+  Impresario::Impresario(int & argc, char ** argv) : SingleApplication(argc,argv), wndActWindow(0)
   {
     // set application name, version, and organization for use
     // in QSettings instance
@@ -164,7 +164,7 @@ namespace app
     QSettings::setPath(XmlFormat,QSettings::SystemScope,applicationDirPath());
     QSettings::setDefaultFormat(XmlFormat);
 
-    connect(this,SIGNAL(messageReceived(QString)),this,SLOT(messageFromOtherInstance(QString)));
+    connect(this,SIGNAL(showUp()),this,SLOT(activatedByAnotherInstance()));
   }
 
   Impresario::~Impresario()
@@ -196,9 +196,15 @@ namespace app
     return result;
   }
 
-  void Impresario::messageFromOtherInstance(const QString& msg)
+  void Impresario::activatedByAnotherInstance()
   {
-    syslog::info(msg);
+    syslog::info(tr("Activated by another instance."));
+    if (wndActWindow)
+    {
+      wndActWindow->setWindowState(wndActWindow->windowState() & ~Qt::WindowMinimized);
+      wndActWindow->raise();
+      wndActWindow->activateWindow();
+    }
   }
 
   void Impresario::initMacroLibraries()

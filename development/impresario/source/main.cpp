@@ -27,12 +27,6 @@ int main(int argc, char *argv[])
 {
   int result = 1;
   app::Impresario& a = app::Impresario::instance(argc, argv);
-  if (a.isRunning())
-  {
-    result = (a.sendMessage(QObject::tr("Impresario: Activated by another instance."))) ? 0 : 1;
-    app::Impresario::release();
-    return result;
-  }
   if (a.initCritical())
   {
     frame::MainWindow& mw = frame::MainWindow::instance();
