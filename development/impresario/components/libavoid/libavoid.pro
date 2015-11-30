@@ -7,11 +7,11 @@
 TEMPLATE = lib
 CONFIG -= app_bundle
 CONFIG -= qt
+CONFIG += dll
 
 INCLUDEPATH += ./source/
 
 win32 {
-  CONFIG += dll
   DEFINES += LIBAVOID_EXPORTS
   CONFIG(release, release|debug) {
     TARGET = libavoid
@@ -24,6 +24,21 @@ win32 {
   }
   else {
     DESTDIR = $$_PRO_FILE_PWD_/lib/win64
+  }
+}
+
+unix {
+  CONFIG(release, release|debug) {
+    TARGET = avoid
+  }
+  CONFIG(debug, release|debug) {
+    TARGET = avoidd
+  }
+  contains(QT_ARCH, i386) {
+    DESTDIR = $$_PRO_FILE_PWD_/lib/unix32
+  }
+  else {
+    DESTDIR = $$_PRO_FILE_PWD_/lib/unix64
   }
 }
 
