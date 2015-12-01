@@ -27,8 +27,11 @@ is also shipped with <span style="font-variant: small-caps">Impresario</span> in
 <p>
 QtPropertyBrowser is part of the Qt Solutions 
 Archive (<a href="http://qt.gitorious.org/qt-solutions">
-http://qt.gitorious.org/qt-solutions</a>)
-and used under the terms of the BSD license as follows:
+http://qt.gitorious.org/qt-solutions</a>). However, a ported version to Qt 5
+is used in <span style="font-variant: small-caps">Impresario</span> which
+can be downloaded from <a href="https://bitbucket.org/eligt/qtpropertybrowser">
+https://bitbucket.org/eligt/qtpropertybrowser</a>.
+QtPropertyBrowser is used under the terms of the BSD license as follows:
 </p>
 <p>
 Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).<br>

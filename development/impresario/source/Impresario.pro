@@ -126,15 +126,29 @@ win32 {
 }
 
 unix {
-  CONFIG(release, release|debug) {
-    DESTDIR = ../../../../bin-unix64-release
-    LIBS += $$quote(-L../../components/qtpropertybrowser/lib/unix64) -lQt5PropertyBrowser
-    LIBS += $$quote(-L../../components/libavoid/lib/unix64) -lavoid
+  contains(QT_ARCH, i386) {
+    CONFIG(release, release|debug) {
+      DESTDIR = ../../../../bin-unix32-release
+      LIBS += $$quote(-L../../components/qtpropertybrowser/lib/unix32) -lQt5PropertyBrowser
+      LIBS += $$quote(-L../../components/libavoid/lib/unix32) -lavoid
+    }
+    CONFIG(debug, release|debug) {
+      DESTDIR = ../../../../bin-unix32-debug
+      LIBS += $$quote(-L../../components/qtpropertybrowser/lib/unix32) -lQt5PropertyBrowserd
+      LIBS += $$quote(-L../../components/libavoid/lib/unix32) -lavoidd
+    }
   }
-  CONFIG(debug, release|debug) {
-    DESTDIR = ../../../../bin-unix64-debug
-    LIBS += $$quote(-L../../components/qtpropertybrowser/lib/unix64) -lQt5PropertyBrowser
-    LIBS += $$quote(-L../../components/libavoid/lib/unix64) -lavoidd
+  else {
+    CONFIG(release, release|debug) {
+      DESTDIR = ../../../../bin-unix64-release
+      LIBS += $$quote(-L../../components/qtpropertybrowser/lib/unix64) -lQt5PropertyBrowser
+      LIBS += $$quote(-L../../components/libavoid/lib/unix64) -lavoid
+    }
+    CONFIG(debug, release|debug) {
+      DESTDIR = ../../../../bin-unix64-debug
+      LIBS += $$quote(-L../../components/qtpropertybrowser/lib/unix64) -lQt5PropertyBrowserd
+      LIBS += $$quote(-L../../components/libavoid/lib/unix64) -lavoidd
+    }
   }
 }
 
