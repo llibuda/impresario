@@ -10,7 +10,22 @@
     <GUI>
         <DB>
             <ShowViewers>true</ShowViewers>
+            <ViewFormats>
+                <ActiveItem>By%20Group</ActiveItem>
+                <ItemCount>4</ItemCount>
+                <ItemDefinition0>MGCLBT</ItemDefinition0>
+                <ItemDefinition1>%5BLBM%5DGCT</ItemDefinition1>
+                <ItemDefinition2>%5BGM%5DCLBT</ItemDefinition2>
+                <ItemDefinition3>%5BFM%5DGBT</ItemDefinition3>
+                <ItemIdentifier0>Full%20List%20View</ItemIdentifier0>
+                <ItemIdentifier1>By%20Library</ItemIdentifier1>
+                <ItemIdentifier2>By%20Group</ItemIdentifier2>
+                <ItemIdentifier3>By%20Library%20File</ItemIdentifier3>
+            </ViewFormats>
         </DB>
+        <MainWindow>
+            <State>AAAA/wAAAAD9AAAAAwAAAAAAAAHNAAADGfwCAAAAAfsAAAAWAEQAbwBjAGsATQBhAGMAcgBvAEQAQgEAAAA7AAADGQAAATEA////AAAAAQAAAX0AAAIZ/AIAAAAB+wAAACYARABvAGMAawBNAGEAYwByAG8AUAByAG8AcABlAHIAdABpAGUAcwAAAAA7AAACGQAAANcA////AAAAAwAABDIAAAD6/AEAAAAB/AAAAdMAAAQyAAAApgD////6AAAAAgIAAAAD+wAAABwARABvAGMAawBDAG8AbgBzAG8AbABlAE8AdQB0AAAAAAD/////AAAAgAD////7AAAAGgBEAG8AYwBrAEMAaABhAG4AZwBlAEwAbwBnAAAAAAD/////AAAAWQD////7AAAAGgBEAG8AYwBrAFMAeQBzAHQAZQBtAEwAbwBnAQAAAloAAAD6AAAAgAD///8AAAKvAAACGQAAAAEAAAAEAAAAAQAAAAj8AAAAAQAAAAIAAAAEAAAAFgBUAG8AbwBsAEIAYQByAEYAaQBsAGUBAAAAAP////8AAAAAAAAAAAAAABYAVABvAG8AbABCAGEAcgBFAGQAaQB0AAAAAJv/////AAAAAAAAAAAAAAAWAFQAbwBvAGwAQgBhAHIAVgBpAGUAdwAAAAFX/////wAAAAAAAAAAAAAAHABUAG8AbwBsAEIAYQByAEMAbwBuAHQAcgBvAGwAAAACDf////8AAAAAAAAAAA==</State>
+        </MainWindow>
         <PropertyWindow>
             <DefaultWidget>../resources/PropertyWidget.qml</DefaultWidget>
         </PropertyWindow>

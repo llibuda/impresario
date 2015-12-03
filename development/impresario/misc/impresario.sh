@@ -31,22 +31,35 @@ fi
 bindir=`dirname "$me"`
 libdir=`cd "$bindir/lib" ; pwd`
 
-# Try to find user's Impresario.xml file
-config=`find ~/.config/ -path "*/.*Impresario.xml"`
+# Try to find user's configuration file
+userconfig=~/.config/
+config=`find $userconfig -path "*/.*Impresario.xml"`
 depdirs=""
-if test -n "$config"; then
+if test -e "$config"; then
     # If config file exists, try to read line with directories containing dependent shared objects
+    #echo "Using Impresario's user configuration file" $config
     depdirs=`sed -nr 's/^.*<DepLibs>(.*)<\/DepLibs>/\1/p' "$config"`
     depdirlist=`sed -nr 's/^.*<DepLibs>(.*)<\/DepLibs>/\1/p' "$config" | sed -nr 's/\|/:/gp'`
     if test -n "$depdirlist"; then
         depdirs="$depdirlist"
+    fi
+else
+    # user configuration file does not exist, try to locate Impresario's global configuration file
+    config=$bindir/Impresario.xml
+    if test -e "$config"; then
+        #echo "Using Impresario's global configuration file" $config
+        depdirs=`sed -nr 's/^.*<DepLibs>(.*)<\/DepLibs>/\1/p' "$config"`
+        depdirlist=`sed -nr 's/^.*<DepLibs>(.*)<\/DepLibs>/\1/p' "$config" | sed -nr 's/\|/:/gp'`
+        if test -n "$depdirlist"; then
+           depdirs="$depdirlist"
+        fi
     fi
 fi
 
 # Extend path for shared objects for this process
 LD_LIBRARY_PATH=$libdir:$depdirs${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
-#echo $LD_LIBRARY_PATH
+#echo "Setting LD_LIBRARY_PATH to " $LD_LIBRARY_PATH
 # Change to Impresario's executable directory so that initialization works properly
 cd $bindir
 # Run Impresario main process
