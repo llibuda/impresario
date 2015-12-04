@@ -15,7 +15,7 @@
 **   GNU General Public License for more details.
 **
 **   You should have received a copy of the GNU General Public License
-**   along with Impresario in subdirectory "licenses", file "LICENSE.GPLv3".
+**   along with Impresario in subdirectory "licenses", file "LICENSE_Impresario.GPLv3".
 **   If not, see <http://www.gnu.org/licenses/>.
 ******************************************************************************************/
 #ifndef DBVIEWCONFIG_H
