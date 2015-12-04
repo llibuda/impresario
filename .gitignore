@@ -64,7 +64,6 @@ Makefile*
 
 # directories to be ignored
 /bin*/*
-/doc/*
 /lib*/*
 /processgraphs/*
 /development/impresario/build/*
