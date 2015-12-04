@@ -19,9 +19,12 @@
 <p>
     You should have received a copy of the GNU General Public License
     along with <span style="font-variant: small-caps">Impresario</span> in subdirectory 
-    "licenses", file "LICENSE.GPLv3".  
+    "licenses", file "LICENSE_Impresario.GPLv3".  
     If not, see <a href="http://www.gnu.org/licenses/gpl-3.0.html">http://www.gnu.org/licenses/gpl-3.0.html</a>.
 </p>
-
+<p>
+    The whole source code of <span style="font-variant: small-caps">Impresario</span> is available for
+    download on GitHub at <a href="https://github.com/llibuda/impresario">https://github.com/llibuda/impresario</a>.
+</p>
 </body>
 </html>

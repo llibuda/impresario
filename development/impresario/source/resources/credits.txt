@@ -21,7 +21,10 @@ The Qt Toolkit is used under the terms of the GNU Lesser General Public
 License version 3 as published by the Free Software Foundation
 (<a href="http://www.gnu.org/licenses/lgpl-3.0.html">
 http://www.gnu.org/licenses/lgpl-3.0.html</a>). A copy of this license 
-is also shipped with <span style="font-variant: small-caps">Impresario</span> in subdirectory "licenses", file "LICENSE.LGPLv3".
+is also shipped with <span style="font-variant: small-caps">Impresario</span> in subdirectory "licenses", file "LICENSE_Qt.LGPLv3".
+</p>
+<p>
+The source code is available for download at <a href="http://www.qt.io/download/">http://www.qt.io/download/</a>
 </p>
 <h2>QtPropertyBrowser</h2>
 <p>
@@ -113,7 +116,7 @@ libavoid is licensed under the terms of the GNU Lesser General Public
 License version 2.1 as published by the Free Software Foundation
 (<a href="http://www.gnu.org/licenses/lgpl-2.1.html">
 http://www.gnu.org/licenses/lgpl-2.1.html</a>). A copy of this license 
-is also shipped with <span style="font-variant: small-caps">Impresario</span> in subdirectory "licenses", file "LICENSE.LGPLv21".
+is also shipped with <span style="font-variant: small-caps">Impresario</span> in subdirectory "licenses", file "LICENSE_libavoid.LGPLv21".
 </p>
 <p>
 Many thanks to the author Michael Wybrow.

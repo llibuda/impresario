@@ -17,7 +17,7 @@ Detailed information are available on the project's [GitHub pages](http://llibud
 ## License
 Impresario is open source software and licensed under the GNU General Public License version 3 (GPLv3). You may look up the license text 
 on the web at [http://www.gnu.org/licenses/gpl-3.0.html](http://www.gnu.org/licenses/gpl-3.0.html) or read it as [plain text]
-(./licenses/LICENSE.GPLv3).
+(./licenses/LICENSE_Impresario.GPLv3).
 
 However, the GPLv3 does not apply to the libraries containing the image processing algorithms, etc. These libraries
 may be licensed under any license the library developers choose, even closed source ones. 
