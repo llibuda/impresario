@@ -1,0 +1,6 @@
+# ignore everything
+*
+# except index.html and web folder
+!index.html
+!web/*
+!.gitignore
