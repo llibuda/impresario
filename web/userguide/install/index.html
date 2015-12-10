@@ -54,7 +54,7 @@
 						  
 							  <li  class="active"><a href="/impresario/web/userguide/install/">Installation</a></li>
 						  
-							  <li ><a href="/impresario/web/userguide/configuration/">Configuration</a></li>
+							  <li ><a href="/impresario/web/userguide/history/">Release History</a></li>
 						  
 						  </ul>
 					  </li>
@@ -88,7 +88,57 @@
 				<h1 class="doc-entry-title">Installation</h1>
 				
 				<section>
-					<p>Installation of Impresario</p>
+					
+
+<p>Impresario binaries are distributed in compressed archives, &ldquo;zip&rdquo; archives on Windows platforms and &ldquo;tar.gz&rdquo; archives
+on Linux platforms. Impresario does not make any changes to the operating system, it runs locally from
+the folder you installed it to.</p>
+
+<h1 id="installation-on-windows">Installation on Windows</h1>
+
+<ul>
+<li>Download the two zip archives <code>Impresario-win64-X.Y.Z.zip</code> and <code>ImpresarioMacros-win64-X.Y.Z.zip</code>
+respectively, where <code>X</code>, <code>Y</code>, and <code>Z</code> denote the major, minor, and patch version of the packages.</li>
+<li>Create a new folder somewhere on your hard drive where you would like Impresario to be installed to,
+e.g. <code>D:\Impresario-2.0.0</code>.</li>
+<li>Call your favorite zip handling tool to uncompress both archives into the just created folder.<br>
+<strong>Important:</strong> Uncompress <code>Impresario-win64-X.Y.Z.zip</code> <strong>first</strong>! During uncompression of
+<code>ImpresarioMacros-win64-X.Y.Z.zip</code>, the zip tool may prompt you to overwrite the file <code>bin\Impresario.xml</code>.
+Please let it overwrite the file.</li>
+<li>You are done. You can now start Impresario by running <code>Impresario.exe</code> in the <code>bin</code> subdirectory.<br /></li>
+</ul>
+
+<h1 id="installation-on-linux">Installation on Linux</h1>
+
+<ul>
+<li>Download the two zip archives <code>Impresario-linux64-X.Y.Z.tar.gz</code> and <code>ImpresarioMacros-linux64-X.Y.Z.tar.gz</code>
+respectively, where <code>X</code>, <code>Y</code>, and <code>Z</code> denote the major, minor, and patch version of the packages.</li>
+<li>Create a new folder somewhere on your hard drive where you would like Impresario to be installed to,
+e.g. <code>~/Impresario-2.0.0</code>.</li>
+<li>Move both tar.gz archives into the just created folder and then run the following commands
+from within this folder in the given order:</li>
+</ul>
+
+<pre><code class="language-bash">    tar xzvf Impresario-linux64-X.Y.Z.tar.gz
+    tar xzvf ImpresarioMacros-linux64-X.Y.Z.tar.gz
+    # optional clean up
+    rm *.tar.gz
+</code></pre>
+
+<ul>
+<li>You are done. You can now start Impresario by running <code>./impresario.sh</code> in the <code>bin</code> subdirectory.<br>
+<strong>Important:</strong> Do not run the program <code>./Impresario</code>! This will run Impresario with an incorrect setup of
+<code>LD_LIBRARY_PATH</code>.<br /></li>
+</ul>
+
+<h1 id="uninstall-impresario">Uninstall Impresario</h1>
+
+<p>To uninstall Impresario just delete the folder containing Impresario.</p>
+
+<p>Impresario stores its user specific settings on Windows in <code>&lt;PATH_TO_YOUR_USER_DIRECTORY&gt;\AppData\Roaming\Impresario</code>.
+On Linux these settings are stored in <code>~/.config/Impresario</code>.</p>
+
+<p>You may like to delete these settings as well.</p>
 
 				</section>
 			</article>
@@ -103,15 +153,16 @@
 			<ul>
 				<li><strong><a href="#title">Installation</a></strong></li>
 			</ul>
-			
+			<nav id="TableOfContents">
+<ul>
+<li><a href="#installation-on-windows">Installation on Windows</a></li>
+<li><a href="#installation-on-linux">Installation on Linux</a></li>
+<li><a href="#uninstall-impresario">Uninstall Impresario</a></li>
+</ul>
+</nav>
 		</div>
 	</div>
-	<div class="sidebar-module">
-		<h4>Tags</h4>
-		<div class="tag-box">
-		
-		</div>
-	</div>
+  
 </div>
 
 </div> 
