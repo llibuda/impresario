@@ -93,12 +93,91 @@
 <h1 id="what-impresario-is-about">What Impresario is about</h1>
 
 <p><em>Impresario</em> is the acronym for &ldquo;<strong>Im</strong>age <strong>Pr</strong>ocessing <strong>E</strong>ngineering <strong>S</strong>ystem <strong>A</strong>pplying <strong>R</strong>eusable
-<strong>I</strong>nteractive <strong>O</strong>bjects&rdquo; (guess what was first ;-)).
-It was designed to easily create and test image processing algorithms in the context of larger solutions.</p>
+<strong>I</strong>nteractive <strong>O</strong>bjects&rdquo;. It is originally designed as a <em>Rapid Prototyping System</em> for easy creation and testing
+of image processing algorithms in the context of larger solutions. But it is not limited to it.</p>
 
-<h2 id="level-two-heading">Level two heading</h2>
+<h2 id="basic-concepts-and-features">Basic concepts and features</h2>
 
-<p>My further text.</p>
+<p>To get a basic understanding of how Impresario works, the following paragraphs outline Impresario&rsquo;s basic concepts and
+features.</p>
+
+<h3 id="macros">Macros</h3>
+
+<p>Impresario relies on the availability of &ldquo;Reusable Interactive Objects&rdquo; as mentioned in its acronym. Impresario
+denotes these reusable interactive objects as &ldquo;Macros&rdquo;. A macro is a functional element which is fully described
+by its input data, output data, and parameters. The latter control the behavior of the functional element.</p>
+
+<p>A macro can most likely be compared to a function block as defined in IEC 61131-3 for programming PLCs (Programmable
+Logic Controller).</p>
+
+<h3 id="macro-libraries">Macro libraries</h3>
+
+<p>A macro library contains several macros and is realized as dynamic link library (.dll) on Windows platforms and as shared
+object (.so) on Linux like platforms.</p>
+
+<p>Impresario comes with a simple C++ API to create your own macro libraries using any license you wish. This is Impresario&rsquo;s
+core feature. The provided API allows the developer to focus on the implementation of the desired macro functionality by
+hiding all interactions with Impresario and GUI related tasks from the developer.</p>
+
+<h3 id="macro-database">Macro database</h3>
+
+<p>During start-up Impresario loads all available macro libraries from predefined directories and adds all macros
+contained in the libraries to its database which is finally presented to the user.</p>
+
+<p>Impresario allows the user to customize views and filters for the database.</p>
+
+<h3 id="impresario-process-graphs">Impresario Process Graphs</h3>
+
+<p>Impresario provides a graphical editor which allows to add macros from the macro database to a document and connect
+macro output data to another macro&rsquo;s input data. The result is a directed graph called Impresario Process Graph.
+Impresario can save these graphs to files and also restore them from files.</p>
+
+<p>Each Impresario Process Graphs represents an application or program the user created. An Impresario Process Graph can
+most likely be compared to a function block diagram as defined in IEC 61131-3, which is one graphical programming syntax
+to program PLCs.</p>
+
+<h3 id="data-flow-engine">Data flow engine</h3>
+
+<p>Impresario features a multithreaded data flow engine which allows to run Impresario Process Graphs in the editor.
+During runtime you can inspect each macro&rsquo;s output data and its execution time. Execution can be paused and resumed as
+you like.</p>
+
+<h3 id="multi-platform-support">Multi platform support</h3>
+
+<p>I chose the <a href="http://www.qt.io">Qt framework</a> for developing Impresario version 2.x. Impresario runs on Windows and
+Linux platforms. Macs should be supported as well but I haven&rsquo;t tested it as I do not own a Mac.</p>
+
+<p><strong>Please note</strong>: As everybody is welcome to develop her own macro libraries, macro libraries must not necessarily be
+cross-platform enabled.</p>
+
+<h2 id="abstraction">Abstraction</h2>
+
+<p>In the end it actually depends on the macros&rsquo; functionalities what Impresario is suitable for. As stated in its acronym,
+Impresario originated from the purpose to develop and test image processing solutions. Therefore all macros
+developed so far have functionalities related to image processing.</p>
+
+<p>However, Impresario&rsquo;s architecture does not limit it to image processing. On a more abstract level Impresario
+can be considered as a graphical function block diagram editor with a data flow engine in the background
+running the function block diagrams in place and visualizing the results. It is up to you to find more
+application areas in which Impresario may be useful.</p>
+
+<h1 id="history">History</h1>
+
+<p>I developed the 1.x versions of Impresario between 2003 and 2006 at the Chair of Technical Computer Science at
+RWTH Aachen University, Germany. These versions were exclusively developed for Windows operating systems - particular
+Windows NT and Windows XP - using Microsoft Visual C++ and Microsoft Foundation Classes (MFC).</p>
+
+<p>Impresario was used as development and testing framework for image processing solutions in several diploma theses
+and my PhD thesis. And as I successfully finished my PhD thesis it fullfilled its purposes to full extent.</p>
+
+<p>In 2006 the Chair of Technical Computer Science closed. Since then Impresario has not been of any use and hasn&rsquo;t been
+maintained. So the original code does not run on Windows Vista and higher.</p>
+
+<p>In winter time 2011 I rediscovered the code on one of my hard disks during a relocation. I spontaneously decided
+to start a new implementation from scratch without all the quirks and workarounds of the 1.x version and with
+multi platform support. The result is now available as Impresario version 2.x licensed under the terms of GPLv3
+on <a href="https://github.com/llibuda/impresario">GitHub</a>. Hopefully, it lasts for longer than version 1.x and finds a
+community for maintenance and further development.</p>
 
 				</section>
 			</article>
@@ -117,8 +196,18 @@ It was designed to easily create and test image processing algorithms in the con
 <ul>
 <li><a href="#what-impresario-is-about">What Impresario is about</a>
 <ul>
-<li><a href="#level-two-heading">Level two heading</a></li>
+<li><a href="#basic-concepts-and-features">Basic concepts and features</a>
+<ul>
+<li><a href="#macros">Macros</a></li>
+<li><a href="#macro-libraries">Macro libraries</a></li>
+<li><a href="#macro-database">Macro database</a></li>
+<li><a href="#impresario-process-graphs">Impresario Process Graphs</a></li>
+<li><a href="#data-flow-engine">Data flow engine</a></li>
+<li><a href="#multi-platform-support">Multi platform support</a></li>
 </ul></li>
+<li><a href="#abstraction">Abstraction</a></li>
+</ul></li>
+<li><a href="#history">History</a></li>
 </ul>
 </nav>
 		</div>
