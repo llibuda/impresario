@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario">
+		<link rel="icon" href="http://llibuda.github.io/impresario/web/impresario.png">
+		<title>Setup of Development Environment - Impresario</title>
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/highlight.js.min.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/theme.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootie-docs.css">
+	</head>
+	
+<style>
+.navbar-custom {
+    color: #00AA00;
+    background-color: #CC3333;
+}
+</style>	
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="http://llibuda.github.io/impresario/web">Impresario</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="http://llibuda.github.io/impresario/web">Home</a></li>
+				
+				
+           
+					  <li ><a  href="/impresario/web/download/">Download</a></li>
+          
+				
+          
+            <li  class="dropdown">
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">User&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/userguide/introduction/">Introduction</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/install/">Installation</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/history/">Release History</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+          
+            <li  class="dropdown active" >
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Developer&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li  class="active"><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+        
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">Setup of Development Environment</h1>
+				
+				<section>
+					
+
+<h1 id="development-environment">Development Environment</h1>
+
+<p>In order to create your own Impresario Macro libraries or to build Impresario yourself from its source code,
+you need a development enviroment.</p>
+
+<p>In general two components are required:</p>
+
+<ul>
+<li>Qt Framework 5.5 with QtCreator</li>
+<li>A suitable compiler for QtCreator</li>
+</ul>
+
+<p>The following two subsections show how to set it up on Windows and Linux systems.</p>
+
+<h2 id="setup-for-windows-systems">Setup for Windows systems</h2>
+
+<p>On Windows systems Impresario currently supports the MinGW C++ compiler 4.9.2 (GNU gcc 32bit) and Microsoft&rsquo;s C++ compiler
+version 18.0 with runtime 12.0 in 32bit and 64bit. The Microsoft compiler for example is shipped with Visual Studio 2013.</p>
+
+<ul>
+<li>Go to <a href="http://www.qt.io/download-open-source/">http://www.qt.io/download-open-source/</a> and download the Qt Online Installer for Windows.</li>
+<li>Run the downloaded installer. After creating a Qt account (it&rsquo;s free) you can choose which Qt components to install. The following
+screenshot shows what is needed by Impresario:
+
+<figure >
+    <a href="../../images/qt_install_windows.png">
+        <img src="../../images/qt_install_windows.png" alt="Qt components to be installed on Windows" />
+    </a>
+    
+    <figcaption>
+        <h4>Qt components on Windows (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure>
+
+Color legend:
+
+<ul>
+<li>Green: Mandatory components to be installed in any case</li>
+<li>Yellow: To be installed if you like to use MinGW compiler</li>
+<li>Blue: To be installed if you like to use Microsoft&rsquo;s C++ compiler</li>
+</ul></li>
+<li>If you choose one of the msvc2013 packages during installation of Qt, you have to install the Microsoft compiler as well. The easiest way is
+to install MS Visual Studio 2013 Express for Desktop. You can download it from
+<a href="https://www.visualstudio.com/downloads/download-visual-studio-vs">https://www.visualstudio.com/downloads/download-visual-studio-vs</a> (it&rsquo;s free).<br /></li>
+</ul>
+
+<h2 id="setup-for-linux-systems">Setup for Linux systems</h2>
+
+<p>On Linux systems the GNU 64bit gcc is the compiler of choice.</p>
+
+<ul>
+<li>Go to <a href="http://www.qt.io/download-open-source/">http://www.qt.io/download-open-source/</a> and download the Qt Online Installer for Linux.</li>
+<li>Run the downloaded installer. After creating a Qt account (it&rsquo;s free) you can choose which Qt components to install. The following
+screenshot shows what is needed by Impresario:
+
+<figure >
+    <a href="../../images/qt_install_linux.png">
+        <img src="../../images/qt_install_linux.png" alt="Qt components to be installed on Linux" />
+    </a>
+    
+    <figcaption>
+        <h4>Qt components on Linux (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure>
+</li>
+<li>If not already installed on your system you have to install gcc itself. On Debian based systems like Ubuntu or Linux Mint with apt repository
+maintenance this is achieved by running <code>sudo apt-get install build-essential</code> from the command line.</li>
+</ul>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">Setup of Development Environment</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+<ul>
+<li><a href="#development-environment">Development Environment</a>
+<ul>
+<li><a href="#setup-for-windows-systems">Setup for Windows systems</a></li>
+<li><a href="#setup-for-linux-systems">Setup for Linux systems</a></li>
+</ul></li>
+</ul>
+</nav>
+		</div>
+	</div>
+  
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	<p>Copyright 2015-2016 Lars Libuda</p>
+</footer>
+
+
+
+<script src="http://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
+<script src="http://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
+
+<script src="http://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="http://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>
