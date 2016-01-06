@@ -65,7 +65,7 @@
 						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Developer&#39;s Guide<span class="caret"></span></a>
 						  <ul class="dropdown-menu" role="menu">
 						  
-							  <li ><a href="/impresario/web/devguide/developer/">First steps</a></li>
+							  <li ><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
 						  
 						  </ul>
 					  </li>
@@ -115,20 +115,19 @@ Please let it overwrite the file.</li>
 respectively, where <code>X</code>, <code>Y</code>, and <code>Z</code> denote the major, minor, and patch version of the packages.</li>
 <li>Create a new folder somewhere on your hard drive where you would like Impresario to be installed to,
 e.g. <code>~/Impresario-2.0.0</code>.</li>
-<li>Move both tar.gz archives into the just created folder and then run the following commands
-from within this folder in the given order:</li>
-</ul>
 
-<pre><code class="language-bash">    tar xzvf Impresario-linux64-X.Y.Z.tar.gz
-    tar xzvf ImpresarioMacros-linux64-X.Y.Z.tar.gz
-    # optional clean up
-    rm *.tar.gz
-</code></pre>
+<li><p>Move both tar.gz archives into the just created folder and then run the following commands
+from within this folder in the given order:</p>
 
-<ul>
-<li>You are done. You can now start Impresario by running <code>./impresario.sh</code> in the <code>bin</code> subdirectory.<br>
+<pre><code class="language-bash">tar xzvf Impresario-linux64-X.Y.Z.tar.gz
+tar xzvf ImpresarioMacros-linux64-X.Y.Z.tar.gz
+# optional clean up
+rm *.tar.gz
+</code></pre></li>
+
+<li><p>You are done. You can now start Impresario by running <code>./impresario.sh</code> in the <code>bin</code> subdirectory.<br>
 <strong>Important:</strong> Do not run the program <code>./Impresario</code>! This will run Impresario with an incorrect setup of
-<code>LD_LIBRARY_PATH</code>.<br /></li>
+<code>LD_LIBRARY_PATH</code>.</p></li>
 </ul>
 
 <h1 id="uninstall-impresario">Uninstall Impresario</h1>
@@ -179,7 +178,7 @@ On Linux these settings are stored in <code>~/.config/Impresario</code>.</p>
 </div> 
 
 <footer class="doc-footer">
-	<p>Copyright 2015 Lars Libuda</p>
+	<p>Copyright 2015-2016 Lars Libuda</p>
 </footer>
 
 
