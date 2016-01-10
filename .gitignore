@@ -63,11 +63,11 @@ Makefile*
 *.qmlproject.user.*
 
 # directories to be ignored
-/bin*/*
-/lib*/*
-/processgraphs/*
-/development/impresario/build/*
-/development/impresario/components/build/*
+/bin*
+/lib*
+/processgraphs
+/development/impresario/build
+/development/impresario/components/build
 
 # special files to be ignored
 /resources/PropertyWidgetConvolution.qml
