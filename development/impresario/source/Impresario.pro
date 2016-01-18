@@ -10,9 +10,9 @@ VERSION = 2.0.0
 QMAKE_TARGET_DESCRIPTION = "Image Processing Engineering System applying Reusable Interactive Objects"
 QMAKE_TARGET_COPYRIGHT = "Copyright 2015 Lars Libuda"
 
-INCLUDEPATH += $$quote(../components/qtpropertybrowser/src)
-INCLUDEPATH += $$quote(../components/libavoid/source)
-INCLUDEPATH += $$quote(../components/singleapplication)
+INCLUDEPATH += $$quote($$_PRO_FILE_PWD_/../components/qtpropertybrowser/src)
+INCLUDEPATH += $$quote($$_PRO_FILE_PWD_/../components/libavoid/source)
+INCLUDEPATH += $$quote($$_PRO_FILE_PWD_/../components/singleapplication)
 
 SOURCES += main.cpp \
     appimpresario.cpp \
@@ -101,26 +101,26 @@ win32 {
   DEFINES += QT_QTPROPERTYBROWSER_IMPORT
   contains(QT_ARCH, i386) {
     CONFIG(release, release|debug) {
-      DESTDIR = ../../../../bin-win32-release
-      LIBS += $$quote(-L../../components/qtpropertybrowser/lib/win32) -lQt5PropertyBrowser
-      LIBS += $$quote(-L../../components/libavoid/lib/win32) -llibavoid
+      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-win32-release
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/win32) -lQt5PropertyBrowser
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/win32) -llibavoid
     }
     CONFIG(debug, release|debug) {
-      DESTDIR = ../../../../bin-win32-debug
-      LIBS += $$quote(-L../../components/qtpropertybrowser/lib/win32) -lQt5PropertyBrowserd
-      LIBS += $$quote(-L../../components/libavoid/lib/win32) -llibavoidd
+      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-win32-debug
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/win32) -lQt5PropertyBrowserd
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/win32) -llibavoidd
     }
   }
   else {
     CONFIG(release, release|debug) {
-      DESTDIR = ../../../../bin-win64-release
-      LIBS += $$quote(-L../../components/qtpropertybrowser/lib/win64) -lQt5PropertyBrowser
-      LIBS += $$quote(-L../../components/libavoid/lib/win64) -llibavoid
+      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-win64-release
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/win64) -lQt5PropertyBrowser
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/win64) -llibavoid
     }
     CONFIG(debug, release|debug) {
-      DESTDIR = ../../../../bin-win64-debug
-      LIBS += $$quote(-L../../components/qtpropertybrowser/lib/win64) -lQt5PropertyBrowserd
-      LIBS += $$quote(-L../../components/libavoid/lib/win64) -llibavoidd
+      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-win64-debug
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/win64) -lQt5PropertyBrowserd
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/win64) -llibavoidd
     }
   }
 }
@@ -128,26 +128,26 @@ win32 {
 unix {
   contains(QT_ARCH, i386) {
     CONFIG(release, release|debug) {
-      DESTDIR = ../../../../bin-unix32-release
-      LIBS += $$quote(-L../../components/qtpropertybrowser/lib/unix32) -lQt5PropertyBrowser
-      LIBS += $$quote(-L../../components/libavoid/lib/unix32) -lavoid
+      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-unix32-release
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/unix32) -lQt5PropertyBrowser
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/unix32) -lavoid
     }
     CONFIG(debug, release|debug) {
-      DESTDIR = ../../../../bin-unix32-debug
-      LIBS += $$quote(-L../../components/qtpropertybrowser/lib/unix32) -lQt5PropertyBrowserd
-      LIBS += $$quote(-L../../components/libavoid/lib/unix32) -lavoidd
+      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-unix32-debug
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/unix32) -lQt5PropertyBrowserd
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/unix32) -lavoidd
     }
   }
   else {
     CONFIG(release, release|debug) {
-      DESTDIR = ../../../../bin-unix64-release
-      LIBS += $$quote(-L../../components/qtpropertybrowser/lib/unix64) -lQt5PropertyBrowser
-      LIBS += $$quote(-L../../components/libavoid/lib/unix64) -lavoid
+      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-unix64-release
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/unix64) -lQt5PropertyBrowser
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/unix64) -lavoid
     }
     CONFIG(debug, release|debug) {
-      DESTDIR = ../../../../bin-unix64-debug
-      LIBS += $$quote(-L../../components/qtpropertybrowser/lib/unix64) -lQt5PropertyBrowserd
-      LIBS += $$quote(-L../../components/libavoid/lib/unix64) -lavoidd
+      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-unix64-debug
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/unix64) -lQt5PropertyBrowserd
+      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/unix64) -lavoidd
     }
   }
 }
