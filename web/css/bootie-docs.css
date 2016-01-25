@@ -161,4 +161,18 @@ figure figcaption h4 {
   color: white;
 }
 
+/*
+ * Menu command shortcode
+ */
+
+code.menu_command {
+  color: black;
+  font-weight: bold;
+}
+ 
+img.menu_command {
+  display: inline;
+  vertical-align: middle;
+}
+
 
