@@ -27,6 +27,7 @@
 #include <QAction>
 #include <QCursor>
 #include <QFont>
+#include <QSettings>
 
 namespace Qt
 {
@@ -160,6 +161,14 @@ public:
     }
     actions->insert(id,action);
   }
+
+  static QStringList getPaths(SettingsIDs id, QSettings::Scope scope = QSettings::UserScope);
+
+  static void setPaths(SettingsIDs id, const QStringList& dirList);
+
+  static QString getPath(SettingsIDs id, QSettings::Scope scope = QSettings::UserScope);
+
+  static void setPath(SettingsIDs id, const QString& strDir);
 
 private:
   Resource();

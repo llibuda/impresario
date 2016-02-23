@@ -209,8 +209,7 @@ namespace app
 
   void Impresario::initMacroLibraries()
   {
-    QSettings settings;
-    QStringList dirs = settings.value(Resource::path(Resource::SETTINGS_PATH_MACROS)).toString().split('|');
+    QStringList dirs = Resource::getPaths(Resource::SETTINGS_PATH_MACROS);
     MacroManager::instance().loadPrototypes(dirs);
   }
 
@@ -237,29 +236,32 @@ namespace app
 
   bool Impresario::initProcessGraphPath()
   {
-    QSettings settings;
-    QString path = settings.value(Resource::path(Resource::SETTINGS_PATH_PROCESSGRAPH)).toString();
-    if (path.length() == 0)
+    // check path for process graphs
+    QStringList pgPaths;
+    pgPaths.append(Resource::getPath(Resource::SETTINGS_PATH_PROCESSGRAPH));
+    pgPaths.append(Resource::getPath(Resource::SETTINGS_PATH_PROCESSGRAPH,QSettings::SystemScope));
+    pgPaths.append(QDir::toNativeSeparators(QDir(applicationDirPath() + "/../processgraphs").absolutePath()));
+    pgPaths.append(QDir::toNativeSeparators(applicationDirPath()));
+    QString path = QString();
+    for(int i = 0; i < pgPaths.count(); ++i)
     {
-      syslog::warning(QString(tr("Configuration: Path to process graphs is not specified. Using path '%1'.")).arg(QDir::toNativeSeparators(QDir::current().absolutePath())));
-      settings.setValue(Resource::path(Resource::SETTINGS_PATH_PROCESSGRAPH),QDir::current().absolutePath());
-    }
-    else
-    {
-      QDir dir(path);
-      if (dir.isRelative())
+      if (pgPaths[i].length() > 0)
       {
-        dir.makeAbsolute();
-      }
-      if (dir.exists())
-      {
-        syslog::info(QString(tr("Configuration: Path to process graphs is '%1'.")).arg(QDir::toNativeSeparators(dir.absolutePath())));
-        settings.setValue(Resource::path(Resource::SETTINGS_PATH_PROCESSGRAPH),dir.absolutePath());
-      }
-      else
-      {
-        syslog::warning(QString(tr("Configuration: Specified path '%1' to process graphs does not exist. Using path '%2'.")).arg(QDir::toNativeSeparators(dir.absolutePath())).arg(QDir::toNativeSeparators(QDir::current().absolutePath())));
-        settings.setValue(Resource::path(Resource::SETTINGS_PATH_PROCESSGRAPH),QDir::current().absolutePath());
+        QDir dir(pgPaths[i]);
+        if (dir.exists()) // path exists -> all ok
+        {
+          path = pgPaths[i];
+          if (i > 0)
+          {
+            Resource::setPath(Resource::SETTINGS_PATH_PROCESSGRAPH,path);
+          }
+          syslog::info(QString(tr("Configuration: Path to process graphs is '%1'.")).arg(path));
+          break; // quit loop
+        }
+        else // path does not exist
+        {
+          syslog::warning(QString(tr("Configuration: Specified path '%1' to process graphs does not exist.")).arg(pgPaths[i]));
+        }
       }
     }
     return true;
@@ -267,31 +269,6 @@ namespace app
 
   bool Impresario::initResourcePath()
   {
-    QSettings settings;
-    QString path = settings.value(Resource::path(Resource::SETTINGS_PATH_RESOURCES)).toString();
-    if (path.length() == 0)
-    {
-      syslog::warning(QString(tr("Configuration: Path to resources is not specified. Using path '%1'.")).arg(QDir::toNativeSeparators(applicationDirPath())));
-      settings.setValue(Resource::path(Resource::SETTINGS_PATH_RESOURCES),applicationDirPath());
-    }
-    else
-    {
-      QDir dir(path);
-      if (dir.isRelative())
-      {
-        dir.makeAbsolute();
-      }
-      if (dir.exists())
-      {
-        syslog::info(QString(tr("Configuration: Path to resources is '%1'.")).arg(QDir::toNativeSeparators(dir.absolutePath())));
-        settings.setValue(Resource::path(Resource::SETTINGS_PATH_RESOURCES),dir.absolutePath());
-      }
-      else
-      {
-        syslog::warning(QString(tr("Configuration: Specified path '%1' to resources does not exist. Using path '%2'.")).arg(QDir::toNativeSeparators(dir.absolutePath())).arg(QDir::toNativeSeparators(applicationDirPath())));
-        settings.setValue(Resource::path(Resource::SETTINGS_PATH_RESOURCES),applicationDirPath());
-      }
-    }
     // check for QML path
     QDir qmlPath(applicationDirPath() + "/qml");
     if (qmlPath.exists())
@@ -303,32 +280,63 @@ namespace app
       syslog::error(QString(tr("Configuration: Path to QML resources '%1' does not exists. Please reinstall Impresario.")).arg(QDir::toNativeSeparators(qmlPath.absolutePath())));
       return false;
     }
+    // check resource path and required files
+    QStringList resPaths;
+    resPaths.append(Resource::getPath(Resource::SETTINGS_PATH_RESOURCES));
+    resPaths.append(Resource::getPath(Resource::SETTINGS_PATH_RESOURCES,QSettings::SystemScope));
+    resPaths.append(QDir::toNativeSeparators(QDir(applicationDirPath() + "/../resources").absolutePath()));
+    QString path = QString();
+    for(int i = 0; i < resPaths.count(); ++i)
+    {
+      if (resPaths[i].length() > 0)
+      {
+        QDir dir(resPaths[i]);
+        if (dir.exists()) // path exists -> all ok
+        {
+          path = resPaths[i];
+          if (i > 0)
+          {
+            Resource::setPath(Resource::SETTINGS_PATH_RESOURCES,path);
+          }
+          break; // quit loop
+        }
+        else // path does not exist
+        {
+          syslog::warning(QString(tr("Configuration: Specified path '%1' to resources does not exist.")).arg(resPaths[i]));
+        }
+      }
+    }
+    if (path.isEmpty())
+    {
+      syslog::error(QString(tr("Configuration: No valid path to resources found. Please reinstall Impresario.")));
+      return false;
+    }
+    else
+    {
+      syslog::info(QString(tr("Configuration: Path to resources is '%1'.")).arg(path));
+    }
+
     // check for process graph schema file
-    QString resPath = settings.value(Resource::path(Resource::SETTINGS_PATH_RESOURCES)).toString();
-    QFileInfo xsdFile(resPath + "/processgraph.xsd");
+    QFileInfo xsdFile(path + "/processgraph.xsd");
     if (!xsdFile.exists() || !xsdFile.isFile())
     {
       syslog::error(QString(tr("Configuration: Schema file '%1' for process graphs does not exists. Please reinstall Impresario.")).arg(QDir::toNativeSeparators(xsdFile.fileName())));
       return false;
     }
     // check for default property widget
-    QFileInfo defPropFile(settings.value(Resource::path(Resource::SETTINGS_PROP_DEFAULTWIDGET)).toString());
+    QSettings settings;
+    QFileInfo defPropFile(Resource::getPath(Resource::SETTINGS_PATH_RESOURCES) + '/' + settings.value(Resource::path((Resource::SETTINGS_PROP_DEFAULTWIDGET))).toString());
     if (!defPropFile.exists() || !defPropFile.isFile())
     {
       syslog::error(QString(tr("Configuration: Default QML property widget '%1' does not exists. Please reinstall Impresario.")).arg(QDir::toNativeSeparators(defPropFile.absoluteFilePath())));
       return false;
-    }
-    else
-    {
-      settings.setValue(Resource::path(Resource::SETTINGS_PROP_DEFAULTWIDGET),QVariant(defPropFile.absoluteFilePath()));
     }
     return true;
   }
 
   bool Impresario::initDepLibPaths()
   {
-    QSettings settings;
-    QStringList paths = settings.value(Resource::path(Resource::SETTINGS_PATH_DEPLIBS)).toString().split('|');
+    QStringList paths = Resource::getPaths(Resource::SETTINGS_PATH_DEPLIBS);
     QStringList libPaths;
     for(int i = 0; i < paths.size(); ++i)
     {
@@ -339,18 +347,13 @@ namespace app
       else
       {
         QDir dir(paths[i]);
-        if (dir.isRelative())
-        {
-          dir.makeAbsolute();
-        }
         if (dir.exists())
         {
-          libPaths.append(QDir::toNativeSeparators(dir.absolutePath()));
-          paths[i] = dir.absolutePath();
+          libPaths.append(paths[i]);
         }
         else
         {
-          syslog::warning(QString(tr("Configuration: Specified path '%1' for dependend libraries does not exist. Ignored.")).arg(QDir::toNativeSeparators(dir.absolutePath())));
+          syslog::warning(QString(tr("Configuration: Specified path '%1' for dependend libraries does not exist. Ignored.")).arg(paths[i]));
         }
       }
     }
@@ -372,7 +375,6 @@ namespace app
       pathVariable.prepend("PATH=");
       putenv(pathVariable.toLatin1().data());
 #endif
-      settings.setValue(Resource::path(Resource::SETTINGS_PATH_DEPLIBS),paths.join('|'));
     }
     else
     {
@@ -383,8 +385,7 @@ namespace app
 
   bool Impresario::initMacroLibPaths()
   {
-    QSettings settings;
-    QStringList paths = settings.value(Resource::path(Resource::SETTINGS_PATH_MACROS)).toString().split('|');
+    QStringList paths = Resource::getPaths(Resource::SETTINGS_PATH_MACROS);
     QStringList libPaths;
     for(int i = 0; i < paths.size(); ++i)
     {
@@ -395,19 +396,13 @@ namespace app
       else
       {
         QDir dir(paths[i]);
-        if (dir.isRelative())
-        {
-          dir.makeAbsolute();
-        }
         if (dir.exists())
         {
-          libPaths.append(QDir::toNativeSeparators(dir.absolutePath()));
-          paths[i] = dir.absolutePath();
-
+          libPaths.append(paths[i]);
         }
         else
         {
-          syslog::warning(QString(tr("Configuration: Specified path '%1' for macro libraries does not exist. Ignored.")).arg(QDir::toNativeSeparators(dir.absolutePath())));
+          syslog::warning(QString(tr("Configuration: Specified path '%1' for macro libraries does not exist. Ignored.")).arg(paths[i]));
         }
       }
     }
@@ -416,9 +411,9 @@ namespace app
       syslog::warning(QString(tr("Configuration: No valid paths for macro libraries specified. Added '%1' as default.")).arg(QDir::toNativeSeparators(applicationDirPath())));
       libPaths.append(QDir::toNativeSeparators(applicationDirPath()));
       paths.prepend(applicationDirPath());
+      Resource::setPaths(Resource::SETTINGS_PATH_MACROS,paths);
     }
     syslog::info(QString(tr("Configuration: Using the following paths for macro libraries\n%1")).arg(libPaths.join("\n")));
-    settings.setValue(Resource::path(Resource::SETTINGS_PATH_MACROS),paths.join('|'));
     return true;
   }
 

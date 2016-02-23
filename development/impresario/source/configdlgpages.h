@@ -416,7 +416,7 @@ namespace config
     virtual void setInformation(QString& info);
 
   private:
-    FileEditor* edtFile;
+    QComboBox*  cbDefQmlFile;
     QComboBox*  cbMacroPropFav;
     QComboBox*  cbOthersPropFav;
   };

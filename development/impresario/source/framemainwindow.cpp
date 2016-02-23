@@ -19,6 +19,7 @@
 **   If not, see <http://www.gnu.org/licenses/>.
 ******************************************************************************************/
 
+#include "appimpresario.h"
 #include "framemainwindow.h"
 #include "framestatusbar.h"
 #include "framemenubar.h"
@@ -234,8 +235,7 @@ namespace frame
 
   void MainWindow::fileOpen()
   {
-    QSettings settings;
-    QString pgPath = settings.value(Resource::path(Resource::SETTINGS_PATH_PROCESSGRAPH)).toString();
+    QString pgPath = Resource::getPath(Resource::SETTINGS_PATH_PROCESSGRAPH);
     QString fileName = QFileDialog::getOpenFileName(this,
                                                     tr("Open ProcessGraph"),
                                                     pgPath,

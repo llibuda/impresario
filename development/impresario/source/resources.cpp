@@ -24,6 +24,10 @@
 #include <QIcon>
 #include <QKeySequence>
 #include <QBitmap>
+#include <QSettings>
+#include <QDir>
+#include <QApplication>
+#include <QDebug>
 
 Resource Resource::instance;
 
@@ -65,6 +69,95 @@ Resource::~Resource()
   fonts->clear();
   delete fonts;
   fonts = 0;
+}
+
+QStringList Resource::getPaths(Resource::SettingsIDs id, QSettings::Scope scope)
+{
+  QSettings settings;
+  QDir::setCurrent(QApplication::applicationDirPath());
+  if (scope == QSettings::UserScope)
+  {
+    QStringList dirList = settings.value(Resource::path(id)).toString().split('|',QString::SkipEmptyParts);
+    for(int i = 0; i < dirList.count(); ++i)
+    {
+      QDir dir(dirList[i]);
+      dirList[i] = QDir::toNativeSeparators(dir.absolutePath());
+    }
+    return dirList;
+  }
+  else
+  {
+    QVariant savedValue = settings.value(Resource::path(id));
+    settings.remove(Resource::path(id));
+    QStringList dirList = settings.value(Resource::path(id)).toString().split('|',QString::SkipEmptyParts);
+    settings.setValue(Resource::path(id),savedValue);
+    for(int i = 0; i < dirList.count(); ++i)
+    {
+      QDir dir(dirList[i]);
+      dirList[i] = QDir::toNativeSeparators(dir.absolutePath());
+    }
+    return dirList;
+  }
+}
+
+void Resource::setPaths(Resource::SettingsIDs id, const QStringList& dirList)
+{
+  QStringList listDir;
+  QDir appDir(QApplication::applicationDirPath());
+  foreach(QString strDir, dirList)
+  {
+    QDir dir(appDir.relativeFilePath(strDir));
+    if (dir.path().isEmpty())
+    {
+      listDir.append(".");
+    }
+    else
+    {
+      listDir.append(QDir::fromNativeSeparators(dir.path()));
+    }
+  }
+  QSettings settings;
+  settings.setValue(Resource::path(id),listDir.join('|'));
+}
+
+QString Resource::getPath(Resource::SettingsIDs id, QSettings::Scope scope)
+{
+  QSettings settings;
+  QDir::setCurrent(QApplication::applicationDirPath());
+  if (scope == QSettings::UserScope)
+  {
+    QString strDir = settings.value(Resource::path(id)).toString();
+    if (strDir.isEmpty()) return QString();
+    QDir dir(strDir);
+    return QDir::toNativeSeparators(dir.absolutePath());
+  }
+  else
+  {
+    QVariant savedValue = settings.value(Resource::path(id));
+    settings.remove(Resource::path(id));
+    QString strDir = settings.value(Resource::path(id)).toString();
+    settings.setValue(Resource::path(id),savedValue);
+    if (strDir.isEmpty()) return QString();
+    QDir dir(strDir);
+    return QDir::toNativeSeparators(dir.absolutePath());
+  }
+}
+
+void Resource::setPath(Resource::SettingsIDs id, const QString& strDir)
+{
+  QString relPath;
+  QDir appDir(QApplication::applicationDirPath());
+  QDir dir(appDir.relativeFilePath(strDir));
+  if (dir.path().isEmpty())
+  {
+    relPath = ".";
+  }
+  else
+  {
+    relPath = QDir::fromNativeSeparators(dir.path());
+  }
+  QSettings settings;
+  settings.setValue(Resource::path(id),relPath);
 }
 
 void Resource::initPaths()

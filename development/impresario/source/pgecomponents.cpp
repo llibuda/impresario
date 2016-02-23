@@ -23,6 +23,7 @@
 #include "pgecommands.h"
 #include "framemainwindow.h"
 #include "appmacromanager.h"
+#include "appimpresario.h"
 #include "sysloglogger.h"
 #include "resources.h"
 #include <QByteArray>
@@ -133,8 +134,7 @@ namespace pge
   {
     QString pgFileName = fileName.split('/').last();
     // get path to schema file
-    QSettings settings;
-    QString schemaPath = settings.value(Resource::path(Resource::SETTINGS_PATH_RESOURCES)).toString();
+    QString schemaPath = Resource::getPath(Resource::SETTINGS_PATH_RESOURCES);
     schemaPath += "/processgraph.xsd";
     QFile schemaFile(schemaPath);
     if (!schemaFile.exists())
@@ -272,8 +272,7 @@ namespace pge
 
   bool ProcessGraphEditor::fileSaveAs()
   {
-    QSettings settings;
-    QString pgPath = settings.value(Resource::path(Resource::SETTINGS_PATH_PROCESSGRAPH)).toString();
+    QString pgPath = Resource::getPath(Resource::SETTINGS_PATH_PROCESSGRAPH);
     QString fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Save ProcessGraph"),
                                                     pgPath,

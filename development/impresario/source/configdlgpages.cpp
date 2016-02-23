@@ -635,8 +635,7 @@ namespace config
 
   void DlgPageDirProcessGraphs::loadSettings()
   {
-    QSettings settings;
-    QString dirValue = QDir::toNativeSeparators(settings.value(Resource::path(Resource::SETTINGS_PATH_PROCESSGRAPH)).toString());
+    QString dirValue = Resource::getPath(Resource::SETTINGS_PATH_PROCESSGRAPH);
     edtDir->setValue(dirValue);
   }
 
@@ -645,10 +644,9 @@ namespace config
     QDir dir(edtDir->value());
     if (dir.exists())
     {
-      QSettings settings;
-      if (settings.value(Resource::path(Resource::SETTINGS_PATH_PROCESSGRAPH)).toString() != dir.absolutePath())
+      if (Resource::getPath(Resource::SETTINGS_PATH_PROCESSGRAPH) != QDir::toNativeSeparators(dir.absolutePath()))
       {
-        settings.setValue(Resource::path(Resource::SETTINGS_PATH_PROCESSGRAPH),dir.absolutePath());
+        Resource::setPath(Resource::SETTINGS_PATH_PROCESSGRAPH,dir.absolutePath());
         emit changedSetting(Resource::SETTINGS_PATH_PROCESSGRAPH);
       }
     }
@@ -688,8 +686,7 @@ namespace config
 
   void DlgPageDirResources::loadSettings()
   {
-    QSettings settings;
-    QString dirValue = QDir::toNativeSeparators(settings.value(Resource::path(Resource::SETTINGS_PATH_RESOURCES)).toString());
+    QString dirValue = Resource::getPath(Resource::SETTINGS_PATH_RESOURCES);
     edtDir->setValue(dirValue);
   }
 
@@ -698,10 +695,9 @@ namespace config
     QDir dir(edtDir->value());
     if (dir.exists())
     {
-      QSettings settings;
-      if (settings.value(Resource::path(Resource::SETTINGS_PATH_RESOURCES)).toString() != dir.absolutePath())
+      if (Resource::getPath(Resource::SETTINGS_PATH_RESOURCES) != QDir::toNativeSeparators(dir.absolutePath()))
       {
-        settings.setValue(Resource::path(Resource::SETTINGS_PATH_RESOURCES),dir.absolutePath());
+        Resource::setPath(Resource::SETTINGS_PATH_RESOURCES,dir.absolutePath());
         emit changedSetting(Resource::SETTINGS_PATH_RESOURCES);
       }
     }
@@ -862,19 +858,18 @@ namespace config
 
   void DlgPageDirMacroLibs::loadSettings()
   {
-    QSettings settings;
-    QStringList dirList = settings.value(Resource::path(Resource::SETTINGS_PATH_MACROS)).toString().split('|');
+    QStringList dirList = Resource::getPaths(Resource::SETTINGS_PATH_MACROS);
     for(QStringList::const_iterator it = dirList.begin(); it != dirList.end(); ++it)
     {
       QStandardItem* item = 0;
       QDir dir(*it);
       if (dir.exists())
       {
-        item = new QStandardItem(QIcon(":/icons/resources/bullet_green.png"),QDir::toNativeSeparators(dir.absolutePath()));
+        item = new QStandardItem(QIcon(":/icons/resources/bullet_green.png"),*it);
       }
       else
       {
-        item = new QStandardItem(QIcon(":/icons/resources/bullet_red.png"),QDir::toNativeSeparators(dir.absolutePath()));
+        item = new QStandardItem(QIcon(":/icons/resources/bullet_red.png"),*it);
       }
       model->appendRow(item);
     }
@@ -895,14 +890,13 @@ namespace config
         QDir dir(item->text());
         if (dir.exists())
         {
-          dirList.append(dir.absolutePath());
+          dirList.append(QDir::toNativeSeparators(dir.absolutePath()));
         }
       }
     }
-    QSettings settings;
-    if (settings.value(Resource::path(Resource::SETTINGS_PATH_MACROS)).toString().split('|') != dirList)
+    if (Resource::getPaths(Resource::SETTINGS_PATH_MACROS) != dirList)
     {
-      settings.setValue(Resource::path(Resource::SETTINGS_PATH_MACROS),dirList.join('|'));
+      Resource::setPaths(Resource::SETTINGS_PATH_MACROS,dirList);
       emit changedSetting(Resource::SETTINGS_PATH_MACROS);
     }
   }
@@ -947,19 +941,18 @@ namespace config
 
   void DlgPageDirDependencies::loadSettings()
   {
-    QSettings settings;
-    QStringList dirList = settings.value(Resource::path(Resource::SETTINGS_PATH_DEPLIBS)).toString().split('|');
+    QStringList dirList = Resource::getPaths(Resource::SETTINGS_PATH_DEPLIBS);
     for(QStringList::const_iterator it = dirList.begin(); it != dirList.end(); ++it)
     {
       QStandardItem* item = 0;
       QDir dir(*it);
       if (dir.exists())
       {
-        item = new QStandardItem(QIcon(":/icons/resources/bullet_green.png"),QDir::toNativeSeparators(dir.absolutePath()));
+        item = new QStandardItem(QIcon(":/icons/resources/bullet_green.png"),*it);
       }
       else
       {
-        item = new QStandardItem(QIcon(":/icons/resources/bullet_red.png"),QDir::toNativeSeparators(dir.absolutePath()));
+        item = new QStandardItem(QIcon(":/icons/resources/bullet_red.png"),*it);
       }
       model->appendRow(item);
     }
@@ -980,14 +973,13 @@ namespace config
         QDir dir(item->text());
         if (dir.exists())
         {
-          dirList.append(dir.absolutePath());
+          dirList.append(QDir::toNativeSeparators(dir.absolutePath()));
         }
       }
     }
-    QSettings settings;
-    if (settings.value(Resource::path(Resource::SETTINGS_PATH_DEPLIBS)).toString().split('|') != dirList)
+    if (Resource::getPaths(Resource::SETTINGS_PATH_DEPLIBS) != dirList)
     {
-      settings.setValue(Resource::path(Resource::SETTINGS_PATH_DEPLIBS),dirList.join('|'));
+      Resource::setPaths(Resource::SETTINGS_PATH_DEPLIBS,dirList);
       emit changedSetting(Resource::SETTINGS_PATH_DEPLIBS);
     }
 
@@ -1404,9 +1396,8 @@ namespace config
   //-----------------------------------------------------------------------
   // Class DlgPagePropertyWnd
   //-----------------------------------------------------------------------
-  DlgPagePropertyWnd::DlgPagePropertyWnd(QWidget *parent) : DlgPageBase(parent), edtFile(0), cbMacroPropFav(0), cbOthersPropFav(0)
+  DlgPagePropertyWnd::DlgPagePropertyWnd(QWidget *parent) : DlgPageBase(parent), cbDefQmlFile(0), cbMacroPropFav(0), cbOthersPropFav(0)
   {
-    edtFile = new FileEditor(tr("QML Components (*.qml)"),this);
   }
 
   DlgPagePropertyWnd::~DlgPagePropertyWnd()
@@ -1416,8 +1407,8 @@ namespace config
   void DlgPagePropertyWnd::loadSettings()
   {
     QSettings settings;
-    QString fileValue = QDir::toNativeSeparators(settings.value(Resource::path(Resource::SETTINGS_PROP_DEFAULTWIDGET)).toString());
-    edtFile->setValue(fileValue);
+    QString fileValue = settings.value(Resource::path((Resource::SETTINGS_PROP_DEFAULTWIDGET))).toString();
+    cbDefQmlFile->setCurrentText(fileValue);
     int selection = settings.value(Resource::path(Resource::SETTINGS_PROP_DEFAULTHELP_MACRO),1).toInt();
     if (selection >= cbMacroPropFav->count() || selection < 0)
     {
@@ -1441,12 +1432,12 @@ namespace config
   void DlgPagePropertyWnd::saveSettings()
   {
     QSettings settings;
-    QFileInfo file(edtFile->value());
+    QFileInfo file(Resource::getPath(Resource::SETTINGS_PATH_RESOURCES) + '/' + cbDefQmlFile->currentText());
     if (file.exists() && file.isFile())
     {
-      if (settings.value(Resource::path(Resource::SETTINGS_PROP_DEFAULTWIDGET)).toString() != file.absoluteFilePath())
+      if (settings.value(Resource::path((Resource::SETTINGS_PROP_DEFAULTWIDGET))).toString() != file.fileName())
       {
-        settings.setValue(Resource::path(Resource::SETTINGS_PROP_DEFAULTWIDGET),file.absoluteFilePath());
+        settings.setValue(Resource::path((Resource::SETTINGS_PROP_DEFAULTWIDGET)),file.fileName());
         emit changedSetting(Resource::SETTINGS_PROP_DEFAULTWIDGET);
       }
     }
@@ -1462,10 +1453,10 @@ namespace config
 
   bool DlgPagePropertyWnd::validateSettings(QStringList& msgList)
   {
-    QFileInfo file(edtFile->value());
+    QFileInfo file(Resource::getPath(Resource::SETTINGS_PATH_RESOURCES) + '/' + cbDefQmlFile->currentText());
     if (!(file.exists() && file.isFile()))
     {
-      msgList += QString(tr("Page Property Window: Specified file '%1' does not exist. File is not stored.")).arg(edtFile->value());
+      msgList += QString(tr("Page Property Window: Specified file '%1' does not exist. File is not stored.")).arg(cbDefQmlFile->currentText());
       return false;
     }
     else
@@ -1477,7 +1468,13 @@ namespace config
   void DlgPagePropertyWnd::setContent(QGroupBox *groupContent)
   {
     QFormLayout* formLayout = new QFormLayout();
-    formLayout->addRow(tr("Default &QML Component"),edtFile);
+    cbDefQmlFile = new QComboBox();
+    QDir dir(Resource::getPath(Resource::SETTINGS_PATH_RESOURCES));
+    QStringList filters;
+    filters << "*.qml";
+    QStringList qmlFiles = dir.entryList(filters,QDir::Files,QDir::Name);
+    cbDefQmlFile->addItems(qmlFiles);
+    formLayout->addRow(tr("Default &QML Component"),cbDefQmlFile);
     QVBoxLayout* layoutGroup = new QVBoxLayout;
     layoutGroup->addLayout(formLayout);
 

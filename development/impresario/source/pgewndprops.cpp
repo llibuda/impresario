@@ -150,11 +150,11 @@ namespace pge
     {
       qmlMacro.setMacro(macro);
       helpPropWnd->updateProps(*(macro.data()));
-      QSettings settings;
       QFileInfo propWidgetFile(macro.data()->getPropertyWidgetComponent());
       if (propWidgetFile.completeBaseName().isEmpty())
       {
-        propWidgetFile = QFileInfo(settings.value(Resource::path(Resource::SETTINGS_PROP_DEFAULTWIDGET)).toString());
+        QSettings settings;
+        propWidgetFile = QFileInfo(Resource::getPath(Resource::SETTINGS_PATH_RESOURCES) + '/' + settings.value(Resource::path((Resource::SETTINGS_PROP_DEFAULTWIDGET))).toString());
       }
       else
       {
@@ -165,7 +165,7 @@ namespace pge
         }
         if (propWidgetFile.path() == QChar('.'))
         {
-          QString resourcePath = settings.value(Resource::path(Resource::SETTINGS_PATH_RESOURCES)).toString();
+          QString resourcePath = Resource::getPath(Resource::SETTINGS_PATH_RESOURCES);
           fullPath = resourcePath + '/' + fullPath;
         }
         propWidgetFile = QFileInfo(fullPath);
