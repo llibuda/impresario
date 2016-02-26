@@ -285,6 +285,7 @@ namespace app
     resPaths.append(Resource::getPath(Resource::SETTINGS_PATH_RESOURCES));
     resPaths.append(Resource::getPath(Resource::SETTINGS_PATH_RESOURCES,QSettings::SystemScope));
     resPaths.append(QDir::toNativeSeparators(QDir(applicationDirPath() + "/../resources").absolutePath()));
+    resPaths.append(QDir::toNativeSeparators(applicationDirPath()));
     QString path = QString();
     for(int i = 0; i < resPaths.count(); ++i)
     {
@@ -336,34 +337,45 @@ namespace app
 
   bool Impresario::initDepLibPaths()
   {
-    QStringList paths = Resource::getPaths(Resource::SETTINGS_PATH_DEPLIBS);
+    QList<QSettings::Scope> settingsScopes;
+    settingsScopes << QSettings::UserScope << QSettings::SystemScope;
+    int index = 0;
     QStringList libPaths;
-    for(int i = 0; i < paths.size(); ++i)
+    do
     {
-      if (paths[i].length() == 0)
+      QStringList paths = Resource::getPaths(Resource::SETTINGS_PATH_DEPLIBS,settingsScopes[index++]);
+      for(int i = 0; i < paths.size(); ++i)
       {
-        syslog::warning(tr("Configuration: Empty path for dependend libraries specified. Ignored."));
-      }
-      else
-      {
-        QDir dir(paths[i]);
-        if (dir.exists())
+        if (paths[i].length() == 0)
         {
-          libPaths.append(paths[i]);
+          syslog::warning(tr("Configuration: Empty path for dependend libraries specified. Ignored."));
         }
         else
         {
-          syslog::warning(QString(tr("Configuration: Specified path '%1' for dependend libraries does not exist. Ignored.")).arg(paths[i]));
+          QDir dir(paths[i]);
+          if (dir.exists())
+          {
+            libPaths.append(paths[i]);
+          }
+          else
+          {
+            syslog::warning(QString(tr("Configuration: Specified path '%1' for dependend libraries does not exist. Ignored.")).arg(paths[i]));
+          }
         }
       }
-    }
+      if ((index > 0 || paths != libPaths) && libPaths.size() > 0)
+      {
+        Resource::setPaths(Resource::SETTINGS_PATH_DEPLIBS,libPaths);
+      }
+    } while(libPaths.size() == 0 && index < settingsScopes.size());
     if (libPaths.size() > 0)
     {
       syslog::info(QString(tr("Configuration: Using the following paths for dependend libraries\n%1")).arg(libPaths.join("\n")));
-      foreach(QString path, libPaths)
-      {
-        addLibraryPath(path);
-      }
+      //foreach(QString path, libPaths)
+      //{
+      //  addLibraryPath(path);
+      //}
+
       // Extend OS search path for dynamic linkable libraries
       // This solution works on Windows only. Linux does not allow to modify
       // LD_LIBRARY_PATH from an already started process. On Linux this tasks
@@ -374,6 +386,8 @@ namespace app
       pathVariable = libPaths.join(";") + ";" + pathVariable;
       pathVariable.prepend("PATH=");
       putenv(pathVariable.toLatin1().data());
+#else
+      Resource::setPaths(Resource::SETTINGS_PATH_DEPLIBS,libPaths);
 #endif
     }
     else
@@ -385,33 +399,42 @@ namespace app
 
   bool Impresario::initMacroLibPaths()
   {
-    QStringList paths = Resource::getPaths(Resource::SETTINGS_PATH_MACROS);
+    QList<QSettings::Scope> settingsScopes;
+    settingsScopes << QSettings::UserScope << QSettings::SystemScope;
+    int index = 0;
     QStringList libPaths;
-    for(int i = 0; i < paths.size(); ++i)
+    do
     {
-      if (paths[i].length() == 0)
+      QStringList paths = Resource::getPaths(Resource::SETTINGS_PATH_MACROS,settingsScopes[index++]);
+      for(int i = 0; i < paths.size(); ++i)
       {
-        syslog::warning(tr("Configuration: Empty path for macro libraries specified. Ignored."));
-      }
-      else
-      {
-        QDir dir(paths[i]);
-        if (dir.exists())
+        if (paths[i].length() == 0)
         {
-          libPaths.append(paths[i]);
+          syslog::warning(tr("Configuration: Empty path for macro libraries specified. Ignored."));
         }
         else
         {
-          syslog::warning(QString(tr("Configuration: Specified path '%1' for macro libraries does not exist. Ignored.")).arg(paths[i]));
+          QDir dir(paths[i]);
+          if (dir.exists())
+          {
+            libPaths.append(paths[i]);
+          }
+          else
+          {
+            syslog::warning(QString(tr("Configuration: Specified path '%1' for macro libraries does not exist. Ignored.")).arg(paths[i]));
+          }
         }
       }
-    }
+      if ((index > 0 || paths != libPaths) && libPaths.size() > 0)
+      {
+        Resource::setPaths(Resource::SETTINGS_PATH_MACROS,libPaths);
+      }
+    } while(libPaths.size() == 0 && index < settingsScopes.size());
     if (libPaths.size() == 0)
     {
       syslog::warning(QString(tr("Configuration: No valid paths for macro libraries specified. Added '%1' as default.")).arg(QDir::toNativeSeparators(applicationDirPath())));
       libPaths.append(QDir::toNativeSeparators(applicationDirPath()));
-      paths.prepend(applicationDirPath());
-      Resource::setPaths(Resource::SETTINGS_PATH_MACROS,paths);
+      Resource::setPaths(Resource::SETTINGS_PATH_MACROS,libPaths);
     }
     syslog::info(QString(tr("Configuration: Using the following paths for macro libraries\n%1")).arg(libPaths.join("\n")));
     return true;
