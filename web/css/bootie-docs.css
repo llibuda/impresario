@@ -133,6 +133,8 @@ h2, .h2 {
  * Figure
  */
 figure{
+  float: right;
+  margin: 10pt;
   display: inline-block;
   position: relative;
 }

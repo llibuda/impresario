@@ -54,6 +54,8 @@
 						  
 							  <li ><a href="/impresario/web/userguide/install/">Installation</a></li>
 						  
+							  <li ><a href="/impresario/web/userguide/macrodb/">Macro database window</a></li>
+						  
 							  <li ><a href="/impresario/web/userguide/auxdocks/">Auxiliary docking windows</a></li>
 						  
 							  <li  class="active"><a href="/impresario/web/userguide/settings/">Settings</a></li>
@@ -152,25 +154,27 @@ change it here. This setting takes effect on restart of Impresario.</p>
 
 <h1 id="macro-database">Macro Database</h1>
 
-<p>The settings in this page and sub-pages effect the behavior of the macro database docking window. The following options are available on this
-main page:</p>
+<p>The settings in this page and sub-pages effect the behavior of the <a href="/impresario/web/userguide/macrodb/#macro-area">macro area</a> in the macro database
+docking window. The following options are available on this main page:</p>
 
 <ul>
-<li><em>Auto reset search field on Enter key</em>: By checking this option the search field in the macro database docking window will be cleared after
+<li><em>Auto reset search field on Enter key</em>: By checking this option the <a href="/impresario/web/userguide/macrodb/#search">search field</a> in the macro database docking
+window will be cleared after
 pressing the Enter key (which adds the first macro in the search results to the current process graph). By unchecking it, the entered search
 string remains.</li>
-<li><em>Show registered viewers (for information only)</em>: Impresario will add all loaded viewers to the macro database docking window if this option is
+<li><em>Show registered viewers (for information only)</em>: Impresario will add all loaded viewers to the macro database if this option is
 checked. Viewers are shown grayed out to indicate that they cannot be added to an Impresario Process Graph like macros. However, it is possible
 to inspect each viewer&rsquo;s properties. If this option is not checked all registered viewers will still be available but won&rsquo;t be shown in the
 macro database.</li>
-<li><em>Default property display for</em>: In this group box you can configure the default property display in the lower half of the macro database docking
-window for the different item types <em>Macros</em>, <em>Viewers</em>, <em>Libraries</em>, and <em>Others</em>. Every time the item&rsquo;s type you select changes,
+<li><em>Default property display for</em>: In this group box you can configure the default property display for the
+<a href="/impresario/web/userguide/macrodb/#information-area">information area</a> of the macro database docking
+window and the different item types <em>Macros</em>, <em>Viewers</em>, <em>Libraries</em>, and <em>Others</em>. Every time the item&rsquo;s type you select changes,
 the properties set as default in this group box will be displayed for the selected item.</li>
 </ul>
 
 <h2 id="view">View</h2>
 
-<p>This settings page allows you to define your own views on the macro database.
+<p>This settings page allows you to define your own <a href="/impresario/web/userguide/macrodb/#view">views on the macro database</a>.
 Each view consists of a unique identifier and its format definition.</p>
 
 <p><strong>Identifier</strong></p>
@@ -185,13 +189,20 @@ by surrounding brackets, i.g <code>[GM]LB</code> where <code>[GM]</code> denotes
 <p>You can use the following upper case characters to reference the item types for the tree and list part:</p>
 
 <ul>
-<li><code>M</code>: Macro</li>
-<li><code>G</code>: Group</li>
-<li><code>L</code>: Library name as coded in the macro library file</li>
-<li><code>F</code>: Macro library file name (excluding suffix)</li>
-<li><code>B</code>: Build information</li>
-<li><code>C</code>: Creator of macro</li>
-<li><code>T</code>: Type of macro (currently &ldquo;Macro&rdquo; or &ldquo;Viewer&rdquo;)</li>
+<li><code>M</code>: <img src="http://llibuda.github.io/impresario/web/images/macro.png"/>&nbsp;<i>Macro</i>
+</li>
+<li><code>G</code>: <img src="http://llibuda.github.io/impresario/web/images/macrogroup.png"/>&nbsp;<i>Macro group</i>
+</li>
+<li><code>L</code>: <img src="http://llibuda.github.io/impresario/web/images/macrodb.png"/>&nbsp;<i>Macro library</i>
+</li>
+<li><code>F</code>: <img src="http://llibuda.github.io/impresario/web/images/macrolib.png"/>&nbsp;<i>Macro library file</i>
+</li>
+<li><code>B</code>: <img src="http://llibuda.github.io/impresario/web/images/macrobuild.png"/>&nbsp;<i>Macro build</i>
+</li>
+<li><code>C</code>: <img src="http://llibuda.github.io/impresario/web/images/macrocreator.png"/>&nbsp;<i>Macro creator</i>
+</li>
+<li><code>T</code>: <img src="http://llibuda.github.io/impresario/web/images/macrotype.png"/>&nbsp;<i>Macro type</i>
+ (currently &ldquo;Macro&rdquo; or &ldquo;Viewer&rdquo;)</li>
 </ul>
 
 <p>For the view definition the following rules apply:</p>
@@ -224,7 +235,7 @@ shown left to the view&rsquo;s identifier. As soon as the view is correctly defi
 
 <h2 id="filter">Filter</h2>
 
-<p>Filters can be defined on this page to hide items in the macro database which are currently not of interest.
+<p><a href="/impresario/web/userguide/macrodb/#filter">Filters</a> can be defined on this page to hide items in the macro database which are currently not of interest.
 A filter consists of a unique identifier and a filter definition.</p>
 
 <p><strong>Identifier</strong></p>
@@ -237,13 +248,20 @@ A filter consists of a unique identifier and a filter definition.</p>
 in the macro database. You can match the following item types represented by their upper case characters:</p>
 
 <ul>
-<li><code>M</code>: Macro</li>
-<li><code>G</code>: Group</li>
-<li><code>L</code>: Library name as coded in the macro library file</li>
-<li><code>F</code>: Macro library file name (excluding suffix)</li>
-<li><code>B</code>: Build information</li>
-<li><code>C</code>: Creator of macro</li>
-<li><code>T</code>: Type of macro (currently &ldquo;Macro&rdquo; or &ldquo;Viewer&rdquo;)</li>
+<li><code>M</code>: <img src="http://llibuda.github.io/impresario/web/images/macro.png"/>&nbsp;<i>Macro</i>
+</li>
+<li><code>G</code>: <img src="http://llibuda.github.io/impresario/web/images/macrogroup.png"/>&nbsp;<i>Macro group</i>
+</li>
+<li><code>L</code>: <img src="http://llibuda.github.io/impresario/web/images/macrodb.png"/>&nbsp;<i>Macro library</i>
+</li>
+<li><code>F</code>: <img src="http://llibuda.github.io/impresario/web/images/macrolib.png"/>&nbsp;<i>Macro library file</i>
+</li>
+<li><code>B</code>: <img src="http://llibuda.github.io/impresario/web/images/macrobuild.png"/>&nbsp;<i>Macro build</i>
+</li>
+<li><code>C</code>: <img src="http://llibuda.github.io/impresario/web/images/macrocreator.png"/>&nbsp;<i>Macro creator</i>
+</li>
+<li><code>T</code>: <img src="http://llibuda.github.io/impresario/web/images/macrotype.png"/>&nbsp;<i>Macro type</i>
+ (currently &ldquo;Macro&rdquo; or &ldquo;Viewer&rdquo;)</li>
 </ul>
 
 <p><em>Example</em>: To see only macros in the database starting with &ldquo;lti::&rdquo; can be achieved with <code>M =~ /^lti::.*/</code>.</p>
@@ -262,7 +280,7 @@ you can define the filter as <code>M =~ /^lti::.*/ AND G !~ /Conversion/</code>.
 
 <p>The following screenshot shows the default filters defined in Impresario.</p>
 
-<figure >
+<p><figure >
     <a href="http://llibuda.github.io/impresario/web/images/settings_db_filter.png">
         <img src="http://llibuda.github.io/impresario/web/images/settings_db_filter.png" alt="Settings page for filter definition" />
     </a>
@@ -272,7 +290,7 @@ you can define the filter as <code>M =~ /^lti::.*/ AND G !~ /Conversion/</code>.
         
     </figcaption>
     
-</figure>
+</figure></p>
 
 <p>When editing a filter, error messages are displayed in the settings page in case the filter is not defined correctly. In addition a red bullet is
 shown left to the filter&rsquo;s identifier. As soon as the filter is correctly defined, the red bullet turns green.</p>
