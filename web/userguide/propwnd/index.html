@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario">
+		<link rel="icon" href="http://llibuda.github.io/impresario/web/impresario.png">
+		<title>Property docking window - Impresario</title>
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/highlight.js.min.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/theme.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootie-docs.css">
+	</head>
+	
+<style>
+.navbar-custom {
+    color: #00AA00;
+    background-color: #CC3333;
+}
+</style>	
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="http://llibuda.github.io/impresario/web">Impresario</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="http://llibuda.github.io/impresario/web">Home</a></li>
+				
+				
+           
+					  <li ><a  href="/impresario/web/download/">Download</a></li>
+          
+				
+          
+            <li  class="dropdown active" >
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">User&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/userguide/introduction/">Introduction</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/install/">Installation</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/macrodb/">Macro database window</a></li>
+						  
+							  <li  class="active"><a href="/impresario/web/userguide/propwnd/">Property window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/settings/">Settings</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/menu/">Menu commands</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/auxdocks/">Auxiliary windows</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/history/">Release History</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+          
+            <li  class="dropdown">
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Developer&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+        
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">Property docking window</h1>
+				
+				<section>
+					
+
+<figure >
+    <a href="http://llibuda.github.io/impresario/web/images/propwnd_overview.png">
+        <img src="http://llibuda.github.io/impresario/web/images/propwnd_overview.png" alt="Property window overview" />
+    </a>
+    
+    <figcaption>
+        <h4>Property window for selected item in process graph editor (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure>
+
+<p>The Property docking window shows all available settings for the item currently selected in the active process graph editor. This applies
+to macros, links, and the process graph itself. The settings for the process graph are displayed as soon as neither a macro nor a link is selected.</p>
+
+<p>The window consists of two parts. The upper bigger part is the so called &ldquo;<a href="#settings-area">Settings area</a>&rdquo;,
+the lower part is the &ldquo;<a href="#information-area">Information area</a>&rdquo;.</p>
+
+<h1 id="settings-area">Settings area</h1>
+
+<p>The settings area displays all properties for the selected item which can be changed by the user. These are:</p>
+
+<ul>
+<li><p><em>Process graph</em>: Settings for the process graph are shown which currently just affects the layout of the graph.</p></li>
+
+<li><p><em>Link</em>: Currently links do not have any configurable properties.</p></li>
+
+<li><p><em>Macros</em>: For macros all adaptable parameters are listed. By default Impresario displays all parameters in a simple list with one parameter per row.
+However, the developer of a macro can choose to display the parameters in a different way.</p></li>
+</ul>
+
+<p>Changing any setting here will affect the selected item instantly. All settings are stored with the process graph when it is
+
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/save.png"/>&nbsp;Saved</code>
+.</p>
+
+<h1 id="information-area">Information area</h1>
+
+<p>The information area displays more detailed information about the selected item in the process graph editor. Depending on the
+selected item type one or two different tabs with information are available. The <a href="/impresario/web/userguide/settings/#property-window">Property Window page</a> in
+the settings dialog allows to configure the default tab for each item type.</p>
+
+<h2 id="general-information-tab">General information tab</h2>
+
+<p><figure >
+    <a href="http://llibuda.github.io/impresario/web/images/propwnd_general.png">
+        <img src="http://llibuda.github.io/impresario/web/images/propwnd_general.png" alt="Tab for general item information" />
+    </a>
+    
+    <figcaption>
+        <h4>Tab for general item information (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure>
+General information are displayed for every item type:</p>
+
+<ul>
+<li><p><em>Process graph</em>: Information include the process graph&rsquo;s name and the number of macros and links respectively.</p></li>
+
+<li><p><em>Link</em>: For links the data type and their source and destination is shown.</p></li>
+
+<li><p><em>Macros</em>: For macros you can find a subset of the details shown in the <a href="/impresario/web/userguide/macrodb/#information-area">information area of the Macro database window</a> when a macro is selected there.</p></li>
+</ul>
+
+<h2 id="description-tab">Description tab</h2>
+
+<p><figure >
+    <a href="http://llibuda.github.io/impresario/web/images/propwnd_description.png">
+        <img src="http://llibuda.github.io/impresario/web/images/propwnd_description.png" alt="Tab displaying item descriptions" />
+    </a>
+    
+    <figcaption>
+        <h4>Tab displaying item descriptions (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure>
+The description tab is displayed only when a macro is selected in the editor. As soon as a macro is selected a detailed description is shown here, provided that
+the developer of the macro included it in her implementation. However, as soon as a macro parameter is selected in the settings area, a description of this
+parameter is shown. This of course only works correctly if the macro developer implemented the parameter help.</p>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">Property docking window</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+<ul>
+<li><a href="#settings-area">Settings area</a></li>
+<li><a href="#information-area">Information area</a>
+<ul>
+<li><a href="#general-information-tab">General information tab</a></li>
+<li><a href="#description-tab">Description tab</a></li>
+</ul></li>
+</ul>
+</nav>
+		</div>
+	</div>
+  
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	<p>Copyright 2015-2016 Lars Libuda</p>
+</footer>
+
+
+
+<script src="http://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
+<script src="http://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
+
+<script src="http://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="http://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>
