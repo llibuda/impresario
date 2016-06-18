@@ -7,7 +7,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario">
 		<link rel="icon" href="http://llibuda.github.io/impresario/web/impresario.png">
-		<title>Menu and Toolbar Commands - Impresario</title>
+		<title>Command Reference - Impresario</title>
 		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/highlight.js.min.css">
 		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap.min.css">
 		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
@@ -60,7 +60,7 @@
 						  
 							  <li ><a href="/impresario/web/userguide/settings/">Settings</a></li>
 						  
-							  <li  class="active"><a href="/impresario/web/userguide/menu/">Menu commands</a></li>
+							  <li  class="active"><a href="/impresario/web/userguide/menu/">Commands</a></li>
 						  
 							  <li ><a href="/impresario/web/userguide/auxdocks/">Auxiliary windows</a></li>
 						  
@@ -95,15 +95,15 @@
 		<main role="main">
 			<article>
 				<a id="title"></a>
-				<h1 class="doc-entry-title">Menu and Toolbar Commands</h1>
+				<h1 class="doc-entry-title">Command Reference</h1>
 				
 				<section>
 					
 
-<p>This section contains an overview of all available commands in the menu bar and toolbars. Not
+<p>This section contains an overview of all available commands in the menu bar, toolbars, and context menus. Not
 all commands are available all the time. It depends on the application&rsquo;s context which commands can be triggered.</p>
 
-<h1 id="file">File</h1>
+<h1 id="file-menu">File menu</h1>
 
 <p>
 <code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/new.png"/>&nbsp;New</code>
@@ -142,7 +142,7 @@ prompted to save or discard the changes.</p>
 you have to stop it before you can quit Impresario. If there are unsaved changes in any open
 process graphs you will be prompted to save or discard the changes.</p>
 
-<h1 id="edit">Edit</h1>
+<h1 id="edit-menu">Edit menu</h1>
 
 <p>
 <code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/undo.png"/>&nbsp;Undo</code>
@@ -184,7 +184,7 @@ Edges which are not selected but will become loose by deleting either the source
 <code class="menu_command">Select all</code>
  selects all items in the current process graph.</p>
 
-<h1 id="view">View</h1>
+<h1 id="view-menu">View menu</h1>
 
 <p>
 <code class="menu_command">Toolbars</code>
@@ -216,7 +216,7 @@ area in the current process graph to zoom into. After selection the selected are
  fits the zoom so that the whole process graph is shown in the current
 view. However, the zoom will not go below 20% or above 300%.</p>
 
-<h1 id="control">Control</h1>
+<h1 id="control-menu">Control menu</h1>
 
 <p>
 <code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/control_play.png"/>&nbsp;Start</code>
@@ -236,19 +236,76 @@ the process graph is stopped automatically and an error message is displayed in 
  executes the current process graph for exactly one cylce, i.e. every
 macro in the process graph is run once. Afterwards execution is stopped.</p>
 
-<h1 id="extras">Extras</h1>
+<h1 id="extras-menu">Extras menu</h1>
 
 <p>
 <code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/settings.png"/>&nbsp;Settings...</code>
  displays the <a href="/impresario/web/userguide/settings/">settings dialog</a> to configure
 some aspects of Impresario.</p>
 
-<h1 id="help">Help</h1>
+<h1 id="help-menu">Help menu</h1>
 
 <p>
 <code class="menu_command">About Impresario...</code>
  shows the dialog containg information about Impresario like version number,
 license, and credits.</p>
+
+<h1 id="process-graph-editor-context-menu">Process graph editor context menu</h1>
+
+<p>Within a process graph editor different context menus are shown depending on which component the user right clicks. These context
+menus offer the standard commands for <a href="#edit-menu">Edit</a> and <a href="#control-menu">Control</a>, and the
+following special commands:</p>
+
+<p>
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/anchor.png"/>&nbsp;Toggle cycle anchor</code>
+ allows to set and unset a cycle anchor for the selected macro to disambiguate a cycle
+in the process graph. This command is only available in the macro context menu if a cycle in the current process graph is detected which
+Impresario cannot disambiguate itself.</p>
+
+<p>
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/eye.png"/>&nbsp;Watch</code>
+ opens a viewer window for the selected output pin or edge. This command is available by right clicking
+either an edge or a macro&rsquo;s ouput pin.</p>
+
+<h1 id="macro-database-context-menu">Macro database context menu</h1>
+
+<p>In the Macro database window two context menus are available. In the <a href="/impresario/web/userguide/macrodb/#macro-area">Macro area</a> a right click
+on a <img src="http://llibuda.github.io/impresario/web/images/macro.png"/>&nbsp;<i>Macro</i>
+ opens a context menu for adding macro instances to the current process graph.
+The context menu in the <a href="/impresario/web/userguide/macrodb/#instances-tab">Instances tab</a> of the <a href="/impresario/web/userguide/macrodb/#information-area">Information area</a>
+allows to navigate to the selected macro.</p>
+
+<h2 id="macro-area-context-menu">Macro area context menu</h2>
+
+<p>
+<code class="menu_command">Create 1 instance</code>
+ creates a new instance of the selected macro and adds it to the current process graph editor.</p>
+
+<p>
+<code class="menu_command">Create 2 instances</code>
+ creates two new instances of the selected macro and adds them to the current process graph editor.</p>
+
+<p>
+<code class="menu_command">Create 3 instances</code>
+ creates three new instances of the selected macro and adds them to the current process graph editor.</p>
+
+<p>
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/macrocreate.png"/>&nbsp;Create multiple instances...</code>
+ opens a dialog where you can choose the number of instances which are to
+be created of the selected macro and added to the current process graph editor. The dialog allows to create up to 10 instances at once.</p>
+
+<h2 id="instances-tab-context-menu">Instances tab context menu</h2>
+
+<p>
+<code class="menu_command">Navigate to Macro instance</code>
+ activates the process graph editor in which the selected macro is located and selects the macro
+within the editor. This command is only available when the selected Macro is part of a process graph.</p>
+
+<p>
+<code class="menu_command">Navigate to Process graph</code>
+ activates the process graph editor in which the selected macro was located before it was deleted from the
+editor. This command is only available when the selected Macro was deleted from the process graph editor but is still available in the
+<a href="/impresario/web/userguide/auxdocks/#change-log-window">Change Log window</a> for an undo action.</p>
 
 				</section>
 			</article>
@@ -261,16 +318,22 @@ license, and credits.</p>
 		<div class="sidebar-toc">
 			<h4>Table of Contents</h4>
 			<ul>
-				<li><strong><a href="#title">Menu and Toolbar Commands</a></strong></li>
+				<li><strong><a href="#title">Command Reference</a></strong></li>
 			</ul>
 			<nav id="TableOfContents">
 <ul>
-<li><a href="#file">File</a></li>
-<li><a href="#edit">Edit</a></li>
-<li><a href="#view">View</a></li>
-<li><a href="#control">Control</a></li>
-<li><a href="#extras">Extras</a></li>
-<li><a href="#help">Help</a></li>
+<li><a href="#file-menu">File menu</a></li>
+<li><a href="#edit-menu">Edit menu</a></li>
+<li><a href="#view-menu">View menu</a></li>
+<li><a href="#control-menu">Control menu</a></li>
+<li><a href="#extras-menu">Extras menu</a></li>
+<li><a href="#help-menu">Help menu</a></li>
+<li><a href="#process-graph-editor-context-menu">Process graph editor context menu</a></li>
+<li><a href="#macro-database-context-menu">Macro database context menu</a>
+<ul>
+<li><a href="#macro-area-context-menu">Macro area context menu</a></li>
+<li><a href="#instances-tab-context-menu">Instances tab context menu</a></li>
+</ul></li>
 </ul>
 </nav>
 		</div>
