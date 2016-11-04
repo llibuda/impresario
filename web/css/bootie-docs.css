@@ -146,16 +146,17 @@ figure img {
 }
 
 figure figcaption {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
+  position: absolute; 
+  bottom: 0;          
+  padding: 3px;
+  width: 100%;        
   height: 2em;
-  text-align: left;
+  text-align: center;
   background: rgba(0,0,0,0.5);
 }
 
 figure figcaption h4 {
-  padding: 0.5em;
+  padding: 0;
   border: 0;
   margin: 0;
   font-size: 10pt;

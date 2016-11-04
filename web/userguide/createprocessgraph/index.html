@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario">
+		<link rel="icon" href="http://llibuda.github.io/impresario/web/impresario.png">
+		<title>Editing process graphs - Impresario</title>
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/highlight.js.min.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/theme.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootie-docs.css">
+	</head>
+	
+<style>
+.navbar-custom {
+    color: #00AA00;
+    background-color: #CC3333;
+}
+</style>	
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="http://llibuda.github.io/impresario/web">Impresario</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="http://llibuda.github.io/impresario/web">Home</a></li>
+				
+				
+           
+					  <li ><a  href="/impresario/web/download/">Download</a></li>
+          
+				
+          
+            <li  class="dropdown active" >
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">User&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/userguide/introduction/">Introduction</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/install/">Installing Impresario</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/guioverview/">Introducing Impresario&#39;s GUI</a></li>
+						  
+							  <li  class="active"><a href="/impresario/web/userguide/createprocessgraph/">Editing process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/runprocessgraph/">Running process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/macrodb/">Reference: Macro database window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/propwnd/">Reference: Property window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/settings/">Reference: Settings</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/menu/">Reference: Commands</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/auxdocks/">Reference: Auxiliary windows</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/history/">Release History</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+          
+            <li  class="dropdown">
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Developer&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+        
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">Editing process graphs</h1>
+				
+				<section>
+					
+
+<p>Editing a process graph mainly comprises adding and removing macros as well as adding and removing links between macros.
+In some situations also loops have to be resolved. Impresario supports all these tasks in several ways.</p>
+
+<h1 id="adding-macros-to-a-process-graph">Adding macros to a process graph</h1>
+
+<p>When a macro is added to a process graph a new instance of this macro is created. Either of the following methods can be used to add a new
+macro instance to a process graph:</p>
+
+<ul>
+<li><p>The most straight forward way is to simply left-click the desired <img src="http://llibuda.github.io/impresario/web/images/macro.png"/>&nbsp;<i>Macro</i>
+ object in the <a href="/impresario/web/userguide/macrodb/">Macro database window</a>,
+drag the macro to the desired position in the process graph editor and drop it there.
+<figure >
+    <a href="http://llibuda.github.io/impresario/web/images/macro_add1.png">
+        <img src="http://llibuda.github.io/impresario/web/images/macro_add1.png" alt="Adding a macro instance by left click drag &amp; drop" />
+    </a>
+    
+    <figcaption>
+        <h4>Adding a macro instance by left-click drag &amp; drop (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure></p></li>
+
+<li><p>It is also possible to search for the desired macro by entering text in the search input box. The first <img src="http://llibuda.github.io/impresario/web/images/macro.png"/>&nbsp;<i>Macro</i>
+ object
+matching the text is highlighted. Pressing the &ldquo;Enter&rdquo; key now adds a new instance of the macro to the top left corner of the process graph editor.
+<figure >
+    <a href="http://llibuda.github.io/impresario/web/images/macro_add2.png">
+        <img src="http://llibuda.github.io/impresario/web/images/macro_add2.png" alt="Adding a macro instance using the search input box" />
+    </a>
+    
+    <figcaption>
+        <h4>Adding a macro instance using the search input box (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure></p></li>
+
+<li><p>A right-click on the desired <img src="http://llibuda.github.io/impresario/web/images/macro.png"/>&nbsp;<i>Macro</i>
+ object in the Macro database window brings up a context menu which allows you to
+
+<code class="menu_command">Create 1 instance</code>
+, 
+<code class="menu_command">Create 2 instances</code>
+, or 
+<code class="menu_command">Create 3 instances</code>
+ of the selected macro.
+More than three instances can also be created by choosing the 
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/macrocreate.png"/>&nbsp;Create multiple instances...</code>
+ command. This will
+open a dialog for creating up to ten instances at once. All created macro instances will be placed in the top left corner of the process graph editor.
+<figure >
+    <a href="http://llibuda.github.io/impresario/web/images/macro_add3.png">
+        <img src="http://llibuda.github.io/impresario/web/images/macro_add3.png" alt="Adding a macro instance using the context menu" />
+    </a>
+    
+    <figcaption>
+        <h4>Adding a macro instance using the context menu (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure></p></li>
+
+<li><p>A combination of the first and third method can be achieved by right-clicking a <img src="http://llibuda.github.io/impresario/web/images/macro.png"/>&nbsp;<i>Macro</i>
+ object in the Macro database window,
+dragging it to the desired position in the process graph editor and drop it there. This will open up the context menu for creating several instances as above.
+All macro instances will be created at the drop position. <strong>However, this method only works on Windows operating systems</strong>.
+<figure >
+    <a href="http://llibuda.github.io/impresario/web/images/macro_add4.png">
+        <img src="http://llibuda.github.io/impresario/web/images/macro_add4.png" alt="Adding a macro instance by right click drag &amp; drop" />
+    </a>
+    
+    <figcaption>
+        <h4>Adding a macro instance by right-click drag &amp; drop (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure></p></li>
+</ul>
+
+<h1 id="creating-links-between-macros">Creating links between macros</h1>
+
+<p>The data flow between macros is determined by links which connect an output pin of one macro with another macro&rsquo;s input pin. The following rules apply to links:</p>
+
+<ol>
+<li>A macro output pin can only be connected to a macro input pin of the same data type.</li>
+<li>A macro&rsquo;s output pin can be connected to many macro input pins.</li>
+<li>A macro input pin can only have one connection to another macro&rsquo;s output pin.</li>
+<li>A macro output pin cannot be connected to a macro input pin of the same macro instance.</li>
+</ol>
+
+<p>Creating a link requires the following steps:</p>
+
+<table>
+  <tr>
+    <td><ul><li> Left-click the output pin and hold down the left mouse button. Start dragging the mouse cursor. A red line will be drawn from the output pin
+        to the current mouse position. The mouse cursor also turns into a link cursor depicting an invalid link destination. </li></ul></td>      
+    <td> <figure >
+    <a href="http://llibuda.github.io/impresario/web/images/macro_link1.png">
+        <img src="http://llibuda.github.io/impresario/web/images/macro_link1.png" alt="Start link creation" />
+    </a>
+    
+    <figcaption>
+        <h4>Start link creation (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure></td>     
+  </tr>
+  <tr>  
+  <td><ul><li> You can hover over various macro input pins. If the data types of the output pin and currently hovered input pin are not identical, the 
+        link line stays red and the mouse cursor still depicts an invalid link destination.</li></ul></td>      
+  <td><figure >
+    <a href="http://llibuda.github.io/impresario/web/images/macro_link2.png">
+        <img src="http://llibuda.github.io/impresario/web/images/macro_link2.png" alt="Invalid link destination" />
+    </a>
+    
+    <figcaption>
+        <h4>Invalid link destination (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure></td>  
+  </tr>
+  <tr>    
+    <td><ul><li> As soon as you hover over a macro input pin with identical data type the link line turns green and the mouse cursor indicates a valid
+          link destination. </li></ul></td>
+    <td><figure >
+    <a href="http://llibuda.github.io/impresario/web/images/macro_link3.png">
+        <img src="http://llibuda.github.io/impresario/web/images/macro_link3.png" alt="Valid link destination" />
+    </a>
+    
+    <figcaption>
+        <h4>Valid link destination (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure></td>    
+  </tr>
+  <tr>
+    <td><ul><li> Release the mouse button. The green line is replaced by a black link with an arrow head pointing to the connected macro input pin.</li></ul></td>
+    <td><figure >
+    <a href="http://llibuda.github.io/impresario/web/images/macro_link4.png">
+        <img src="http://llibuda.github.io/impresario/web/images/macro_link4.png" alt="Created link" />
+    </a>
+    
+    <figcaption>
+        <h4>Created link (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure></td>    
+  </tr>
+</table>
+
+<p>It is also possible to create links by starting from a macro&rsquo;s input pin and connect to another macro&rsquo;s output pin.</p>
+
+<h1 id="resolving-loops">Resolving loops</h1>
+
+<table>
+  <tr>
+    <td>It may happen that you create circular references between macros resulting in a loop Impresario cannot resolve itself from execution order point of view. In this case
+        you have to guide Impresario.<br/>
+        Impresario marks all macros within an unresolvable loop with a red circular arrow <img src="http://llibuda.github.io/impresario/web/images/cycle.png"/> and does not assign these macros an execution order number.
+    </td>
+    <td><figure >
+    <a href="http://llibuda.github.io/impresario/web/images/macro_loop.png">
+        <img src="http://llibuda.github.io/impresario/web/images/macro_loop.png" alt="Unresolvable loop" />
+    </a>
+    
+    <figcaption>
+        <h4>Unresolvable loop (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure></td>
+  </tr>
+  <tr>
+    <td>To resolve a loop you have to use the command 
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/anchor.png"/>&nbsp;Toggle cycle anchor</code>
+ which is exclusively available on the context menu of each macro
+        within the loop you need to resolve.<br/>
+        By executing this command on a macro, you tell Impresario to use this macro as starting point - or anchor - for calculating the execution order.
+    </td>
+    <td><figure >
+    <a href="http://llibuda.github.io/impresario/web/images/macro_loop_menu.png">
+        <img src="http://llibuda.github.io/impresario/web/images/macro_loop_menu.png" alt="Context menu for resolving loops" />
+    </a>
+    
+    <figcaption>
+        <h4>Context menu for resolving loops (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure></td>
+  </tr>
+  <tr>
+    <td>The macro you selected as anchor is subsequently marked with the anchor icon <img src="http://llibuda.github.io/impresario/web/images/anchor.png"/>.<br/>
+        <b>Please note</b>: When you further change your process graph it may happen that Impresario can resolve the loop on its own you just resolved manually. In this case
+        Impresario will do so and the anchor icon will disappear again.
+    </td>
+    <td><figure >
+    <a href="http://llibuda.github.io/impresario/web/images/macro_loop_resolve.png">
+        <img src="http://llibuda.github.io/impresario/web/images/macro_loop_resolve.png" alt="Manually resolved loop" />
+    </a>
+    
+    <figcaption>
+        <h4>Manually resolved loop (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure></td>
+  </tr>
+</table>
+
+<h1 id="standard-edit-operations">Standard edit operations</h1>
+
+<p><figure >
+    <a href="http://llibuda.github.io/impresario/web/images/macro_prop_sel.png">
+        <img src="http://llibuda.github.io/impresario/web/images/macro_prop_sel.png" alt="Selection" />
+    </a>
+    
+    <figcaption>
+        <h4>Selection (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure>
+Impresario supports the standard edit operations 
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/cut.png"/>&nbsp;Cut</code>
+, 
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/copy.png"/>&nbsp;Copy</code>
+, and 
+<code class="menu_command">Delete</code>
+. These
+commands work on a single macro, a single link, or a selection consisting of several macros and/or links.
+To make a selection, press the left mouse button and pull a rectangle around all components to be selected. Afterwards, the standard edit commands are applied to the current selection.</p>
+
+<p><figure >
+    <a href="http://llibuda.github.io/impresario/web/images/macro_prop_size.png">
+        <img src="http://llibuda.github.io/impresario/web/images/macro_prop_size.png" alt="Resizing" />
+    </a>
+    
+    <figcaption>
+        <h4>Resizing (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure>
+Copied or cut selections can be inserted in the same or a different process graph editor using the 
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/paste.png"/>&nbsp;Paste</code>
+ command.</p>
+
+<p>When a single macro is selected, small circles are displayed in each corner. By left clicking a circle and holding down the mouse button the selected macro can be resized.</p>
+
+<h1 id="undo-and-redo">Undo and Redo</h1>
+
+<p>All operations described in the previous sections can be undone or redone at any time until the process graph is saved. Undoing or redoing edit operations is possible by
+using the 
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/undo.png"/>&nbsp;Undo</code>
+ and 
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/redo.png"/>&nbsp;Redo</code>
+ commands or the <a href="/impresario/web/userguide/auxdocks/#change-log-window">Change log Window</a>.</p>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">Editing process graphs</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+<ul>
+<li><a href="#adding-macros-to-a-process-graph">Adding macros to a process graph</a></li>
+<li><a href="#creating-links-between-macros">Creating links between macros</a></li>
+<li><a href="#resolving-loops">Resolving loops</a></li>
+<li><a href="#standard-edit-operations">Standard edit operations</a></li>
+<li><a href="#undo-and-redo">Undo and Redo</a></li>
+</ul>
+</nav>
+		</div>
+	</div>
+  
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	<p>Copyright 2015-2016 Lars Libuda</p>
+</footer>
+
+
+
+<script src="http://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
+<script src="http://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
+
+<script src="http://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="http://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>

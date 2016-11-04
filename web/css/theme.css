@@ -3,6 +3,15 @@ body {
   padding-bottom: 30px;
 }
 
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+td {
+  vertical-align: top;
+}
+
 .theme-dropdown .dropdown-menu {
   position: static;
   display: block;

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario">
+		<link rel="icon" href="http://llibuda.github.io/impresario/web/impresario.png">
+		<title>Introducing Impresario&#39;s GUI - Impresario</title>
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/highlight.js.min.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/theme.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootie-docs.css">
+	</head>
+	
+<style>
+.navbar-custom {
+    color: #00AA00;
+    background-color: #CC3333;
+}
+</style>	
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="http://llibuda.github.io/impresario/web">Impresario</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="http://llibuda.github.io/impresario/web">Home</a></li>
+				
+				
+           
+					  <li ><a  href="/impresario/web/download/">Download</a></li>
+          
+				
+          
+            <li  class="dropdown active" >
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">User&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/userguide/introduction/">Introduction</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/install/">Installing Impresario</a></li>
+						  
+							  <li  class="active"><a href="/impresario/web/userguide/guioverview/">Introducing Impresario&#39;s GUI</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/createprocessgraph/">Editing process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/runprocessgraph/">Running process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/macrodb/">Reference: Macro database window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/propwnd/">Reference: Property window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/settings/">Reference: Settings</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/menu/">Reference: Commands</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/auxdocks/">Reference: Auxiliary windows</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/history/">Release History</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+          
+            <li  class="dropdown">
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Developer&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+        
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">Introducing Impresario&#39;s GUI</h1>
+				
+				<section>
+					
+
+<p>After starting Impresario the window as shown in the following screenshot pops up which features the components marked by the annotated red rectangles:</p>
+
+<figure >
+    <a href="http://llibuda.github.io/impresario/web/images/impresario_start.png">
+        <img src="http://llibuda.github.io/impresario/web/images/impresario_start.png" alt="Impresario main window after startup" />
+    </a>
+    
+    <figcaption>
+        <h4>Impresario GUI after startup (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure>
+
+<ul>
+<li><em>Menu bar</em>: The menu bar contains all commands available in Impresario&rsquo;s current context. A reference of all commands is available in the chapter
+<a href="/impresario/web/userguide/menu/">Commands</a>.</li>
+<li><em>Tool bar</em>: The tool bar contains short cuts to some commands available in the menu.</li>
+<li><em>Macro database window</em>: The <a href="/impresario/web/userguide/macrodb/">Macro database window</a> provides all <a href="/impresario/web/userguide/introduction/#macros">macros</a> Impresario
+knows about for use in <a href="/impresario/web/userguide/introduction/#impresario-process-graphs">process graphs</a>. This window is populated during startup of Impresario.</li>
+<li><em>System messages window</em>: In the <a href="/impresario/web/userguide/auxdocks/#system-messages-window">System messages window</a> Impresario prints out information, warnings, and
+errors which occur during startup and operation. After startup you will find information about the used directories, loaded macros, and much more.</li>
+<li><em>Status bar</em>: The status bar displays temporay information when some operation like loading a process graph is carried out.</li>
+</ul>
+
+<p>Finally, the dark gray area is the working area which is populated with process graph editors as soon as they are created by using the 
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/new.png"/>&nbsp;New</code>
+
+command or opended from disk by using the 
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/open.png"/>&nbsp;Open...</code>
+ command.</p>
+
+<h1 id="process-graph-editor">Process graph editor</h1>
+
+<p>The following screenshot shows Impresario&rsquo;s process graph editor containing a process graph.
+<figure >
+    <a href="http://llibuda.github.io/impresario/web/images/impresario_editor.png">
+        <img src="http://llibuda.github.io/impresario/web/images/impresario_editor.png" alt="Impresario editor with opened process graph" />
+    </a>
+    
+    <figcaption>
+        <h4>Impresario editor with opened process graph (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure></p>
+
+<p>In addition to the editor also the <a href="/impresario/web/userguide/propwnd/">Property window</a> is shown which displays all properties of the selected components in
+the process graph editor.</p>
+
+<p>The process graph editor contains two different types of components:</p>
+
+<ul>
+<li>Macros (more precisely: Instances of macros)</li>
+<li>Links between macro instances</li>
+</ul>
+
+<h2 id="macro-instances">Macro instances</h2>
+
+<p><figure >
+    <a href="http://llibuda.github.io/impresario/web/images/macro_elements.png">
+        <img src="http://llibuda.github.io/impresario/web/images/macro_elements.png" alt="Macro visualization" />
+    </a>
+    
+    <figcaption>
+        <h4>Macro visualization (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure>
+<figure >
+    <a href="http://llibuda.github.io/impresario/web/images/pin_prop_allowed.png">
+        <img src="http://llibuda.github.io/impresario/web/images/pin_prop_allowed.png" alt="Detailed pin information" />
+    </a>
+    
+    <figcaption>
+        <h4>Detailed pin information (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure>
+Macro instances are visualized as rectangles in the process graph editor. In general, a macro instance has (yellow) input pins and (red) output pins to connect the macro instance
+to different macro instances. Further, each macro instance displays its name, its status and last execution time, and its order number. The order number is automatically
+calculated by Impresario as soon as the macro instance is connected to other macro instances.</p>
+
+<p>When you hover over a pin with the mouse, an information window pops up giving information about the pin&rsquo;s name and data type. In addition the mouse cursor changes indicating whether
+it is possible to create a connection to this pin.</p>
+
+<h2 id="links">Links</h2>
+
+<p>Links are connections between an output pin of one macro instance (source) and an input pin of another macro instance (destination). They are visualized by black lines
+with an arrow head pointing to the input pin. Links define the data flow within the process graph and therefore determine the chronological order in which the macro instances
+are executed when the process graph is run. So everytime a link is added or removed, Impresario updates the order number of all affected macro instances.</p>
+
+<p>Impresario routes all links automatically.</p>
+
+<h2 id="context-menus">Context menus</h2>
+
+<p><figure >
+    <a href="http://llibuda.github.io/impresario/web/images/pin_prop_menu.png">
+        <img src="http://llibuda.github.io/impresario/web/images/pin_prop_menu.png" alt="Pin context menu" />
+    </a>
+    
+    <figcaption>
+        <h4>Pin context menu (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure>
+The process graph editor provides context menus for all components in the editor:</p>
+
+<ul>
+<li>Macro instances</li>
+<li>Macro pins (see screenshot)</li>
+<li>Links</li>
+<li>Selection of components</li>
+<li>Editor itself (empty space)</li>
+</ul>
+
+<p>A context menu can be accessed by right clicking the respective component. It mainly provides shortcuts to the commands available on the toolbar and the menu bar but in some
+cases also contains special commands only applicable to the selected component.</p>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">Introducing Impresario&#39;s GUI</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+<ul>
+<li><a href="#process-graph-editor">Process graph editor</a>
+<ul>
+<li><a href="#macro-instances">Macro instances</a></li>
+<li><a href="#links">Links</a></li>
+<li><a href="#context-menus">Context menus</a></li>
+</ul></li>
+</ul>
+</nav>
+		</div>
+	</div>
+  
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	<p>Copyright 2015-2016 Lars Libuda</p>
+</footer>
+
+
+
+<script src="http://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
+<script src="http://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
+
+<script src="http://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="http://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>

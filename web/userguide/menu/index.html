@@ -7,7 +7,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario">
 		<link rel="icon" href="http://llibuda.github.io/impresario/web/impresario.png">
-		<title>Command Reference - Impresario</title>
+		<title>Reference: Commands - Impresario</title>
 		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/highlight.js.min.css">
 		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap.min.css">
 		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
@@ -52,17 +52,23 @@
 						  
 							  <li ><a href="/impresario/web/userguide/introduction/">Introduction</a></li>
 						  
-							  <li ><a href="/impresario/web/userguide/install/">Installation</a></li>
+							  <li ><a href="/impresario/web/userguide/install/">Installing Impresario</a></li>
 						  
-							  <li ><a href="/impresario/web/userguide/macrodb/">Macro database window</a></li>
+							  <li ><a href="/impresario/web/userguide/guioverview/">Introducing Impresario&#39;s GUI</a></li>
 						  
-							  <li ><a href="/impresario/web/userguide/propwnd/">Property window</a></li>
+							  <li ><a href="/impresario/web/userguide/createprocessgraph/">Editing process graphs</a></li>
 						  
-							  <li ><a href="/impresario/web/userguide/settings/">Settings</a></li>
+							  <li ><a href="/impresario/web/userguide/runprocessgraph/">Running process graphs</a></li>
 						  
-							  <li  class="active"><a href="/impresario/web/userguide/menu/">Commands</a></li>
+							  <li ><a href="/impresario/web/userguide/macrodb/">Reference: Macro database window</a></li>
 						  
-							  <li ><a href="/impresario/web/userguide/auxdocks/">Auxiliary windows</a></li>
+							  <li ><a href="/impresario/web/userguide/propwnd/">Reference: Property window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/settings/">Reference: Settings</a></li>
+						  
+							  <li  class="active"><a href="/impresario/web/userguide/menu/">Reference: Commands</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/auxdocks/">Reference: Auxiliary windows</a></li>
 						  
 							  <li ><a href="/impresario/web/userguide/history/">Release History</a></li>
 						  
@@ -95,7 +101,7 @@
 		<main role="main">
 			<article>
 				<a id="title"></a>
-				<h1 class="doc-entry-title">Command Reference</h1>
+				<h1 class="doc-entry-title">Reference: Commands</h1>
 				
 				<section>
 					
@@ -156,19 +162,19 @@ to the <a href="/impresario/web/userguide/auxdocks/#change-log-window">Change Lo
 
 <p>
 <code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/cut.png"/>&nbsp;Cut</code>
- cuts the selected items (macros and edges) from the current process graph and
+ cuts the selected items (macros and links) from the current process graph and
 adds them to the clipboard. <strong>Please note</strong>:</p>
 
 <ul>
-<li>Edges which are not selected but will become loose by cutting either the source or destination macro will be deleted!</li>
-<li>Edges which are selected but both their respective source <strong>and</strong> destination macros are not part of the selection are
+<li>Links which are not selected but will become loose by cutting either the source or destination macro will be deleted!</li>
+<li>Links which are selected but both their respective source <strong>and</strong> destination macros are not part of the selection are
 not added to the clipboard but will be deleted!</li>
 </ul>
 
 <p>
 <code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/copy.png"/>&nbsp;Copy</code>
- copies the selected items (macros and edges) to the clipboard.
-<strong>Please note</strong>: &ldquo;Loose&rdquo; edges are not copied, i.e. edges which are selected but both their respective source <strong>and</strong> destination macros
+ copies the selected items (macros and links) to the clipboard.
+<strong>Please note</strong>: &ldquo;Loose&rdquo; links are not copied, i.e. links which are selected but both their respective source <strong>and</strong> destination macros
 are not part of the selection!</p>
 
 <p>
@@ -177,8 +183,8 @@ are not part of the selection!</p>
 
 <p>
 <code class="menu_command">Delete</code>
- deletes the selected items (macros and edges) in the current process graph. <strong>Pleate note:</strong>
-Edges which are not selected but will become loose by deleting either the source or destination macro will also be deleted!</p>
+ deletes the selected items (macros and links) in the current process graph. <strong>Pleate note:</strong>
+Links which are not selected but will become loose by deleting either the source or destination macro will also be deleted!</p>
 
 <p>
 <code class="menu_command">Select all</code>
@@ -264,8 +270,8 @@ Impresario cannot disambiguate itself.</p>
 
 <p>
 <code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/eye.png"/>&nbsp;Watch</code>
- opens a viewer window for the selected output pin or edge. This command is available by right clicking
-either an edge or a macro&rsquo;s ouput pin.</p>
+ opens a viewer window for the selected output pin or link. This command is available by right clicking
+either an link or a macro&rsquo;s ouput pin.</p>
 
 <h1 id="macro-database-context-menu">Macro database context menu</h1>
 
@@ -318,7 +324,7 @@ editor. This command is only available when the selected Macro was deleted from 
 		<div class="sidebar-toc">
 			<h4>Table of Contents</h4>
 			<ul>
-				<li><strong><a href="#title">Command Reference</a></strong></li>
+				<li><strong><a href="#title">Reference: Commands</a></strong></li>
 			</ul>
 			<nav id="TableOfContents">
 <ul>

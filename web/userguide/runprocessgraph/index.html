@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario">
+		<link rel="icon" href="http://llibuda.github.io/impresario/web/impresario.png">
+		<title>Running process graphs - Impresario</title>
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/highlight.js.min.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/theme.css">
+		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootie-docs.css">
+	</head>
+	
+<style>
+.navbar-custom {
+    color: #00AA00;
+    background-color: #CC3333;
+}
+</style>	
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="http://llibuda.github.io/impresario/web">Impresario</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="http://llibuda.github.io/impresario/web">Home</a></li>
+				
+				
+           
+					  <li ><a  href="/impresario/web/download/">Download</a></li>
+          
+				
+          
+            <li  class="dropdown active" >
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">User&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/userguide/introduction/">Introduction</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/install/">Installing Impresario</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/guioverview/">Introducing Impresario&#39;s GUI</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/createprocessgraph/">Editing process graphs</a></li>
+						  
+							  <li  class="active"><a href="/impresario/web/userguide/runprocessgraph/">Running process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/macrodb/">Reference: Macro database window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/propwnd/">Reference: Property window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/settings/">Reference: Settings</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/menu/">Reference: Commands</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/auxdocks/">Reference: Auxiliary windows</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/history/">Release History</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+          
+            <li  class="dropdown">
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Developer&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+        
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">Running process graphs</h1>
+				
+				<section>
+					
+
+<p>Process graphs can be run in Impresario&rsquo;s process graph editor. <strong>Please note: While a process graph is running it cannot be modified!</strong></p>
+
+<h1 id="control">Control</h1>
+
+<p>To start running a process graph use the 
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/control_play.png"/>&nbsp;Start</code>
+ command. This will initialize all macro instances
+which are subsequently processed in a loop afterwards. In case an error occurs during initialization or processing of any macro instance,
+execution is stopped automatically and an error message is displayed in the <a href="/impresario/web/userguide/auxdocks/#system-messages-window">System Messages window</a>.</p>
+
+<p>With the 
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/control_pause.png"/>&nbsp;Pause</code>
+ command it is possible to pause processing the current process graph at any time. Using this
+command again resumes processing. The 
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/control_stop.png"/>&nbsp;Stop</code>
+ command finally stops processing the current process graph.</p>
+
+<p>A special command is the 
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/control_end.png"/>&nbsp;Snap</code>
+ command. It runs the current process graph for exactly one cylce, i.e. every
+macro instance in the process graph is run once. Afterwards execution is stopped automatically.</p>
+
+<h1 id="macro-indications">Macro indications</h1>
+
+<p>Each macro displays its current status and last execution time. The execution time measures the time the macro instance required to run its code and
+can therefore be used to estimate its performance with varying inputs. The status is displayed as LED which can have the following colors and meanings:</p>
+
+<ul>
+<li>Black or off <img src="http://llibuda.github.io/impresario/web/images/bullet_black.png"/>: The process graph is stopped.</li>
+<li>Green <img src="http://llibuda.github.io/impresario/web/images/bullet_green.png"/>: The macro instance is in idle state, i.e. waiting to be run.</li>
+<li>Orange <img src="http://llibuda.github.io/impresario/web/images/bullet_orange.png"/>: The macro instance is currently running.</li>
+<li>Red <img src="http://llibuda.github.io/impresario/web/images/bullet_red.png"/>: An error occured in the macro instance. In this case an error message should also be displayed in the
+<a href="/impresario/web/userguide/auxdocks/#system-messages-window">System Messages window</a></li>
+</ul>
+
+<h1 id="visualization-of-results">Visualization of results</h1>
+
+<p>It is possible to look at the data flowing through the graph at runtime. The only prerequisite is a viewer for the data type to be visualized.
+Viewers can be opened by:</p>
+
+<ul>
+<li>Right clicking the desired output pin of a macro instance and choosing the 
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/eye.png"/>&nbsp;Watch</code>
+ command in the context menu.</li>
+<li>Right clicking the desired link and choosing the 
+<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/eye.png"/>&nbsp;Watch</code>
+ command in the context menu.</li>
+<li>Double clicking the desired link.</li>
+</ul>
+
+<p>If a viewer is available for the data type represented by the link or output pin a separate window will open and show the current data. Otherwise
+an error message stating that no viewer is available for the data type will appear in the
+<a href="/impresario/web/userguide/auxdocks/#system-messages-window">System messages window</a>.</p>
+
+<h1 id="changing-parameters-at-runtime">Changing parameters at runtime</h1>
+
+<p>While a process graph is running it is possible to change parameters of any macro instance. Just select the macro instance for which you would like
+to change some parameters and the parameters will be displayed in the <a href="/impresario/web/userguide/propwnd/">Property window</a>. Here you can change the parameters.
+The changed values take effect immediately.</p>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">Running process graphs</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+<ul>
+<li><a href="#control">Control</a></li>
+<li><a href="#macro-indications">Macro indications</a></li>
+<li><a href="#visualization-of-results">Visualization of results</a></li>
+<li><a href="#changing-parameters-at-runtime">Changing parameters at runtime</a></li>
+</ul>
+</nav>
+		</div>
+	</div>
+  
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	<p>Copyright 2015-2016 Lars Libuda</p>
+</footer>
+
+
+
+<script src="http://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
+<script src="http://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
+
+<script src="http://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="http://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>
