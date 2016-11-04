@@ -400,7 +400,7 @@ namespace db
   void WndMacros::searchMacro(const QString& pattern)
   {
     btnSearchReset->setEnabled(!pattern.isEmpty());
-    sortModel.setFilterRegExp('^' + pattern);
+    sortModel.setFilterRegExp(pattern);
     QModelIndexList matchedMacro = sortModel.match(sortModel.index(0,0),Qt::ModelItemTypeRole,db::ModelItem::MODELITEMTYPE_MACRO,1,Qt::MatchExactly | Qt::MatchRecursive);
     if (matchedMacro.count() > 0 && !pattern.isEmpty())
     {
