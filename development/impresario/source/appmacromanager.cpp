@@ -27,7 +27,7 @@
 
 namespace app
 {
-  MacroManager MacroManager::macroManager = MacroManager();
+  MacroManager MacroManager::macroManager;
 
   MacroManager::MacroManager() : graph::ElementManager(), libList()
   {
