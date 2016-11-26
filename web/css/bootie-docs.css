@@ -133,16 +133,35 @@ h2, .h2 {
  * Figure
  */
 figure{
-  float: right;
   margin: 10pt;
   display: inline-block;
   position: relative;
 }
 
+figure.float{
+  float: right;
+  max-width: 50%;
+  clear: both;
+}
+
+figure.float_fix{
+  float: right;
+  max-width: 50%;
+  clear: both;
+}
+
+figure.float_fix  + *:after{
+  content: "."; 
+  display: block; 
+  clear: both;
+  height: 0;
+  visibility: hidden;
+}
+
 figure img {
-  width: 100%;
   height: auto;
   display: block;
+  width: 100%;
 }
 
 figure figcaption {
