@@ -1,8 +1,23 @@
-#-------------------------------------------------
+#******************************************************************************************
+#   Impresario - Image Processing Engineering System applying Reusable Interactive Objects
+#   Copyright (C) 2015-2017  Lars Libuda
 #
-# Project created by QtCreator 2011-03-03T19:52:02
+#   This file is part of Impresario.
 #
-#-------------------------------------------------
+#   Impresario is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   Impresario is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with Impresario in subdirectory "licenses", file "LICENSE_Impresario.GPLv3".
+#   If not, see <http://www.gnu.org/licenses/>.
+#*****************************************************************************************
 QT += core gui widgets network xmlpatterns qml quick quickwidgets concurrent
 TARGET = Impresario
 TEMPLATE = app

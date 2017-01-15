@@ -1,6 +1,6 @@
 /******************************************************************************************
 **   Impresario - Image Processing Engineering System applying Reusable Interactive Objects
-**   Copyright (C) 2015-2016  Lars Libuda
+**   Copyright (C) 2015-2017  Lars Libuda
 **
 **   This file is part of Impresario.
 **
@@ -46,7 +46,7 @@ namespace about
     {
       version += tr(" Debug");
     }
-    QString copyRight = QString("Copyright (C) %1 Lars Libuda").arg(QDate::currentDate().year());
+    QString copyRight = QString("Copyright (C) 2015-%1  Lars Libuda").arg(QDate::currentDate().year());
     QString buildDate = tr("Date: ");
     QString buildTool = tr("Tool: ");
     QPainter painter(&pixmap);
