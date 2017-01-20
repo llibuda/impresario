@@ -222,12 +222,14 @@ namespace config
     void clkDirProcessGraphs();
     void clkDirMacros();
     void clkDirDependencies();
+    void clkDirDocumentation();
     void clkDirResources();
 
   private:
     QPushButton* btnDirProcessGraphs;
     QPushButton* btnDirMacros;
     QPushButton* btnDirDependencies;
+    QPushButton* btnDirDocumentation;
     QPushButton* btnDirResources;
   };
 
@@ -248,6 +250,20 @@ namespace config
     Q_OBJECT
   public:
     explicit DlgPageDirProcessGraphs(QWidget *parent = 0);
+    virtual void loadSettings();
+    virtual void saveSettings();
+    virtual bool validateSettings(QStringList& msgList);
+
+  protected:
+    virtual void setContent(QGroupBox* groupContent);
+    virtual void setInformation(QString& info);
+  };
+
+  class DlgPageDirDocumentation : public DlgPageDirSingle
+  {
+    Q_OBJECT
+  public:
+    explicit DlgPageDirDocumentation(QWidget *parent = 0);
     virtual void loadSettings();
     virtual void saveSettings();
     virtual bool validateSettings(QStringList& msgList);

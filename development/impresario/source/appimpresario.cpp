@@ -185,6 +185,7 @@ namespace app
   bool Impresario::initNonCritical()
   {
     bool result = true;
+    result = initDocumentationPath() && result;
     result = initProcessGraphPath() && result;
     result = initDepLibPaths() && result;
     result = initMacroLibPaths() && result;
@@ -228,6 +229,9 @@ namespace app
       break;
     case Resource::SETTINGS_PATH_RESOURCES:
       initResourcePath();
+      break;
+    case Resource::SETTINGS_PATH_DOCUMENTATION:
+      initDocumentationPath();
       break;
     default:
       break;
@@ -331,6 +335,38 @@ namespace app
     {
       syslog::error(QString(tr("Configuration: Default QML property widget '%1' does not exists. Please reinstall Impresario.")).arg(QDir::toNativeSeparators(defPropFile.absoluteFilePath())));
       return false;
+    }
+    return true;
+  }
+
+  bool Impresario::initDocumentationPath()
+  {
+    // check path for documentation
+    QStringList docPaths;
+    docPaths.append(Resource::getPath(Resource::SETTINGS_PATH_DOCUMENTATION));
+    docPaths.append(Resource::getPath(Resource::SETTINGS_PATH_DOCUMENTATION,QSettings::SystemScope));
+    docPaths.append(QDir::toNativeSeparators(QDir(applicationDirPath() + "/../doc").absolutePath()));
+    QString path = QString();
+    for(int i = 0; i < docPaths.count(); ++i)
+    {
+      if (docPaths[i].length() > 0)
+      {
+        QDir dir(docPaths[i]);
+        if (dir.exists()) // path exists -> all ok
+        {
+          path = docPaths[i];
+          if (i > 0)
+          {
+            Resource::setPath(Resource::SETTINGS_PATH_DOCUMENTATION,path);
+          }
+          syslog::info(QString(tr("Configuration: Path to documenation is '%1'.")).arg(path));
+          break; // quit loop
+        }
+        else // path does not exist
+        {
+          syslog::warning(QString(tr("Configuration: Specified path '%1' to documentation does not exist. Online help is not available.")).arg(docPaths[i]));
+        }
+      }
     }
     return true;
   }

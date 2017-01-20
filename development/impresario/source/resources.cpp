@@ -170,6 +170,7 @@ void Resource::initPaths()
   paths[SETTINGS_PATH_MACROS] = "/Data/Paths/Macros";
   paths[SETTINGS_PATH_DEPLIBS] = "/Data/Paths/DepLibs";
   paths[SETTINGS_PATH_RESOURCES] = "/Data/Paths/Resources";
+  paths[SETTINGS_PATH_DOCUMENTATION] = "/Data/Paths/Documentation";
   paths[SETTINGS_DB_VIEWFORMATS] = "/GUI/DB/ViewFormats";
   paths[SETTINGS_DB_VIEWFILTERS] = "/GUI/DB/ViewFilters";
   paths[SETTINGS_DB_AUTORESETSEARCH] = "/GUI/DB/AutoResetSearch";
@@ -290,7 +291,13 @@ void Resource::initActions()
   action->setStatusTip(QObject::tr("Edit Impresario's settings"));
   (*actions)[EXTRAS_SETTINGS] = action;
 
-  action = new QAction(QObject::tr("&About Impresario..."), 0);
+  action = new QAction(QIcon(":/icons/resources/helpcontent.png"), QObject::tr("&Contents..."), 0);
+  action->setStatusTip(QObject::tr("Show the help contents"));
+  (*actions)[HELP_CONTENT] = action;
+  action = new QAction(QIcon(":/icons/resources/helpindex.png"), QObject::tr("&Index..."), 0);
+  action->setStatusTip(QObject::tr("Show index to select help topic"));
+  (*actions)[HELP_IDX] = action;
+  action = new QAction(QIcon(":/icons/resources/helpabout.png"), QObject::tr("&About Impresario..."), 0);
   action->setStatusTip(QObject::tr("View information about Impresario"));
   (*actions)[HELP_ABOUT] = action;
 

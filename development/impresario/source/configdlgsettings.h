@@ -44,6 +44,7 @@ namespace config
       DirProcessGraphs,
       DirMacroLibs,
       DirDependencies,
+      DirDocumentation,
       DirResources,
       MacroDBGeneral,
       MacroDBView,

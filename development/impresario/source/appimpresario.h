@@ -74,6 +74,7 @@ namespace app
     virtual ~Impresario();
 
     bool initResourcePath();
+    bool initDocumentationPath();
     bool initProcessGraphPath();
     bool initDepLibPaths();
     bool initMacroLibPaths();
