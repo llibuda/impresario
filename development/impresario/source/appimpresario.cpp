@@ -29,6 +29,7 @@
 #include <QStringList>
 #include <stdlib.h>
 #include <QClipboard>
+#include <QRegularExpression>
 #include <QDebug>
 
 namespace app
@@ -175,10 +176,8 @@ namespace app
   bool Impresario::initCritical()
   {
     bool result = initResourcePath();
-    if (result)
-    {
-      emit initCriticalSuccessful();
-    }
+
+    emit initCriticalFinished(result);
     return result;
   }
 
@@ -190,10 +189,8 @@ namespace app
     result = initDepLibPaths() && result;
     result = initMacroLibPaths() && result;
     initMacroLibraries();
-    if (result)
-    {
-      emit initNonCriticalSuccessful();
-    }
+
+    emit initNonCriticalFinished(result);
     return result;
   }
 
@@ -360,11 +357,15 @@ namespace app
             Resource::setPath(Resource::SETTINGS_PATH_DOCUMENTATION,path);
           }
           syslog::info(QString(tr("Configuration: Path to documenation is '%1'.")).arg(path));
+
+          // setup help engine
+          const QString helpCollectionFileName = "impresario.qhc";
+          helpSystemInstance.initHelp(path + QDir::separator() + helpCollectionFileName,"^impresario\\.\\d+\\.\\d+");
           break; // quit loop
         }
         else // path does not exist
         {
-          syslog::warning(QString(tr("Configuration: Specified path '%1' to documentation does not exist. Online help is not available.")).arg(docPaths[i]));
+          syslog::warning(QString(tr("Configuration: Specified path '%1' to documentation does not exist.")).arg(docPaths[i]));
         }
       }
     }

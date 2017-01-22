@@ -734,7 +734,7 @@ namespace config
 
   void DlgPageDirDocumentation::setInformation(QString& info)
   {
-    info = tr("In this directory Impresario help is stored. This setting takes effect on restart.");
+    info = tr("In this directory Impresario help is stored. This change takes effect immediately.");
   }
 
   //-----------------------------------------------------------------------

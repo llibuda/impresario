@@ -150,6 +150,8 @@ namespace frame
     connect(Resource::action(Resource::FILE_CLOSEALL), SIGNAL(triggered()), mdiArea, SLOT(closeAllSubWindows()));
     connect(Resource::action(Resource::FILE_QUIT), SIGNAL(triggered()), this, SLOT(close()));
     connect(Resource::action(Resource::EXTRAS_SETTINGS), SIGNAL(triggered()), this, SLOT(extrasSettings()));
+    connect(Resource::action(Resource::HELP_CONTENT), SIGNAL(triggered()), &app::Impresario::instance().helpEngine(), SLOT(showHelpContents()));
+    connect(Resource::action(Resource::HELP_IDX), SIGNAL(triggered()), &app::Impresario::instance().helpEngine(), SLOT(showHelpIndex()));
     connect(Resource::action(Resource::HELP_ABOUT), SIGNAL(triggered()), this, SLOT(helpAbout()));
     connect(Resource::action(Resource::MACRO_FINDINSTANCE),SIGNAL(triggered()),this,SLOT(mdiNavigateMacro()));
 

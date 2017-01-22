@@ -18,12 +18,12 @@
 #   along with Impresario in subdirectory "licenses", file "LICENSE_Impresario.GPLv3".
 #   If not, see <http://www.gnu.org/licenses/>.
 #*****************************************************************************************
-QT += core gui widgets network xmlpatterns qml quick quickwidgets concurrent
+QT += core gui widgets network xmlpatterns qml quick quickwidgets concurrent help
 TARGET = Impresario
 TEMPLATE = app
-VERSION = 2.0.0
+VERSION = 2.1.0
 QMAKE_TARGET_DESCRIPTION = "Image Processing Engineering System applying Reusable Interactive Objects"
-QMAKE_TARGET_COPYRIGHT = "Copyright 2015 Lars Libuda"
+QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2015-2017  Lars Libuda"
 
 INCLUDEPATH += $$quote($$_PRO_FILE_PWD_/../components/qtpropertybrowser/src)
 INCLUDEPATH += $$quote($$_PRO_FILE_PWD_/../components/libavoid/source)
@@ -66,7 +66,8 @@ SOURCES += main.cpp \
     graphresources.cpp \
     graphserializer.cpp \
     stdconsoleinterface.cpp \
-    ../components/singleapplication/singleapplication.cpp
+    ../components/singleapplication/singleapplication.cpp \
+    helpsystem.cpp
 
 HEADERS  += appimpresario.h \
     framemainwindow.h \
@@ -106,7 +107,8 @@ HEADERS  += appimpresario.h \
     graphresources.h \
     graphserializer.h \
     stdconsoleinterface.h \
-    ../components/singleapplication/singleapplication.h
+    ../components/singleapplication/singleapplication.h \
+    helpsystem.h
 
 RESOURCES += \
     resources.qrc
