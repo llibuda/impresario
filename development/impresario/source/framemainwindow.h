@@ -59,6 +59,7 @@ namespace frame
 
   signals:
     void changedState(MainWindow::AppState oldState, MainWindow::AppState newState);
+    void closeHelpSystem();
 
   public slots:
     void mdiChildDestroy(pge::ProcessGraphEditor* child);

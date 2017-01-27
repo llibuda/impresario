@@ -18,7 +18,7 @@
 #   along with Impresario in subdirectory "licenses", file "LICENSE_Impresario.GPLv3".
 #   If not, see <http://www.gnu.org/licenses/>.
 #*****************************************************************************************
-QT += core gui widgets network xmlpatterns qml quick quickwidgets concurrent help
+QT += core gui widgets network xmlpatterns qml quick quickwidgets concurrent help webkitwidgets
 TARGET = Impresario
 TEMPLATE = app
 VERSION = 2.1.0
@@ -67,7 +67,8 @@ SOURCES += main.cpp \
     graphserializer.cpp \
     stdconsoleinterface.cpp \
     ../components/singleapplication/singleapplication.cpp \
-    helpsystem.cpp
+    helpsystem.cpp \
+    helpcontentwindow.cpp
 
 HEADERS  += appimpresario.h \
     framemainwindow.h \
@@ -108,7 +109,8 @@ HEADERS  += appimpresario.h \
     graphserializer.h \
     stdconsoleinterface.h \
     ../components/singleapplication/singleapplication.h \
-    helpsystem.h
+    helpsystem.h \
+    helpcontentwindow.h
 
 RESOURCES += \
     resources.qrc
