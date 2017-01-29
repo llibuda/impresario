@@ -18,7 +18,7 @@
 **   along with Impresario in subdirectory "licenses", file "LICENSE_Impresario.GPLv3".
 **   If not, see <http://www.gnu.org/licenses/>.
 ******************************************************************************************/
-#include "helpcontentwindow.h"
+#include "helpwindows.h"
 #include "helpsystem.h"
 
 namespace help
@@ -262,7 +262,7 @@ namespace help
     settings()->setAttribute(QWebSettings::PluginsEnabled, false);
 
     page()->setNetworkAccessManager(WebkitBrowserSupport::createNetworkAccessManager(this));
-    setFont(viewerFont());
+    setViewerFont(viewerFont());
   }
 
   ContentWindow::~ContentWindow()
@@ -275,7 +275,7 @@ namespace help
   //  if (HelpEngineWrapper::instance().usesBrowserFont())
   //    return HelpEngineWrapper::instance().browserFont();
     QWebSettings *webSettings = QWebSettings::globalSettings();
-    return QFont(webSettings->fontFamily(QWebSettings::StandardFont),
+    return QFont(webSettings->fontFamily(QWebSettings::SansSerifFont),
                  webSettings->fontSize(QWebSettings::DefaultFontSize));
   }
 
@@ -283,9 +283,7 @@ namespace help
   {
     QWebSettings *webSettings = settings();
     webSettings->setFontFamily(QWebSettings::StandardFont, font.family());
-    webSettings->setFontFamily(QWebSettings::StandardFont, "Helvetica");
     webSettings->setFontSize(QWebSettings::DefaultFontSize, font.pointSize());
-    webSettings->setFontSize(QWebSettings::DefaultFontSize, 24);
   }
 
 }

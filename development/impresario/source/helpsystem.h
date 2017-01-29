@@ -21,7 +21,7 @@
 #ifndef HELPSYSTEM_H
 #define HELPSYSTEM_H
 
-#include "helpcontentwindow.h"
+#include "helpwindows.h"
 #include <QObject>
 #include <QMainWindow>
 #include <QtHelp>

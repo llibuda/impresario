@@ -38,6 +38,7 @@ namespace frame
   class MainWindow : public QMainWindow
   {
     Q_OBJECT
+    Q_DISABLE_COPY(MainWindow)
 
   public:
     enum AppState
@@ -77,7 +78,6 @@ namespace frame
 
   private:
     MainWindow(QWidget* parent = 0);
-    MainWindow& operator=(const MainWindow&) { return *this; }
     ~MainWindow();
 
     static MainWindow* wndInstance;

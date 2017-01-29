@@ -68,7 +68,7 @@ SOURCES += main.cpp \
     stdconsoleinterface.cpp \
     ../components/singleapplication/singleapplication.cpp \
     helpsystem.cpp \
-    helpcontentwindow.cpp
+    helpwindows.cpp
 
 HEADERS  += appimpresario.h \
     framemainwindow.h \
@@ -110,7 +110,7 @@ HEADERS  += appimpresario.h \
     stdconsoleinterface.h \
     ../components/singleapplication/singleapplication.h \
     helpsystem.h \
-    helpcontentwindow.h
+    helpwindows.h
 
 RESOURCES += \
     resources.qrc
