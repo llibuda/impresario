@@ -22,43 +22,36 @@
 #define HELPCONTENTWINDOW_H
 
 #include <QtWebKitWidgets>
+#include <QtHelp>
+#include <QMainWindow>
 
 namespace help
 {
-  // Provide helper functions for feeding the QtHelp data stored in the help database
-  // into various browsers.
-  class WebkitBrowserSupport
-  {
-  public:
-    enum ResolveUrlResult {
-      UrlRedirect,
-      UrlLocalData,
-      UrlResolveError
-    };
-
-    static QString msgError404();
-    static QString msgPageNotFound();
-    static QString msgAllDocumentationSets();
-    static QString msgLoadError(const QUrl &url);
-    static QString msgHtmlErrorPage(const QUrl &url);
-    static QString mimeFromUrl(const QUrl &url);
-
-    static ResolveUrlResult resolveUrl(const QUrl &url, QUrl *targetUrl,
-                                       QByteArray *data);
-    static QByteArray fileDataForLocalUrl(const QUrl &url);
-
-    // Create an instance of QNetworkAccessManager for WebKit-type browsers.
-    static QNetworkAccessManager *createNetworkAccessManager(QObject *parent = 0);
-  };
-
   class ContentWindow : public QWebView
   {
   public:
-    ContentWindow(QWidget* parent = 0);
+    ContentWindow(QHelpEngine& helpEngine, QWidget* parent = 0);
     ~ContentWindow();
 
     QFont viewerFont() const;
-    void setViewerFont(const QFont &font);
+    void setViewerFont(const QFont &font);    
+  };
+
+  class MainWindow : public QMainWindow
+  {
+    Q_OBJECT
+    Q_DISABLE_COPY(MainWindow)
+  public:
+    MainWindow(QHelpEngine& helpEngine);
+    ~MainWindow();
+
+  private slots:
+    void runSearch();
+    void showPage(const QUrl& url);
+
+  private:
+    QHelpEngine&   helpEngineInstance;
+    ContentWindow* ptrBrowser;
   };
 
 }

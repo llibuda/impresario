@@ -23,36 +23,10 @@
 
 #include "helpwindows.h"
 #include <QObject>
-#include <QMainWindow>
 #include <QtHelp>
-#include <QSharedPointer>
 
 namespace help
 {
-  typedef QSharedPointer<QHelpEngine> PtrHelpEngine;
-
-  class MainWindow : public QMainWindow
-  {
-    Q_OBJECT
-    Q_DISABLE_COPY(MainWindow)
-  public:
-
-    static MainWindow& instance();
-    static void release();
-
-  private slots:
-    void runSearch();
-    void showPage(const QUrl& url);
-
-  private:
-    MainWindow();
-    ~MainWindow();
-
-    static MainWindow* wndInstance;
-
-    ContentWindow* ptrBrowser;
-  };
-
   class System : public QObject
   {
     Q_OBJECT
@@ -60,16 +34,11 @@ namespace help
     System();
     virtual ~System();
 
-    void initHelp(const QString& helpCollectionFilePath, const QString& mainHelpCheckExpression);
+    void initialize(const QString& helpCollectionFilePath, const QString& mainHelpCheckExpression);
 
     bool helpAvailable() const
     {
       return (ptrHelpEngine != 0);
-    }
-
-    static const PtrHelpEngine helpEngine()
-    {
-      return ptrHelpEngine;
     }
 
   signals:
@@ -79,8 +48,21 @@ namespace help
     void showHelpIndex();
     void closeHelp();
 
+  private slots:
+    void helpSetupStarted();
+    void helpSetupFinished();
+    void helpIndexingStarted();
+    void helpIndexingFinished();
+    void helpWarning(const QString& msg);
+
   private:
-    static PtrHelpEngine ptrHelpEngine;
+    void showHelpMainWindow();
+    void destroyHelpMainWindow();
+    void destroyHelpEngine();
+    QWidget* findApplicationMainWindow() const;
+
+    QHelpEngine* ptrHelpEngine;
+    MainWindow*  ptrHelpMainWnd;
   };
 
 }

@@ -20,9 +20,34 @@
 ******************************************************************************************/
 #include "helpwindows.h"
 #include "helpsystem.h"
+#include <QApplication>
 
 namespace help
 {
+  //-----------------------------------------------------------------------
+  // Class WebKitBrowserSupport Declaration (INTERNAL)
+  //-----------------------------------------------------------------------
+  class WebkitBrowserSupport
+  {
+  public:
+    enum ResolveUrlResult {
+      UrlRedirect,
+      UrlLocalData,
+      UrlResolveError
+    };
+
+    static QString msgError404();
+    static QString msgPageNotFound();
+    static QString msgAllDocumentationSets();
+    static QString msgLoadError(const QUrl &url);
+    static QString msgHtmlErrorPage(const QUrl &url);
+    static QString mimeFromUrl(const QUrl &url);
+
+    static ResolveUrlResult resolveUrl(const QUrl &url, const QHelpEngineCore& helpEngineInstance, QUrl *targetUrl, QByteArray *data);
+
+    // Create an instance of QNetworkAccessManager for WebKit-type browsers.
+    static QNetworkAccessManager *createNetworkAccessManager(QHelpEngine& helpEngine, QObject *parent = 0);
+  };
 
   //-----------------------------------------------------------------------
   // Class HelpNetworkReply (INTERNAL)
@@ -103,13 +128,16 @@ namespace help
   class HelpNetworkAccessManager : public QNetworkAccessManager
   {
   public:
-    HelpNetworkAccessManager(QObject *parent);
+    HelpNetworkAccessManager(QHelpEngineCore& helpEngine, QObject *parent);
 
   protected:
     virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &request, QIODevice* outgoingData = 0);
+
+  private:
+    QHelpEngineCore& helpEngineInstance;
   };
 
-  HelpNetworkAccessManager::HelpNetworkAccessManager(QObject *parent) : QNetworkAccessManager(parent)
+  HelpNetworkAccessManager::HelpNetworkAccessManager(QHelpEngineCore& helpEngine, QObject *parent) : QNetworkAccessManager(parent), helpEngineInstance(helpEngine)
   {
   }
 
@@ -118,7 +146,7 @@ namespace help
     QByteArray data;
     const QUrl url = request.url();
     QUrl redirectedUrl;
-    switch (WebkitBrowserSupport::resolveUrl(url, &redirectedUrl, &data)) {
+    switch (WebkitBrowserSupport::resolveUrl(url, helpEngineInstance, &redirectedUrl, &data)) {
       case WebkitBrowserSupport::UrlRedirect:
         return new HelpRedirectNetworkReply(request, redirectedUrl);
       case WebkitBrowserSupport::UrlLocalData: {
@@ -132,9 +160,8 @@ namespace help
   }
 
   //-----------------------------------------------------------------------
-  // Class WebKitBrowserSupport
+  // Class WebKitBrowserSupport Definition (INTERNAL)
   //-----------------------------------------------------------------------
-
   static const char g_htmlPage[] = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; "
                                    "charset=UTF-8\"><title>%1</title><style>body{padding: 3em 0em;background: #eeeeee;}"
                                    "hr{color: lightgray;width: 100%;}img{float: left;opacity: .8;}#box{background: white;border: 1px solid "
@@ -207,11 +234,6 @@ namespace help
              WebkitBrowserSupport::msgLoadError(url), WebkitBrowserSupport::msgAllDocumentationSets());
   }
 
-  QByteArray WebkitBrowserSupport::fileDataForLocalUrl(const QUrl &url)
-  {
-      return System::helpEngine()->fileData(url);
-  }
-
   QString WebkitBrowserSupport::mimeFromUrl(const QUrl &url)
   {
     const QString &path = url.path();
@@ -227,11 +249,9 @@ namespace help
     return QLatin1String("application/octet-stream");
   }
 
-  WebkitBrowserSupport::ResolveUrlResult WebkitBrowserSupport::resolveUrl(const QUrl &url, QUrl *targetUrlP, QByteArray *dataP)
+  WebkitBrowserSupport::ResolveUrlResult WebkitBrowserSupport::resolveUrl(const QUrl &url, const QHelpEngineCore& helpEngineInstance, QUrl *targetUrlP, QByteArray *dataP)
   {
-    const PtrHelpEngine engine = System::helpEngine();
-
-    const QUrl targetUrl = engine->findFile(url);
+    const QUrl targetUrl = helpEngineInstance.findFile(url);
     if (!targetUrl.isValid())
       return UrlResolveError;
 
@@ -241,27 +261,27 @@ namespace help
       return UrlRedirect;
     }
 
-    if (dataP) *dataP = WebkitBrowserSupport::fileDataForLocalUrl(targetUrl);
+    if (dataP) *dataP = helpEngineInstance.fileData(targetUrl);
 
     return UrlLocalData;
   }
 
-  QNetworkAccessManager *WebkitBrowserSupport::createNetworkAccessManager(QObject *parent)
+  QNetworkAccessManager *WebkitBrowserSupport::createNetworkAccessManager(QHelpEngine& helpEngine, QObject *parent)
   {
-    return new HelpNetworkAccessManager(parent);
+    return new HelpNetworkAccessManager(helpEngine, parent);
   }
 
   //-----------------------------------------------------------------------
   // Class ContentWindow
   //-----------------------------------------------------------------------
 
-  ContentWindow::ContentWindow(QWidget* parent) : QWebView(parent)
+  ContentWindow::ContentWindow(QHelpEngine& helpEngine, QWidget* parent) : QWebView(parent)
   {
     setAcceptDrops(false);
     settings()->setAttribute(QWebSettings::JavaEnabled, false);
     settings()->setAttribute(QWebSettings::PluginsEnabled, false);
 
-    page()->setNetworkAccessManager(WebkitBrowserSupport::createNetworkAccessManager(this));
+    page()->setNetworkAccessManager(WebkitBrowserSupport::createNetworkAccessManager(helpEngine,this));
     setViewerFont(viewerFont());
   }
 
@@ -284,6 +304,70 @@ namespace help
     QWebSettings *webSettings = settings();
     webSettings->setFontFamily(QWebSettings::StandardFont, font.family());
     webSettings->setFontSize(QWebSettings::DefaultFontSize, font.pointSize());
+  }
+
+  //-----------------------------------------------------------------------
+  // Class MainWindow
+  //-----------------------------------------------------------------------
+  MainWindow::MainWindow(QHelpEngine& helpEngine) : QMainWindow(), helpEngineInstance(helpEngine), ptrBrowser(0)
+  {
+    setWindowTitle(QApplication::applicationName() + " - " + tr("Help"));
+
+    setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowTabbedDocks);
+    setCorner(Qt::TopLeftCorner,Qt::LeftDockWidgetArea);
+    setCorner(Qt::BottomLeftCorner,Qt::LeftDockWidgetArea);
+    setTabPosition(Qt::AllDockWidgetAreas,QTabWidget::North);
+
+    // setup status bar
+    QStatusBar* statusBar = new QStatusBar(this);
+    setStatusBar(statusBar);
+
+    ptrBrowser = new ContentWindow(helpEngineInstance, this);
+    setCentralWidget(ptrBrowser);
+
+    // create dock widgets
+    QDockWidget* dockWidgetContents = new QDockWidget(tr("Contents"),this);
+    dockWidgetContents->setWidget(helpEngineInstance.contentWidget());
+    addDockWidget(Qt::LeftDockWidgetArea,dockWidgetContents);
+
+    QDockWidget* dockWidgetIndex = new QDockWidget(tr("Index"),this);
+    dockWidgetIndex->setWidget(helpEngineInstance.indexWidget());
+    addDockWidget(Qt::LeftDockWidgetArea,dockWidgetIndex);
+
+    QDockWidget* dockWidgetSearch = new QDockWidget(tr("Search"),this);
+    QWidget* widgetSearch = new QWidget(this);
+    QVBoxLayout* layout = new QVBoxLayout(widgetSearch);
+    layout->addWidget(helpEngineInstance.searchEngine()->queryWidget());
+    layout->addWidget(helpEngineInstance.searchEngine()->resultWidget(),1);
+    layout->setMargin(5);
+    widgetSearch->setLayout(layout);
+    dockWidgetSearch->setWidget(widgetSearch);
+    addDockWidget(Qt::LeftDockWidgetArea,dockWidgetSearch);
+
+    tabifyDockWidget(dockWidgetContents,dockWidgetIndex);
+    tabifyDockWidget(dockWidgetIndex,dockWidgetSearch);
+    dockWidgetContents->raise();
+
+    // connect signals
+    connect(helpEngineInstance.contentWidget(),SIGNAL(linkActivated(QUrl)),this,SLOT(showPage(QUrl)));
+    connect(helpEngineInstance.searchEngine()->queryWidget(),SIGNAL(search()),this,SLOT(runSearch()));
+    connect(helpEngineInstance.searchEngine()->resultWidget(),SIGNAL(requestShowLink(QUrl)),this,SLOT(showPage(QUrl)));
+  }
+
+
+  MainWindow::~MainWindow()
+  {
+  }
+
+  void MainWindow::runSearch()
+  {
+    helpEngineInstance.searchEngine()->search(helpEngineInstance.searchEngine()->queryWidget()->query());
+  }
+
+  void MainWindow::showPage(const QUrl &url)
+  {
+    statusBar()->showMessage(QString(tr("Url: %1")).arg(url.toString()));
+    ptrBrowser->setUrl(url);
   }
 
 }

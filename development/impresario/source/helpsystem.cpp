@@ -20,123 +20,49 @@
 ******************************************************************************************/
 #include "helpsystem.h"
 #include "sysloglogger.h"
-#include "framemainwindow.h"
 #include <QApplication>
+#include <QMainWindow>
 #include <QMessageBox>
 #include <QDir>
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QDebug>
 
 namespace help
 {
   //-----------------------------------------------------------------------
-  // Class MainWindow
-  //-----------------------------------------------------------------------
-  MainWindow* MainWindow::wndInstance = 0;
-
-  MainWindow& MainWindow::instance()
-  {
-    if (!wndInstance)
-    {
-      wndInstance = new MainWindow();
-    }
-    return *wndInstance;
-  }
-
-  void MainWindow::release()
-  {
-    if (wndInstance)
-    {
-      delete wndInstance;
-      wndInstance = 0;
-    }
-  }
-
-  MainWindow::MainWindow() : QMainWindow(), ptrBrowser(0)
-  {
-    Q_ASSERT(!System::helpEngine().isNull());
-    setWindowTitle(QApplication::applicationName() + " - " + tr("Help"));
-
-    setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowTabbedDocks);
-    setCorner(Qt::TopLeftCorner,Qt::LeftDockWidgetArea);
-    setCorner(Qt::BottomLeftCorner,Qt::LeftDockWidgetArea);
-    setTabPosition(Qt::AllDockWidgetAreas,QTabWidget::North);
-
-    // setup status bar
-    QStatusBar* statusBar = new QStatusBar(this);
-    setStatusBar(statusBar);
-
-    ptrBrowser = new ContentWindow(this);
-    setCentralWidget(ptrBrowser);
-
-    // create dock widgets
-    QDockWidget* dockWidgetContents = new QDockWidget(tr("Contents"),this);
-    dockWidgetContents->setWidget(System::helpEngine()->contentWidget());
-    addDockWidget(Qt::LeftDockWidgetArea,dockWidgetContents);
-
-    QDockWidget* dockWidgetIndex = new QDockWidget(tr("Index"),this);
-    dockWidgetIndex->setWidget(System::helpEngine()->indexWidget());
-    addDockWidget(Qt::LeftDockWidgetArea,dockWidgetIndex);
-
-    QDockWidget* dockWidgetSearch = new QDockWidget(tr("Search"),this);
-    QWidget* widgetSearch = new QWidget(this);
-    QVBoxLayout* layout = new QVBoxLayout(widgetSearch);
-    layout->addWidget(System::helpEngine()->searchEngine()->queryWidget());
-    layout->addWidget(System::helpEngine()->searchEngine()->resultWidget(),1);
-    layout->setMargin(5);
-    widgetSearch->setLayout(layout);
-    dockWidgetSearch->setWidget(widgetSearch);
-    addDockWidget(Qt::LeftDockWidgetArea,dockWidgetSearch);
-
-    tabifyDockWidget(dockWidgetContents,dockWidgetIndex);
-    tabifyDockWidget(dockWidgetIndex,dockWidgetSearch);
-    dockWidgetContents->raise();
-
-    // connect signals
-    connect(System::helpEngine()->contentWidget(),SIGNAL(linkActivated(QUrl)),this,SLOT(showPage(QUrl)));
-    connect(System::helpEngine()->searchEngine()->queryWidget(),SIGNAL(search()),this,SLOT(runSearch()));
-    connect(System::helpEngine()->searchEngine()->resultWidget(),SIGNAL(requestShowLink(QUrl)),this,SLOT(showPage(QUrl)));
-  }
-
-
-  MainWindow::~MainWindow()
-  {
-  }
-
-  void MainWindow::runSearch()
-  {
-    System::helpEngine()->searchEngine()->search(System::helpEngine()->searchEngine()->queryWidget()->query());
-  }
-
-  void MainWindow::showPage(const QUrl &url)
-  {
-    statusBar()->showMessage(QString(tr("Url: %1")).arg(url.toString()));
-    //ptrBrowser->setHtml(ptrHelpEngine->fileData(url),QUrl("qthelp://impresario.2.0/doc/"));
-    ptrBrowser->setUrl(url);
-  }
-
-  //-----------------------------------------------------------------------
   // Class System
   //-----------------------------------------------------------------------
-  PtrHelpEngine System::ptrHelpEngine;
-
-  System::System() : QObject(0)
+  System::System() : QObject(0), ptrHelpEngine(0), ptrHelpMainWnd(0)
   {
   }
 
   System::~System()
   {
-    closeHelp();
+    destroyHelpEngine();
   }
 
-  void System::initHelp(const QString &helpCollectionFilePath, const QString& mainHelpCheckExpression)
+  void System::initialize(const QString &helpCollectionFilePath, const QString& mainHelpCheckExpression)
   {
-    PtrHelpEngine helpEngineInstance = PtrHelpEngine(new QHelpEngine(helpCollectionFilePath));
-    helpEngineInstance->setupData();
-    QString errorMsg = helpEngineInstance->error();
+    // if help is already initialized, we close it first
+    destroyHelpEngine();
+    // create new help engine
+    ptrHelpEngine = new QHelpEngine(helpCollectionFilePath);
+    if (!ptrHelpEngine)
+    {
+      syslog::error(QString(tr("Help system: Online help is not available. Could not allocate memory.")));
+      return;
+    }
+
+    // we need to call setupData() first, otherwise no qch file will be registered successfully
+    disconnect(ptrHelpEngine,SIGNAL(setupFinished()),ptrHelpEngine->searchEngine(),SLOT(indexDocumentation()));
+    ptrHelpEngine->setupData();
+
+    QString errorMsg = ptrHelpEngine->error();
     if (errorMsg.count() > 0)
     {
       syslog::error(QString(tr("Help system: Online help is not available. %1")).arg(errorMsg));
+      destroyHelpEngine();
       return;
     }
     QFileInfo fileInfo(helpCollectionFilePath);
@@ -147,65 +73,135 @@ namespace help
     QStringList helpFiles = helpDir.entryList(helpFilePattern, QDir::Files | QDir::NoSymLinks, QDir::Name | QDir::IgnoreCase);
     foreach(QString helpFile, helpFiles)
     {
-      if (helpEngineInstance->registerDocumentation(helpDir.absoluteFilePath(helpFile)))
+      if (ptrHelpEngine->registerDocumentation(helpDir.absoluteFilePath(helpFile)))
       {
         syslog::info(QString(tr("Help system: Registered help file '%1'.")).arg(QDir::toNativeSeparators(helpDir.absoluteFilePath(helpFile))));
       }
     }
+    // connect signals and slots
+    connect(ptrHelpEngine,SIGNAL(setupStarted()),this,SLOT(helpSetupStarted()));
+    connect(ptrHelpEngine,SIGNAL(setupFinished()),this,SLOT(helpSetupFinished()));
+    connect(ptrHelpEngine,SIGNAL(warning(QString)),this,SLOT(helpWarning(QString)));
+    connect(ptrHelpEngine->searchEngine(),SIGNAL(indexingStarted()),this,SLOT(helpIndexingStarted()));
+    connect(ptrHelpEngine->searchEngine(),SIGNAL(indexingFinished()),this,SLOT(helpIndexingFinished()));
+
+    connect(ptrHelpEngine,SIGNAL(setupFinished()),ptrHelpEngine->searchEngine(),SLOT(indexDocumentation()));
+
     // check whether we have any help at all
-    QStringList registeredHelpFiles = helpEngineInstance->registeredDocumentations();
+    QStringList registeredHelpFiles = ptrHelpEngine->registeredDocumentations();
     if (registeredHelpFiles.count() == 0)
     {
-      syslog::error(QString(tr("Help system: Online help is not available. No help files registered in path '%1'. %2")).arg(QDir::toNativeSeparators(helpDir.absolutePath())).arg(helpEngineInstance->error()));
+      syslog::error(QString(tr("Help system: Online help is not available. No help files registered in path '%1'. %2")).arg(QDir::toNativeSeparators(helpDir.absolutePath())).arg(ptrHelpEngine->error()));
+      destroyHelpEngine();
       return;
     }
 
-    // check whether we have Impresario help
+    // check whether we have main help
     QRegularExpression regEx(mainHelpCheckExpression,QRegularExpression::CaseInsensitiveOption);
     if (registeredHelpFiles.indexOf(regEx,0) < 0)
     {
       syslog::warning(QString(tr("Help system: Main help for application is not available due to missing help file.")));
     }
     syslog::info(QString(tr("Help system: Online help initialized. Number of referenced help files: %1")).arg(registeredHelpFiles.count()));
-
-    // exchange help engine
-    MainWindow::release();
-    ptrHelpEngine = helpEngineInstance;
-    ptrHelpEngine->searchEngine()->reindexDocumentation();
   }
 
   void System::showHelpContents()
   {
-    if (!ptrHelpEngine.isNull())
+    if (ptrHelpEngine)
     {
-      MainWindow& helpWndInstance = MainWindow::instance();
-      helpWndInstance.show();
+      showHelpMainWindow();
     }
     else
     {
-      QMessageBox msgBox(QMessageBox::Critical,QApplication::applicationName(),tr("Help system was not correctly initialized. Online help is not available."),QMessageBox::Ok,&frame::MainWindow::instance());
+      QMessageBox msgBox(QMessageBox::Critical,QApplication::applicationName(),tr("Help system was not correctly initialized. Online help is not available."),QMessageBox::Ok,findApplicationMainWindow());
       msgBox.exec();
     }
   }
 
   void System::showHelpIndex()
   {
-    if (!ptrHelpEngine.isNull())
+    if (ptrHelpEngine)
     {
-      MainWindow& helpWndInstance = MainWindow::instance();
-      helpWndInstance.show();
+      showHelpMainWindow();
     }
     else
     {
-      QMessageBox msgBox(QMessageBox::Critical,QApplication::applicationName(),tr("Help system was not correctly initialized. Online help is not available."),QMessageBox::Ok,&frame::MainWindow::instance());
+      QMessageBox msgBox(QMessageBox::Critical,QApplication::applicationName(),tr("Help system was not correctly initialized. Online help is not available."),QMessageBox::Ok,findApplicationMainWindow());
       msgBox.exec();
     }
   }
 
   void System::closeHelp()
   {
-    MainWindow::release();
-    ptrHelpEngine.clear();
+    destroyHelpMainWindow();
+  }
+
+  void System::helpSetupStarted()
+  {
+    // syslog::info(QString(tr("Help system: Setup started.")));
+  }
+
+  void System::helpSetupFinished()
+  {
+    syslog::info(QString(tr("Help system: Setup finished.")));
+  }
+
+  void System::helpIndexingStarted()
+  {
+    syslog::info(QString(tr("Help system: Indexing started.")));
+  }
+
+  void System::helpIndexingFinished()
+  {
+    syslog::info(QString(tr("Help system: Indexing finished.")));
+  }
+
+  void System::helpWarning(const QString& msg)
+  {
+    syslog::warning(QString(tr("Help system: %1")).arg(msg));
+  }
+
+  void System::showHelpMainWindow()
+  {
+    if (!ptrHelpMainWnd && ptrHelpEngine)
+    {
+      ptrHelpMainWnd = new MainWindow(*ptrHelpEngine);
+    }
+    if (ptrHelpMainWnd && ptrHelpMainWnd->isHidden())
+    {
+      ptrHelpMainWnd->show();
+    }
+  }
+
+  void System::destroyHelpMainWindow()
+  {
+    if (ptrHelpMainWnd)
+    {
+      ptrHelpMainWnd->close();
+      delete ptrHelpMainWnd;
+      ptrHelpMainWnd = 0;
+    }
+  }
+
+  void System::destroyHelpEngine()
+  {
+    destroyHelpMainWindow();
+    delete ptrHelpEngine;
+    ptrHelpEngine = 0;
+  }
+
+  QWidget* System::findApplicationMainWindow() const
+  {
+    QWidgetList widgetList = QApplication::topLevelWidgets();
+    foreach(QWidget* widget, widgetList)
+    {
+      QMainWindow* mainWindow = qobject_cast<QMainWindow*>(widget);
+      if (mainWindow)
+      {
+        return mainWindow;
+      }
+    }
+    return 0;
   }
 
 }

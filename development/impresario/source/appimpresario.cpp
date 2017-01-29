@@ -360,7 +360,7 @@ namespace app
 
           // setup help engine
           const QString helpCollectionFileName = "impresario.qhc";
-          helpSystemInstance.initHelp(path + QDir::separator() + helpCollectionFileName,"^impresario\\.\\d+\\.\\d+");
+          helpSystemInstance.initialize(path + QDir::separator() + helpCollectionFileName,"^impresario\\.\\d+\\.\\d+");
           break; // quit loop
         }
         else // path does not exist
