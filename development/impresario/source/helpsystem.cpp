@@ -65,17 +65,49 @@ namespace help
       destroyHelpEngine();
       return;
     }
+    // scan for help files in given directory recursively
+    bool updateRequired = false;
     QFileInfo fileInfo(helpCollectionFilePath);
     QDir helpDir(fileInfo.absolutePath());
-    // register all help files in directory in our collection
-    QStringList helpFilePattern;
-    helpFilePattern.append("*.qch");
-    QStringList helpFiles = helpDir.entryList(helpFilePattern, QDir::Files | QDir::NoSymLinks, QDir::Name | QDir::IgnoreCase);
+    QStringList helpFiles;
+    scanForHelpFiles(helpDir,helpFiles);
+    // get registered documentations
+    QStringList registeredNamespaces = ptrHelpEngine->registeredDocumentations();
+    // run through registered namespaces and check whether help file is actually existing.
+    // if it does not exist, remove it from help.
+    foreach(QString nameSpace, registeredNamespaces)
+    {
+      QString helpFile = ptrHelpEngine->documentationFileName(nameSpace);
+      int fileIndex = helpFiles.indexOf(helpFile);
+      if (fileIndex < 0)
+      {
+        if (ptrHelpEngine->unregisterDocumentation(nameSpace))
+        {
+          syslog::warning(QString(tr("Help system: Removed reference to help file '%1'. File does not exist.")).arg(QDir::toNativeSeparators(helpFile)));
+          updateRequired = true;
+        }
+        else
+        {
+          syslog::error(QString(tr("Help system: Failed to unregister non-existing help file '%1'. %2")).arg(QDir::toNativeSeparators(helpFile)).arg(ptrHelpEngine->error()));
+        }
+      }
+      else
+      {
+        // file exists and is registered -> remove it from file list
+        helpFiles.removeAt(fileIndex);
+      }
+    }
+    // all remaining files in list must now be registered.
     foreach(QString helpFile, helpFiles)
     {
-      if (ptrHelpEngine->registerDocumentation(helpDir.absoluteFilePath(helpFile)))
+      if (ptrHelpEngine->registerDocumentation(helpFile))
       {
-        syslog::info(QString(tr("Help system: Registered help file '%1'.")).arg(QDir::toNativeSeparators(helpDir.absoluteFilePath(helpFile))));
+        syslog::info(QString(tr("Help system: Registered help file '%1'.")).arg(QDir::toNativeSeparators(helpFile)));
+        updateRequired = true;
+      }
+      else
+      {
+        syslog::error(QString(tr("Help system: Failed to register help file '%1'. %2")).arg(QDir::toNativeSeparators(helpFile)).arg(ptrHelpEngine->error()));
       }
     }
     // connect signals and slots
@@ -86,6 +118,11 @@ namespace help
     connect(ptrHelpEngine->searchEngine(),SIGNAL(indexingFinished()),this,SLOT(helpIndexingFinished()));
 
     connect(ptrHelpEngine,SIGNAL(setupFinished()),ptrHelpEngine->searchEngine(),SLOT(indexDocumentation()));
+
+    if (updateRequired)
+    {
+      ptrHelpEngine->setupData();
+    }
 
     // check whether we have any help at all
     QStringList registeredHelpFiles = ptrHelpEngine->registeredDocumentations();
@@ -159,6 +196,27 @@ namespace help
   void System::helpWarning(const QString& msg)
   {
     syslog::warning(QString(tr("Help system: %1")).arg(msg));
+  }
+
+  void System::scanForHelpFiles(const QDir& directory, QStringList& helpFileList) const
+  {
+    if (!directory.exists()) return;
+    // scan for *.qch files
+    QStringList pattern;
+    pattern.append("*.qch");
+    QFileInfoList helpFileInfos = directory.entryInfoList(pattern, QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot | QDir::NoSymLinks, QDir::Name | QDir::IgnoreCase | QDir::DirsLast);
+    foreach(QFileInfo fileInfo, helpFileInfos)
+    {
+      if (fileInfo.isFile())
+      {
+        helpFileList.append(fileInfo.absoluteFilePath());
+      }
+      else if (fileInfo.isDir())
+      {
+        // recursive step down
+        scanForHelpFiles(QDir(fileInfo.absoluteFilePath()),helpFileList);
+      }
+    }
   }
 
   void System::showHelpMainWindow()

@@ -23,6 +23,7 @@
 
 #include "helpwindows.h"
 #include <QObject>
+#include <QDir>
 #include <QtHelp>
 
 namespace help
@@ -56,6 +57,7 @@ namespace help
     void helpWarning(const QString& msg);
 
   private:
+    void scanForHelpFiles(const QDir& directory, QStringList& helpFileList) const;
     void showHelpMainWindow();
     void destroyHelpMainWindow();
     void destroyHelpEngine();
