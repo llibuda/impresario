@@ -350,6 +350,7 @@ namespace help
 
     // connect signals
     connect(helpEngineInstance.contentWidget(),SIGNAL(linkActivated(QUrl)),this,SLOT(showPage(QUrl)));
+    connect(helpEngineInstance.indexWidget(),SIGNAL(linkActivated(QUrl,QString)),this,SLOT(showPage(QUrl)));
     connect(helpEngineInstance.searchEngine()->queryWidget(),SIGNAL(search()),this,SLOT(runSearch()));
     connect(helpEngineInstance.searchEngine()->resultWidget(),SIGNAL(requestShowLink(QUrl)),this,SLOT(showPage(QUrl)));
   }
@@ -365,6 +366,12 @@ namespace help
   }
 
   void MainWindow::showPage(const QUrl &url)
+  {
+    statusBar()->showMessage(QString(tr("Url: %1")).arg(url.toString()));
+    ptrBrowser->setUrl(url);
+  }
+
+  void MainWindow::showPage(const QUrl &url, const QString& /*keyword*/)
   {
     statusBar()->showMessage(QString(tr("Url: %1")).arg(url.toString()));
     ptrBrowser->setUrl(url);

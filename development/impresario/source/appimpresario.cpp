@@ -157,7 +157,7 @@ namespace app
     // set application name, version, and organization for use
     // in QSettings instance
     setApplicationName("Impresario");
-    setApplicationVersion("2.0");
+    setApplicationVersion("2.1");
     setOrganizationName("Impresario");
 
     // register new format for application settings
@@ -360,7 +360,7 @@ namespace app
 
           // setup help engine
           const QString helpCollectionFileName = "impresario.qhc";
-          helpSystemInstance.initialize(path + QDir::separator() + helpCollectionFileName,"^impresario\\.\\d+\\.\\d+");
+          helpSystemInstance.initialize(path + QDir::separator() + helpCollectionFileName,"Impresario-Mainpage");
           break; // quit loop
         }
         else // path does not exist

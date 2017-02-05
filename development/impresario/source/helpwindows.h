@@ -45,9 +45,10 @@ namespace help
     MainWindow(QHelpEngine& helpEngine);
     ~MainWindow();
 
-  private slots:
+  public slots:
     void runSearch();
     void showPage(const QUrl& url);
+    void showPage(const QUrl& url, const QString& keyword);
 
   private:
     QHelpEngine&   helpEngineInstance;

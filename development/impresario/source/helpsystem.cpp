@@ -33,7 +33,7 @@ namespace help
   //-----------------------------------------------------------------------
   // Class System
   //-----------------------------------------------------------------------
-  System::System() : QObject(0), ptrHelpEngine(0), ptrHelpMainWnd(0)
+  System::System() : QObject(0), ptrHelpEngine(0), ptrHelpMainWnd(0), helpInitialized(false), urlMainPage()
   {
   }
 
@@ -42,7 +42,7 @@ namespace help
     destroyHelpEngine();
   }
 
-  void System::initialize(const QString &helpCollectionFilePath, const QString& mainHelpCheckExpression)
+  void System::initialize(const QString &helpCollectionFilePath, const QString& mainPageID)
   {
     // if help is already initialized, we close it first
     destroyHelpEngine();
@@ -65,6 +65,7 @@ namespace help
       destroyHelpEngine();
       return;
     }
+
     // scan for help files in given directory recursively
     bool updateRequired = false;
     QFileInfo fileInfo(helpCollectionFilePath);
@@ -134,19 +135,34 @@ namespace help
     }
 
     // check whether we have main help
-    QRegularExpression regEx(mainHelpCheckExpression,QRegularExpression::CaseInsensitiveOption);
-    if (registeredHelpFiles.indexOf(regEx,0) < 0)
+    QMap<QString,QUrl> mapHits = ptrHelpEngine->linksForIdentifier(mainPageID);
+    if (mapHits.count() == 0)
     {
       syslog::warning(QString(tr("Help system: Main help for application is not available due to missing help file.")));
     }
+    else
+    {
+      urlMainPage = mapHits.first();
+    }
     syslog::info(QString(tr("Help system: Online help initialized. Number of referenced help files: %1")).arg(registeredHelpFiles.count()));
+    helpInitialized = true;
   }
 
-  void System::showHelpContents()
+  void System::showHelpContents(const QString& helpID)
   {
-    if (ptrHelpEngine)
+    if (helpInitialized)
     {
-      showHelpMainWindow();
+      QUrl url = urlMainPage;
+      if (!helpID.isEmpty())
+      {
+        QMap<QString,QUrl> mapHits = ptrHelpEngine->linksForIdentifier(helpID);
+        if (mapHits.count() > 0)
+        {
+          // TODO: show dialog to select topic in case more than one result was found
+          url = mapHits.first();
+        }
+      }
+      showHelpMainWindow(url);
     }
     else
     {
@@ -157,9 +173,9 @@ namespace help
 
   void System::showHelpIndex()
   {
-    if (ptrHelpEngine)
+    if (helpInitialized)
     {
-      showHelpMainWindow();
+      showHelpMainWindow(urlMainPage);
     }
     else
     {
@@ -198,36 +214,26 @@ namespace help
     syslog::warning(QString(tr("Help system: %1")).arg(msg));
   }
 
-  void System::scanForHelpFiles(const QDir& directory, QStringList& helpFileList) const
-  {
-    if (!directory.exists()) return;
-    // scan for *.qch files
-    QStringList pattern;
-    pattern.append("*.qch");
-    QFileInfoList helpFileInfos = directory.entryInfoList(pattern, QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot | QDir::NoSymLinks, QDir::Name | QDir::IgnoreCase | QDir::DirsLast);
-    foreach(QFileInfo fileInfo, helpFileInfos)
-    {
-      if (fileInfo.isFile())
-      {
-        helpFileList.append(fileInfo.absoluteFilePath());
-      }
-      else if (fileInfo.isDir())
-      {
-        // recursive step down
-        scanForHelpFiles(QDir(fileInfo.absoluteFilePath()),helpFileList);
-      }
-    }
-  }
-
-  void System::showHelpMainWindow()
+  void System::showHelpMainWindow(const QUrl url)
   {
     if (!ptrHelpMainWnd && ptrHelpEngine)
     {
       ptrHelpMainWnd = new MainWindow(*ptrHelpEngine);
     }
-    if (ptrHelpMainWnd && ptrHelpMainWnd->isHidden())
+    if (ptrHelpMainWnd)
     {
-      ptrHelpMainWnd->show();
+      if (url.isValid())
+      {
+        ptrHelpMainWnd->showPage(url);
+      }
+      if (ptrHelpMainWnd->isHidden())
+      {
+        ptrHelpMainWnd->show();
+      }
+      else
+      {
+        ptrHelpMainWnd->raise();
+      }
     }
   }
 
@@ -246,9 +252,11 @@ namespace help
     destroyHelpMainWindow();
     delete ptrHelpEngine;
     ptrHelpEngine = 0;
+    helpInitialized = false;
+    urlMainPage = QUrl();
   }
 
-  QWidget* System::findApplicationMainWindow() const
+  QWidget* System::findApplicationMainWindow()
   {
     QWidgetList widgetList = QApplication::topLevelWidgets();
     foreach(QWidget* widget, widgetList)
@@ -260,6 +268,27 @@ namespace help
       }
     }
     return 0;
+  }
+
+  void System::scanForHelpFiles(const QDir& directory, QStringList& helpFileList)
+  {
+    if (!directory.exists()) return;
+    // scan for *.qch files
+    QStringList pattern;
+    pattern.append("*.qch");
+    QFileInfoList helpFileInfos = directory.entryInfoList(pattern, QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot | QDir::NoSymLinks, QDir::Name | QDir::IgnoreCase | QDir::DirsLast);
+    foreach(QFileInfo fileInfo, helpFileInfos)
+    {
+      if (fileInfo.isFile())
+      {
+        helpFileList.append(fileInfo.absoluteFilePath());
+      }
+      else if (fileInfo.isDir())
+      {
+        // recursive step down
+        scanForHelpFiles(QDir(fileInfo.absoluteFilePath()),helpFileList);
+      }
+    }
   }
 
 }

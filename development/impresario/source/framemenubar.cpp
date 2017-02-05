@@ -88,7 +88,8 @@ namespace frame
     // build help menu
     menuHelp = this->addMenu(tr("&Help"));
     menuHelp->addAction(Resource::action(Resource::HELP_CONTENT));
-    menuHelp->addAction(Resource::action(Resource::HELP_IDX));
+    // help index not required as separate item
+    // menuHelp->addAction(Resource::action(Resource::HELP_IDX));
     menuHelp->addSeparator();
     menuHelp->addAction(Resource::action(Resource::HELP_ABOUT));
   }

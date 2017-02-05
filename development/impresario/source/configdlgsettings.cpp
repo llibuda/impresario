@@ -21,6 +21,7 @@
 
 #include "configdlgsettings.h"
 #include "configdlgpages.h"
+#include "appimpresario.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QIcon>
@@ -60,6 +61,7 @@ namespace config
     // set signal handlers
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(saveSettings()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
+    connect(buttonBox, SIGNAL(helpRequested()), this, SLOT(showHelp()));
     connect(selectionPane,SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),this, SLOT(changePage(QTreeWidgetItem*,QTreeWidgetItem*)));
 
     // create dialog pages
@@ -213,5 +215,17 @@ namespace config
         (*it).second->saveSettings();
       }
     }
+  }
+
+  void DlgSettings::showHelp()
+  {
+    QString strHelpID = "Impresario-Settings";
+    QWidget* widget = contentPane->currentWidget();
+    DlgPageBase* dlgPage = qobject_cast<DlgPageBase*>(widget);
+    if (dlgPage)
+    {
+      strHelpID = dlgPage->helpID();
+    }
+    app::Impresario::instance().helpEngine().showHelpContents(strHelpID);
   }
 }

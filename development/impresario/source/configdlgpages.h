@@ -186,6 +186,16 @@ namespace config
     virtual void saveSettings() = 0;
     virtual bool validateSettings(QStringList& msgList) = 0;
 
+    void setHelpID(const QString& id)
+    {
+      strHelpID = id;
+    }
+
+    const QString& helpID() const
+    {
+      return strHelpID;
+    }
+
   signals:
     void changedSetting(Resource::SettingsIDs id);
 
@@ -199,7 +209,8 @@ namespace config
   private:
     void createLayout();
 
-    bool initPage;
+    bool    initPage;
+    QString strHelpID;
 };
 
   class DlgPageDirectories : public DlgPageBase

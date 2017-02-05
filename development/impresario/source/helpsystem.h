@@ -35,17 +35,17 @@ namespace help
     System();
     virtual ~System();
 
-    void initialize(const QString& helpCollectionFilePath, const QString& mainHelpCheckExpression);
+    void initialize(const QString& helpCollectionFilePath, const QString& mainPageID);
 
     bool helpAvailable() const
     {
-      return (ptrHelpEngine != 0);
+      return helpInitialized;
     }
 
   signals:
 
   public slots:
-    void showHelpContents();
+    void showHelpContents(const QString& helpID = QString());
     void showHelpIndex();
     void closeHelp();
 
@@ -57,14 +57,17 @@ namespace help
     void helpWarning(const QString& msg);
 
   private:
-    void scanForHelpFiles(const QDir& directory, QStringList& helpFileList) const;
-    void showHelpMainWindow();
+    void showHelpMainWindow(const QUrl url);
     void destroyHelpMainWindow();
     void destroyHelpEngine();
-    QWidget* findApplicationMainWindow() const;
 
-    QHelpEngine* ptrHelpEngine;
-    MainWindow*  ptrHelpMainWnd;
+    static QWidget* findApplicationMainWindow();
+    static void scanForHelpFiles(const QDir& directory, QStringList& helpFileList);
+
+    QHelpEngine*         ptrHelpEngine;
+    MainWindow*          ptrHelpMainWnd;
+    bool                 helpInitialized;
+    QUrl                 urlMainPage;
   };
 
 }
