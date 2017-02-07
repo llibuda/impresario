@@ -158,7 +158,6 @@ namespace help
         QMap<QString,QUrl> mapHits = ptrHelpEngine->linksForIdentifier(helpID);
         if (mapHits.count() > 0)
         {
-          // TODO: show dialog to select topic in case more than one result was found
           url = mapHits.first();
         }
       }

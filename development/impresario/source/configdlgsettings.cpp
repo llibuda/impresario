@@ -35,6 +35,8 @@ namespace config
 {
   DlgSettings::DlgSettings(QWidget *parent, DlgPage startPage) : QDialog(parent)
   {
+    setWindowModality(Qt::WindowModal);
+
     // create layout
     selectionPane = new QTreeWidget;
     selectionPane->header()->hide();
