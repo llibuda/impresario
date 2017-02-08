@@ -50,7 +50,13 @@ namespace help
     void showPage(const QUrl& url);
     void showPage(const QUrl& url, const QString& keyword);
 
+  protected:
+    virtual void closeEvent(QCloseEvent* event);
+
   private:
+    static const QString keyHelpWndGeometry;
+    static const QString keyHelpWndState;
+
     QHelpEngine&   helpEngineInstance;
     ContentWindow* ptrBrowser;
   };

@@ -72,6 +72,7 @@ namespace frame
   {
     syslog::WndLogger* logWnd = new syslog::WndLogger(this);
     this->setWidget(logWnd);
+    toggleViewAction()->setStatusTip(tr("Toggle visibility of System messages window"));
   }
 
   //-----------------------------------------------------------------------
@@ -90,6 +91,7 @@ namespace frame
     splitWnd->restoreState(QByteArray::fromBase64(settings.value(Resource::path(Resource::SETTINGS_GUI_MACROWND_SPLITTER)).toByteArray()));
     this->setWidget(splitWnd);
     connect(macroWnd,SIGNAL(selectionChanged(const db::ModelItem*,const db::ModelItem*)),props,SLOT(updateProps(const db::ModelItem*,const db::ModelItem*)));
+    toggleViewAction()->setStatusTip(tr("Toggle visibility of Macro database window"));
   }
 
   DockWndMacroDb::~DockWndMacroDb()
@@ -107,6 +109,7 @@ namespace frame
     undoView->setCleanIcon(QIcon(":/icons/resources/save.png"));
     undoView->setEmptyLabel(tr("<saved>"));
     this->setWidget(undoView);
+    toggleViewAction()->setStatusTip(tr("Toggle visibility of Change log window"));
   }
 
   void DockWndChangeLog::changeState(MainWindow::AppState oldState, MainWindow::AppState newState)
@@ -141,6 +144,7 @@ namespace frame
   {
     pge::WndProperties* propWnd = new pge::WndProperties(this);
     this->setWidget(propWnd);
+    toggleViewAction()->setStatusTip(tr("Toggle visibility of Properties window"));
   }
 
   void DockWndProperties::changeState(MainWindow::AppState oldState, MainWindow::AppState newState)
@@ -174,6 +178,7 @@ namespace frame
   DockWndConsole::DockWndConsole(QWidget *parent) : DockWndBase("DockConsoleOut",tr("Console output"),parent)
   {
     this->setWidget(new syslog::WndConsole(this));
+    toggleViewAction()->setStatusTip(tr("Toggle visibility of Console output window"));
   }
 
   DockWndConsole::~DockWndConsole()

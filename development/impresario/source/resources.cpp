@@ -291,13 +291,13 @@ void Resource::initActions()
   action->setStatusTip(QObject::tr("Edit Impresario's settings"));
   (*actions)[EXTRAS_SETTINGS] = action;
 
-  action = new QAction(QIcon(":/icons/resources/helpcontent.png"), QObject::tr("&Contents..."), 0);
+  action = new QAction(QIcon(":/icons/resources/help.png"), QObject::tr("&Contents..."), 0);
   action->setStatusTip(QObject::tr("Show the help contents"));
   (*actions)[HELP_CONTENT] = action;
-  action = new QAction(QIcon(":/icons/resources/helpindex.png"), QObject::tr("&Index..."), 0);
+  action = new QAction(QIcon(":/icons/resources/help.png"), QObject::tr("&Index..."), 0);
   action->setStatusTip(QObject::tr("Show index to select help topic"));
   (*actions)[HELP_IDX] = action;
-  action = new QAction(QIcon(":/icons/resources/helpabout.png"), QObject::tr("&About Impresario..."), 0);
+  action = new QAction(QIcon(":/icons/resources/information.png"), QObject::tr("&About Impresario..."), 0);
   action->setStatusTip(QObject::tr("View information about Impresario"));
   (*actions)[HELP_ABOUT] = action;
 

@@ -309,6 +309,9 @@ namespace help
   //-----------------------------------------------------------------------
   // Class MainWindow
   //-----------------------------------------------------------------------
+  const QString MainWindow::keyHelpWndGeometry = QLatin1String("HelpWndGeometry");
+  const QString MainWindow::keyHelpWndState = QLatin1String("HelpWndState");
+
   MainWindow::MainWindow(QHelpEngine& helpEngine) : QMainWindow(), helpEngineInstance(helpEngine), ptrBrowser(0)
   {
     setWindowTitle(QApplication::applicationName() + " - " + tr("Help"));
@@ -328,10 +331,12 @@ namespace help
     // create dock widgets
     QDockWidget* dockWidgetContents = new QDockWidget(tr("Contents"),this);
     dockWidgetContents->setWidget(helpEngineInstance.contentWidget());
+    dockWidgetContents->setObjectName(dockWidgetContents->windowTitle());
     addDockWidget(Qt::LeftDockWidgetArea,dockWidgetContents);
 
     QDockWidget* dockWidgetIndex = new QDockWidget(tr("Index"),this);
     dockWidgetIndex->setWidget(helpEngineInstance.indexWidget());
+    dockWidgetIndex->setObjectName(dockWidgetIndex->windowTitle());
     addDockWidget(Qt::LeftDockWidgetArea,dockWidgetIndex);
 
     QDockWidget* dockWidgetSearch = new QDockWidget(tr("Search"),this);
@@ -342,17 +347,39 @@ namespace help
     layout->setMargin(5);
     widgetSearch->setLayout(layout);
     dockWidgetSearch->setWidget(widgetSearch);
+    dockWidgetSearch->setObjectName(dockWidgetSearch->windowTitle());
     addDockWidget(Qt::LeftDockWidgetArea,dockWidgetSearch);
 
     tabifyDockWidget(dockWidgetContents,dockWidgetIndex);
     tabifyDockWidget(dockWidgetIndex,dockWidgetSearch);
     dockWidgetContents->raise();
 
+    // create menu bar
+    QMenu* menuFile = new QMenu(tr("&File"),this);
+    QAction* action = menuFile->addAction(QIcon(":/icons/resources/quit.png"),tr("&Close"),this,SLOT(close()),QKeySequence::Close);
+    action->setStatusTip(tr("Close help window."));
+
+    QMenu* menuView = new QMenu(tr("&View"),this);
+    menuView->addAction(dockWidgetContents->toggleViewAction());
+    dockWidgetContents->toggleViewAction()->setStatusTip(tr("Toggle visibility of contents window"));
+    menuView->addAction(dockWidgetIndex->toggleViewAction());
+    dockWidgetIndex->toggleViewAction()->setStatusTip(tr("Toggle visibility of index window"));
+    menuView->addAction(dockWidgetSearch->toggleViewAction());
+    dockWidgetSearch->toggleViewAction()->setStatusTip(tr("Toggle visibility of search window"));
+
+    QMenuBar* menuBar = new QMenuBar(this);
+    menuBar->addMenu(menuFile);
+    menuBar->addMenu(menuView);
+    setMenuBar(menuBar);
+
     // connect signals
     connect(helpEngineInstance.contentWidget(),SIGNAL(linkActivated(QUrl)),this,SLOT(showPage(QUrl)));
     connect(helpEngineInstance.indexWidget(),SIGNAL(linkActivated(QUrl,QString)),this,SLOT(showPage(QUrl)));
     connect(helpEngineInstance.searchEngine()->queryWidget(),SIGNAL(search()),this,SLOT(runSearch()));
     connect(helpEngineInstance.searchEngine()->resultWidget(),SIGNAL(requestShowLink(QUrl)),this,SLOT(showPage(QUrl)));
+
+    restoreGeometry(helpEngineInstance.customValue(keyHelpWndGeometry).toByteArray());
+    restoreState(helpEngineInstance.customValue(keyHelpWndState).toByteArray());
   }
 
 
@@ -375,6 +402,13 @@ namespace help
   {
     statusBar()->showMessage(QString(tr("Url: %1")).arg(url.toString()));
     ptrBrowser->setUrl(url);
+  }
+
+  void MainWindow::closeEvent(QCloseEvent* event)
+  {
+    helpEngineInstance.setCustomValue(keyHelpWndGeometry,saveGeometry());
+    helpEngineInstance.setCustomValue(keyHelpWndState,saveState());
+    QMainWindow::closeEvent(event);
   }
 
 }

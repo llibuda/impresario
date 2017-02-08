@@ -65,10 +65,8 @@
         <file>resources/property_wnd.png</file>
         <file>resources/warning.png</file>
         <file>resources/macrodb.png</file>
-        <file>resources/helpabout.png</file>
-        <file>resources/helpcontent.png</file>
-        <file>resources/helpindex.png</file>
         <file>resources/cfgfolderdoc.png</file>
+        <file>resources/help.png</file>
     </qresource>
     <qresource prefix="/information">
         <file>resources/license.txt</file>
