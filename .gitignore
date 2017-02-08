@@ -72,6 +72,8 @@ Makefile*
 /processgraphs
 /development/impresario/build
 /development/impresario/components/build
+/doc
+!/doc/*.txt
 
 # special files to be ignored
 /resources/PropertyWidgetConvolution.qml
