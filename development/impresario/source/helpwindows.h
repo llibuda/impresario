@@ -24,6 +24,11 @@
 #include <QtWebKitWidgets>
 #include <QtHelp>
 #include <QMainWindow>
+#include <QDialog>
+#include <QLabel>
+#include <QLineEdit>
+#include <QListView>
+#include <QSortFilterProxyModel>
 
 namespace help
 {
@@ -35,6 +40,33 @@ namespace help
 
     QFont viewerFont() const;
     void setViewerFont(const QFont &font);    
+  };
+
+  class DlgTopicSelection : public QDialog
+  {
+    Q_OBJECT
+  public:
+    DlgTopicSelection(const QMap<QString,QUrl>& helpTopics, const QString& keyword, QWidget* parent);
+
+    QUrl link() const
+    {
+      return url;
+    }
+
+  private slots:
+    void setTopicFilter(const QString& filter);
+    void topicActivated(const QModelIndex& index);
+    void selectTopic();
+
+  protected:
+    virtual bool eventFilter(QObject *object, QEvent *event);
+
+  private:
+    QUrl                   url;
+    QLabel*                lblTopic;
+    QLineEdit*             edtFilter;
+    QListView*             lvTopics;
+    QSortFilterProxyModel* mdlFilter;
   };
 
   class MainWindow : public QMainWindow
@@ -49,6 +81,7 @@ namespace help
     void runSearch();
     void showPage(const QUrl& url);
     void showPage(const QUrl& url, const QString& keyword);
+    void selectTopic(const QMap<QString,QUrl>& topicList, const QString& keyword);
 
   protected:
     virtual void closeEvent(QCloseEvent* event);

@@ -307,6 +307,116 @@ namespace help
   }
 
   //-----------------------------------------------------------------------
+  // Class DlgTopicSelection
+  //-----------------------------------------------------------------------
+  DlgTopicSelection::DlgTopicSelection(const QMap<QString,QUrl>& helpTopics, const QString& keyword, QWidget *parent) : QDialog(parent),
+    url(), lblTopic(0), edtFilter(0), lvTopics(0), mdlFilter(0)
+  {
+    setWindowTitle(tr("Select Topic"));
+    setSizeGripEnabled(true);
+    setWindowModality(Qt::WindowModal);
+
+    lblTopic = new QLabel(this);
+    lblTopic->setTextFormat(Qt::RichText);
+    lblTopic->setText(QString(tr("Select help topic for <b>%1</b>")).arg(keyword));
+
+    edtFilter = new QLineEdit(this);
+    edtFilter->setPlaceholderText(tr("Filter"));
+    setFocusProxy(edtFilter);
+    edtFilter->installEventFilter(this);
+    connect(edtFilter,SIGNAL(textChanged(QString)),this,SLOT(setTopicFilter(QString)));
+
+    QStandardItemModel* mdlItems = new QStandardItemModel();
+    QMap<QString,QUrl>::ConstIterator it;
+    for(it = helpTopics.begin(); it != helpTopics.end(); ++it)
+    {
+      QStandardItem* item = new QStandardItem(it.key());
+      item->setToolTip(it.value().toString());
+      item->setData(it.value());
+      mdlItems->appendRow(item);
+    }
+
+    mdlFilter = new QSortFilterProxyModel();
+    mdlFilter->setSourceModel(mdlItems);
+    mdlFilter->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    lvTopics = new QListView(this);
+    lvTopics->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    lvTopics->setUniformItemSizes(true);
+    lvTopics->setModel(mdlFilter);
+    if (mdlFilter->rowCount() != 0)
+    {
+      lvTopics->setCurrentIndex(mdlFilter->index(0, 0));
+    }
+    connect(lvTopics,SIGNAL(activated(QModelIndex)),this,SLOT(topicActivated(QModelIndex)));
+
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,this);
+    connect(buttonBox,SIGNAL(accepted()),this,SLOT(selectTopic()));
+    connect(buttonBox,SIGNAL(rejected()),this,SLOT(reject()));
+
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(lblTopic);
+    layout->addWidget(edtFilter);
+    layout->addWidget(lvTopics,1);
+    layout->addWidget(buttonBox);
+    setLayout(layout);
+  }
+
+  void DlgTopicSelection::setTopicFilter(const QString& filter)
+  {
+    mdlFilter->setFilterFixedString(filter);
+    if (mdlFilter->rowCount() != 0 && !lvTopics->currentIndex().isValid())
+    {
+      lvTopics->setCurrentIndex(mdlFilter->index(0, 0));
+    }
+  }
+
+  void DlgTopicSelection::topicActivated(const QModelIndex& index)
+  {
+    if (index.isValid())
+    {
+      url = index.data(Qt::UserRole+1).toUrl();
+    }
+    accept();
+  }
+
+  void DlgTopicSelection::selectTopic()
+  {
+    topicActivated(lvTopics->currentIndex());
+  }
+
+  bool DlgTopicSelection::eventFilter(QObject *object, QEvent *event)
+  {
+    if (object == edtFilter && event->type() == QEvent::KeyPress)
+    {
+      QModelIndex idx = lvTopics->currentIndex();
+      switch ((static_cast<QKeyEvent*>(event)->key()))
+      {
+        case Qt::Key_Up:
+          idx = mdlFilter->index(idx.row() - 1,idx.column(),idx.parent());
+          if (idx.isValid())
+          {
+            lvTopics->setCurrentIndex(idx);
+          }
+          break;
+        case Qt::Key_Down:
+          idx = mdlFilter->index(idx.row() + 1,idx.column(),idx.parent());
+          if (idx.isValid())
+          {
+            lvTopics->setCurrentIndex(idx);
+          }
+          break;
+        default: ;
+      }
+    }
+    else if (edtFilter && event->type() == QEvent::FocusIn && static_cast<QFocusEvent *>(event)->reason() != Qt::MouseFocusReason)
+    {
+      edtFilter->selectAll();
+      edtFilter->setFocus();
+    }
+    return QDialog::eventFilter(object, event);
+  }
+
+  //-----------------------------------------------------------------------
   // Class MainWindow
   //-----------------------------------------------------------------------
   const QString MainWindow::keyHelpWndGeometry = QLatin1String("HelpWndGeometry");
@@ -325,6 +435,7 @@ namespace help
     QStatusBar* statusBar = new QStatusBar(this);
     setStatusBar(statusBar);
 
+    // setup content browser
     ptrBrowser = new ContentWindow(helpEngineInstance, this);
     setCentralWidget(ptrBrowser);
 
@@ -375,6 +486,7 @@ namespace help
     // connect signals
     connect(helpEngineInstance.contentWidget(),SIGNAL(linkActivated(QUrl)),this,SLOT(showPage(QUrl)));
     connect(helpEngineInstance.indexWidget(),SIGNAL(linkActivated(QUrl,QString)),this,SLOT(showPage(QUrl)));
+    connect(helpEngineInstance.indexWidget(),SIGNAL(linksActivated(QMap<QString,QUrl>,QString)),this,SLOT(selectTopic(QMap<QString,QUrl>,QString)));
     connect(helpEngineInstance.searchEngine()->queryWidget(),SIGNAL(search()),this,SLOT(runSearch()));
     connect(helpEngineInstance.searchEngine()->resultWidget(),SIGNAL(requestShowLink(QUrl)),this,SLOT(showPage(QUrl)));
 
@@ -394,14 +506,21 @@ namespace help
 
   void MainWindow::showPage(const QUrl &url)
   {
-    statusBar()->showMessage(QString(tr("Url: %1")).arg(url.toString()));
     ptrBrowser->setUrl(url);
   }
 
   void MainWindow::showPage(const QUrl &url, const QString& /*keyword*/)
   {
-    statusBar()->showMessage(QString(tr("Url: %1")).arg(url.toString()));
     ptrBrowser->setUrl(url);
+  }
+
+  void MainWindow::selectTopic(const QMap<QString,QUrl>& topicList, const QString& keyword)
+  {
+    DlgTopicSelection dlg(topicList,keyword,this);
+    if (dlg.exec() > 0)
+    {
+      ptrBrowser->setUrl(dlg.link());
+    }
   }
 
   void MainWindow::closeEvent(QCloseEvent* event)
