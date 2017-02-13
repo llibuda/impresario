@@ -26,6 +26,7 @@ namespace help
 {
   //-----------------------------------------------------------------------
   // Class WebKitBrowserSupport Declaration (INTERNAL)
+  // Adapted from Qt Assistant source code
   //-----------------------------------------------------------------------
   class WebkitBrowserSupport
   {
@@ -51,6 +52,7 @@ namespace help
 
   //-----------------------------------------------------------------------
   // Class HelpNetworkReply (INTERNAL)
+  // Adapted from Qt Assistant source code
   //-----------------------------------------------------------------------
 
   class HelpNetworkReply : public QNetworkReply
@@ -103,6 +105,7 @@ namespace help
 
   //-----------------------------------------------------------------------
   // Class HelpRedirectNetworkReply (INTERNAL)
+  // Adapted from Qt Assistant source code
   //-----------------------------------------------------------------------
 
   class HelpRedirectNetworkReply : public QNetworkReply
@@ -123,6 +126,7 @@ namespace help
 
   //-----------------------------------------------------------------------
   // Class HelpNetworkAccessManager (INTERNAL)
+  // Adapted from Qt Assistant source code
   //-----------------------------------------------------------------------
 
   class HelpNetworkAccessManager : public QNetworkAccessManager
@@ -161,6 +165,7 @@ namespace help
 
   //-----------------------------------------------------------------------
   // Class WebKitBrowserSupport Definition (INTERNAL)
+  // Adapted from Qt Assistant source code
   //-----------------------------------------------------------------------
   static const char g_htmlPage[] = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; "
                                    "charset=UTF-8\"><title>%1</title><style>body{padding: 3em 0em;background: #eeeeee;}"
@@ -308,6 +313,7 @@ namespace help
 
   //-----------------------------------------------------------------------
   // Class DlgTopicSelection
+  // Adapted from Qt Assistant source code
   //-----------------------------------------------------------------------
   DlgTopicSelection::DlgTopicSelection(const QMap<QString,QUrl>& helpTopics, const QString& keyword, QWidget *parent) : QDialog(parent),
     url(), lblTopic(0), edtFilter(0), lvTopics(0), mdlFilter(0)
@@ -417,6 +423,169 @@ namespace help
   }
 
   //-----------------------------------------------------------------------
+  // Class HelpIndexWidget
+  // Adapted from Qt Assistant source code
+  //-----------------------------------------------------------------------
+  HelpIndexWidget::HelpIndexWidget(QHelpEngine& helpEngine, QWidget *parent) : QWidget(parent), edtSearch(0), lvIndex(0)
+  {
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    edtSearch = new QLineEdit(this);
+    edtSearch->setPlaceholderText(tr("Look for"));
+    connect(edtSearch, SIGNAL(textChanged(QString)), this, SLOT(filterIndices(QString)));
+    edtSearch->installEventFilter(this);
+    layout->setMargin(4);
+    layout->addWidget(edtSearch);
+
+    lvIndex = helpEngine.indexWidget();
+    lvIndex->installEventFilter(this);
+    connect(helpEngine.indexModel(), SIGNAL(indexCreationStarted()), this, SLOT(disableSearchLineEdit()));
+    connect(helpEngine.indexModel(), SIGNAL(indexCreated()), this, SLOT(enableSearchLineEdit()));
+    connect(lvIndex, SIGNAL(linkActivated(QUrl,QString)), this, SIGNAL(linkActivated(QUrl,QString)));
+    connect(lvIndex, SIGNAL(linksActivated(QMap<QString,QUrl>,QString)), this, SIGNAL(linksActivated(QMap<QString,QUrl>,QString)));
+    connect(edtSearch, SIGNAL(returnPressed()), lvIndex, SLOT(activateCurrentItem()));
+    layout->addWidget(lvIndex);
+
+    lvIndex->viewport()->installEventFilter(this);
+  }
+
+  HelpIndexWidget::~HelpIndexWidget()
+  {
+  }
+
+  void HelpIndexWidget::filterIndices(const QString &filter)
+  {
+    if (filter.contains(QLatin1Char('*')))
+    {
+      lvIndex->filterIndices(filter, filter);
+    }
+    else
+    {
+      lvIndex->filterIndices(filter, QString());
+    }
+  }
+
+  bool HelpIndexWidget::eventFilter(QObject *obj, QEvent *e)
+  {
+    if (obj == edtSearch && e->type() == QEvent::KeyPress)
+    {
+      QKeyEvent *ke = static_cast<QKeyEvent*>(e);
+      QModelIndex idx = lvIndex->currentIndex();
+      switch (ke->key())
+      {
+        case Qt::Key_Up:
+          idx = lvIndex->model()->index(idx.row()-1, idx.column(), idx.parent());
+          if (idx.isValid())
+          {
+            lvIndex->setCurrentIndex(idx);
+            return true;
+          }
+          break;
+        case Qt::Key_Down:
+          idx = lvIndex->model()->index(idx.row()+1, idx.column(), idx.parent());
+          if (idx.isValid())
+          {
+            lvIndex->setCurrentIndex(idx);
+            return true;
+          }
+          break;
+        case Qt::Key_Escape:
+          emit escapePressed();
+          return true;
+        default: ; // stop complaining
+      }
+    }
+    /*
+    else if (obj == lvIndex && e->type() == QEvent::ContextMenu)
+    {
+      QContextMenuEvent *ctxtEvent = static_cast<QContextMenuEvent*>(e);
+      QModelIndex idx = lvIndex->indexAt(ctxtEvent->pos());
+      if (idx.isValid())
+      {
+        QMenu menu;
+        QAction *curTab = menu.addAction(tr("Open Link"));
+        QAction *newTab = menu.addAction(tr("Open Link in New Tab"));
+        menu.move(lvIndex->mapToGlobal(ctxtEvent->pos()));
+        QAction *action = menu.exec();
+        if (curTab == action)
+        {
+          lvIndex->activateCurrentItem();
+        }
+        else if (newTab == action)
+        {
+          open(lvIndex, idx);
+        }
+      }
+    }
+    */
+    else if (lvIndex && obj == lvIndex->viewport() && e->type() == QEvent::MouseButtonRelease)
+    {
+      QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(e);
+      QModelIndex idx = lvIndex->indexAt(mouseEvent->pos());
+      if (idx.isValid())
+      {
+        Qt::MouseButtons button = mouseEvent->button();
+        if (((button == Qt::LeftButton) && (mouseEvent->modifiers() & Qt::ControlModifier)) || (button == Qt::MidButton))
+        {
+          open(lvIndex, idx);
+        }
+      }
+    }
+#ifdef Q_OS_MAC
+    else if (obj == m_indexWidget && e->type() == QEvent::KeyPress)
+    {
+      QKeyEvent *ke = static_cast<QKeyEvent*>(e);
+      if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter)
+        m_indexWidget->activateCurrentItem();
+    }
+#endif
+    return QWidget::eventFilter(obj, e);
+  }
+
+  void HelpIndexWidget::enableSearchLineEdit()
+  {
+    edtSearch->setDisabled(false);
+    filterIndices(edtSearch->text());
+  }
+
+  void HelpIndexWidget::disableSearchLineEdit()
+  {
+    edtSearch->setDisabled(true);
+  }
+
+  void HelpIndexWidget::setSearchLineEditText(const QString &text)
+  {
+    edtSearch->setText(text);
+  }
+
+  void HelpIndexWidget::focusInEvent(QFocusEvent *e)
+  {
+    if (e->reason() != Qt::MouseFocusReason)
+    {
+      edtSearch->selectAll();
+      edtSearch->setFocus();
+    }
+  }
+
+  void HelpIndexWidget::open(QHelpIndexWidget* indexWidget, const QModelIndex &index)
+  {
+    QHelpIndexModel *model = qobject_cast<QHelpIndexModel*>(indexWidget->model());
+    if (model)
+    {
+      QString keyword = model->data(index, Qt::DisplayRole).toString();
+      QMap<QString, QUrl> links = model->linksForKeyword(keyword);
+      QUrl url;
+      if (links.count() > 1)
+      {
+        emit linksActivated(links,keyword);
+      }
+      else if (links.count() == 1)
+      {
+        emit linkActivated(url,keyword);
+      }
+    }
+  }
+
+  //-----------------------------------------------------------------------
   // Class MainWindow
   //-----------------------------------------------------------------------
   const QString MainWindow::keyHelpWndGeometry = QLatin1String("HelpWndGeometry");
@@ -446,7 +615,8 @@ namespace help
     addDockWidget(Qt::LeftDockWidgetArea,dockWidgetContents);
 
     QDockWidget* dockWidgetIndex = new QDockWidget(tr("Index"),this);
-    dockWidgetIndex->setWidget(helpEngineInstance.indexWidget());
+    HelpIndexWidget* indexWidget = new HelpIndexWidget(helpEngineInstance,this);
+    dockWidgetIndex->setWidget(indexWidget);
     dockWidgetIndex->setObjectName(dockWidgetIndex->windowTitle());
     addDockWidget(Qt::LeftDockWidgetArea,dockWidgetIndex);
 
@@ -455,7 +625,7 @@ namespace help
     QVBoxLayout* layout = new QVBoxLayout(widgetSearch);
     layout->addWidget(helpEngineInstance.searchEngine()->queryWidget());
     layout->addWidget(helpEngineInstance.searchEngine()->resultWidget(),1);
-    layout->setMargin(5);
+    layout->setMargin(4);
     widgetSearch->setLayout(layout);
     dockWidgetSearch->setWidget(widgetSearch);
     dockWidgetSearch->setObjectName(dockWidgetSearch->windowTitle());
@@ -484,9 +654,9 @@ namespace help
     setMenuBar(menuBar);
 
     // connect signals
+    connect(indexWidget,SIGNAL(linkActivated(QUrl,QString)),this,SLOT(showPage(QUrl,QString)));
+    connect(indexWidget,SIGNAL(linksActivated(QMap<QString,QUrl>,QString)),this,SLOT(selectTopic(QMap<QString,QUrl>,QString)));
     connect(helpEngineInstance.contentWidget(),SIGNAL(linkActivated(QUrl)),this,SLOT(showPage(QUrl)));
-    connect(helpEngineInstance.indexWidget(),SIGNAL(linkActivated(QUrl,QString)),this,SLOT(showPage(QUrl)));
-    connect(helpEngineInstance.indexWidget(),SIGNAL(linksActivated(QMap<QString,QUrl>,QString)),this,SLOT(selectTopic(QMap<QString,QUrl>,QString)));
     connect(helpEngineInstance.searchEngine()->queryWidget(),SIGNAL(search()),this,SLOT(runSearch()));
     connect(helpEngineInstance.searchEngine()->resultWidget(),SIGNAL(requestShowLink(QUrl)),this,SLOT(showPage(QUrl)));
 

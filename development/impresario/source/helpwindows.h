@@ -69,6 +69,39 @@ namespace help
     QSortFilterProxyModel* mdlFilter;
   };
 
+  class HelpIndexWidget : public QWidget
+  {
+    Q_OBJECT
+
+  public:
+    HelpIndexWidget(QHelpEngine& helpEngine, QWidget *parent = 0);
+    ~HelpIndexWidget();
+
+    void setSearchLineEditText(const QString &text);
+    QString searchLineEditText() const
+    {
+      return edtSearch->text();
+    }
+
+  signals:
+    void linkActivated(const QUrl &link, const QString &keyword);
+    void linksActivated(const QMap<QString, QUrl> &links, const QString &keyword);
+    void escapePressed();
+
+  private slots:
+    void filterIndices(const QString &filter);
+    void enableSearchLineEdit();
+    void disableSearchLineEdit();
+
+  private:
+    bool eventFilter(QObject *obj, QEvent *e);
+    void focusInEvent(QFocusEvent *e);
+    void open(QHelpIndexWidget *indexWidget, const QModelIndex &index);
+
+    QLineEdit *edtSearch;
+    QHelpIndexWidget *lvIndex;
+  };
+
   class MainWindow : public QMainWindow
   {
     Q_OBJECT
