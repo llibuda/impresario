@@ -38,6 +38,7 @@ namespace about
 
   DlgAbout::DlgAbout(QWidget *parent) : QDialog(parent), pageStack(0), pageSelector(0)
   {
+    setWindowModality(Qt::WindowModal);
     // create pixmap from splash screen in resources
     // and add version, build date, and build tool information
     QPixmap pixmap = QPixmap(":information/resources/splash.png");
