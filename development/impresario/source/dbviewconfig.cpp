@@ -884,7 +884,7 @@ namespace db
     case 'F':
       {
         QFileInfo info(macro.getLibrary().getPath());
-        key = info.baseName();
+        key = info.completeBaseName();
         break;
       }
     default:
