@@ -71,7 +71,6 @@ Makefile*
 /lib*
 /processgraphs
 /development/impresario/build
-/development/impresario/components/build
 /doc
 !/doc/*.txt
 

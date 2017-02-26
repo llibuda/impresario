@@ -7,9 +7,11 @@
 TEMPLATE = lib
 CONFIG -= app_bundle
 CONFIG -= qt
-CONFIG += dll
+CONFIG += shared
 
-INCLUDEPATH += ./source/
+!include(../../impresario_bin_path.pri) {
+  error(Failed to include impresario_bin_path.pri)
+}
 
 win32 {
   DEFINES += LIBAVOID_EXPORTS
@@ -19,12 +21,7 @@ win32 {
   CONFIG(debug, release|debug) {
     TARGET = libavoidd
   }
-  contains(QT_ARCH, i386) {
-    DESTDIR = $$_PRO_FILE_PWD_/lib/win32
-  }
-  else {
-    DESTDIR = $$_PRO_FILE_PWD_/lib/win64
-  }
+  QMAKE_POST_LINK = copy /Y $$shell_path($${OUT_PWD})\\$${BUILD_TYPE}\*.dll $$shell_path($${IMPRESARIO_BIN_PATH})
 }
 
 unix {
@@ -34,13 +31,10 @@ unix {
   CONFIG(debug, release|debug) {
     TARGET = avoidd
   }
-  contains(QT_ARCH, i386) {
-    DESTDIR = $$_PRO_FILE_PWD_/lib/unix32
-  }
-  else {
-    DESTDIR = $$_PRO_FILE_PWD_/lib/unix64
-  }
+  QMAKE_POST_LINK = cp $$shell_path($${OUT_PWD})/$${BUILD_TYPE}/*.so* $$shell_path($${IMPRESARIO_BIN_PATH})
 }
+
+INCLUDEPATH += ./source/
 
 SOURCES += \
     source/actioninfo.cpp \
