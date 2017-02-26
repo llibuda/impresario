@@ -45,12 +45,12 @@ win32 {
 
 unix {
   CONFIG(release, release|debug) {
-    LIBS += $$quote(-L../components/libavoid/release) -lavoid
-    LIBS += $$quote(-L../components/qtpropertybrowser/release) -lQt5PropertyBrowser
+    LIBS += $$quote(-L../components/libavoid) -lavoid
+    LIBS += $$quote(-L../components/qtpropertybrowser) -lQt5PropertyBrowser
   }
   CONFIG(debug, release|debug) {
-    LIBS += $$quote(-L../components/libavoid/debug) -lavoidd
-    LIBS += $$quote(-L../components/qtpropertybrowser/debug) -lQt5PropertyBrowserd
+    LIBS += $$quote(-L../components/libavoid) -lavoidd
+    LIBS += $$quote(-L../components/qtpropertybrowser) -lQt5PropertyBrowserd
   }
 }
 

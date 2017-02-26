@@ -20,7 +20,7 @@ win32 {
 }
 
 unix {
-  BUILD_POSTFIX = $${BUILD_POSTIFX}_gcc$${system( g++ -dumpversion )}
+  BUILD_POSTFIX = $${BUILD_POSTFIX}_gcc$${system( g++ -dumpversion )}
   contains(QT_ARCH, i386) {
     BUILD_POSTFIX = unix32_$${BUILD_POSTFIX}
   }
