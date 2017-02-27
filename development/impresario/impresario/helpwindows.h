@@ -21,7 +21,7 @@
 #ifndef HELPCONTENTWINDOW_H
 #define HELPCONTENTWINDOW_H
 
-#include <QtWebKitWidgets>
+#include <QtWebEngineWidgets>
 #include <QtHelp>
 #include <QMainWindow>
 #include <QDialog>
@@ -32,7 +32,7 @@
 
 namespace help
 {
-  class ContentWindow : public QWebView
+  class ContentWindow : public QWebEngineView
   {
   public:
     ContentWindow(QHelpEngine& helpEngine, QWidget* parent = 0);

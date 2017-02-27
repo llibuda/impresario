@@ -21,160 +21,10 @@
 #include "helpwindows.h"
 #include "helpsystem.h"
 #include <QApplication>
+#include <QDebug>
 
 namespace help
 {
-  //-----------------------------------------------------------------------
-  // Class WebKitBrowserSupport Declaration (INTERNAL)
-  // Adapted from Qt Assistant source code
-  //-----------------------------------------------------------------------
-  class WebkitBrowserSupport
-  {
-  public:
-    enum ResolveUrlResult {
-      UrlRedirect,
-      UrlLocalData,
-      UrlResolveError
-    };
-
-    static QString msgError404();
-    static QString msgPageNotFound();
-    static QString msgAllDocumentationSets();
-    static QString msgLoadError(const QUrl &url);
-    static QString msgHtmlErrorPage(const QUrl &url);
-    static QString mimeFromUrl(const QUrl &url);
-
-    static ResolveUrlResult resolveUrl(const QUrl &url, const QHelpEngineCore& helpEngineInstance, QUrl *targetUrl, QByteArray *data);
-
-    // Create an instance of QNetworkAccessManager for WebKit-type browsers.
-    static QNetworkAccessManager *createNetworkAccessManager(QHelpEngine& helpEngine, QObject *parent = 0);
-  };
-
-  //-----------------------------------------------------------------------
-  // Class HelpNetworkReply (INTERNAL)
-  // Adapted from Qt Assistant source code
-  //-----------------------------------------------------------------------
-
-  class HelpNetworkReply : public QNetworkReply
-  {
-  public:
-    HelpNetworkReply(const QNetworkRequest &request, const QByteArray &fileData, const QString &mimeType);
-
-    virtual void abort();
-
-    virtual qint64 bytesAvailable() const
-    { return data.length() + QNetworkReply::bytesAvailable(); }
-
-  protected:
-    virtual qint64 readData(char *data, qint64 maxlen);
-
-  private:
-    QByteArray   data;
-    const qint64 origLen;
-  };
-
-  HelpNetworkReply::HelpNetworkReply(const QNetworkRequest &request, const QByteArray &fileData, const QString& mimeType)
-    : data(fileData), origLen(fileData.length())
-  {
-    setRequest(request);
-    setUrl(request.url());
-    setOpenMode(QIODevice::ReadOnly);
-
-    setHeader(QNetworkRequest::ContentTypeHeader, mimeType);
-    setHeader(QNetworkRequest::ContentLengthHeader, QByteArray::number(origLen));
-    QTimer::singleShot(0, this, &QNetworkReply::metaDataChanged);
-    QTimer::singleShot(0, this, &QNetworkReply::readyRead);
-    QTimer::singleShot(0, this, &QNetworkReply::finished);
-  }
-
-  void HelpNetworkReply::abort()
-  {
-  }
-
-  qint64 HelpNetworkReply::readData(char *buffer, qint64 maxlen)
-  {
-    qint64 len = qMin(qint64(data.length()), maxlen);
-    if (len)
-    {
-      memcpy(buffer, data.constData(), len);
-      data.remove(0, len);
-    }
-    if (!data.length()) QTimer::singleShot(0, this, &QNetworkReply::finished);
-    return len;
-  }
-
-  //-----------------------------------------------------------------------
-  // Class HelpRedirectNetworkReply (INTERNAL)
-  // Adapted from Qt Assistant source code
-  //-----------------------------------------------------------------------
-
-  class HelpRedirectNetworkReply : public QNetworkReply
-  {
-  public:
-    HelpRedirectNetworkReply(const QNetworkRequest &request, const QUrl &newUrl)
-    {
-      setRequest(request);
-      setAttribute(QNetworkRequest::HttpStatusCodeAttribute, 301);
-      setAttribute(QNetworkRequest::RedirectionTargetAttribute, newUrl);
-      QTimer::singleShot(0, this, &QNetworkReply::finished);
-    }
-
-  protected:
-    void abort() { }
-    qint64 readData(char*, qint64) { return qint64(-1); }
-  };
-
-  //-----------------------------------------------------------------------
-  // Class HelpNetworkAccessManager (INTERNAL)
-  // Adapted from Qt Assistant source code
-  //-----------------------------------------------------------------------
-
-  class HelpNetworkAccessManager : public QNetworkAccessManager
-  {
-  public:
-    HelpNetworkAccessManager(QHelpEngineCore& helpEngine, QObject *parent);
-
-  protected:
-    virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &request, QIODevice* outgoingData = 0);
-
-  private:
-    QHelpEngineCore& helpEngineInstance;
-  };
-
-  HelpNetworkAccessManager::HelpNetworkAccessManager(QHelpEngineCore& helpEngine, QObject *parent) : QNetworkAccessManager(parent), helpEngineInstance(helpEngine)
-  {
-  }
-
-  QNetworkReply* HelpNetworkAccessManager::createRequest(Operation, const QNetworkRequest &request, QIODevice*)
-  {
-    QByteArray data;
-    const QUrl url = request.url();
-    QUrl redirectedUrl;
-    switch (WebkitBrowserSupport::resolveUrl(url, helpEngineInstance, &redirectedUrl, &data)) {
-      case WebkitBrowserSupport::UrlRedirect:
-        return new HelpRedirectNetworkReply(request, redirectedUrl);
-      case WebkitBrowserSupport::UrlLocalData: {
-        const QString mimeType = WebkitBrowserSupport::mimeFromUrl(url);
-        return new HelpNetworkReply(request, data, mimeType);
-      }
-      case WebkitBrowserSupport::UrlResolveError:
-        break;
-    }
-    return new HelpNetworkReply(request, WebkitBrowserSupport::msgHtmlErrorPage(request.url()).toUtf8(), QStringLiteral("text/html"));
-  }
-
-  //-----------------------------------------------------------------------
-  // Class WebKitBrowserSupport Definition (INTERNAL)
-  // Adapted from Qt Assistant source code
-  //-----------------------------------------------------------------------
-  static const char g_htmlPage[] = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; "
-                                   "charset=UTF-8\"><title>%1</title><style>body{padding: 3em 0em;background: #eeeeee;}"
-                                   "hr{color: lightgray;width: 100%;}img{float: left;opacity: .8;}#box{background: white;border: 1px solid "
-                                   "lightgray;width: 600px;padding: 60px;margin: auto;}h1{font-size: 130%;font-weight: bold;border-bottom: "
-                                   "1px solid lightgray;margin-left: 48px;}h2{font-size: 100%;font-weight: normal;border-bottom: 1px solid "
-                                   "lightgray;margin-left: 48px;}ul{font-size: 80%;padding-left: 48px;margin: 0;}#reloadButton{padding-left:"
-                                   "48px;}</style></head><body><div id=\"box\"><h1>%2</h1><h2>%3</h2><h2><b>%4</b></h2></div></body></html>";
-
   struct ExtensionMap {
       const char *extension;
       const char *mimeType;
@@ -212,34 +62,7 @@ namespace help
       { 0, 0 }
   };
 
-  QString WebkitBrowserSupport::msgError404()
-  {
-    return QCoreApplication::translate("Help System", "Error 404...");
-  }
-
-  QString WebkitBrowserSupport::msgPageNotFound()
-  {
-    return QCoreApplication::translate("Help System", "The page could not be found!");
-  }
-
-  QString WebkitBrowserSupport::msgAllDocumentationSets()
-  {
-    return QCoreApplication::translate("Help System","Please make sure that you have all documentation sets installed.");
-  }
-
-  QString WebkitBrowserSupport::msgLoadError(const QUrl &url)
-  {
-    return QObject::tr("Error loading: %1").arg(url.toString());
-  }
-
-  QString WebkitBrowserSupport::msgHtmlErrorPage(const QUrl &url)
-  {
-    return QString::fromLatin1(g_htmlPage)
-        .arg(WebkitBrowserSupport::msgError404(), WebkitBrowserSupport::msgPageNotFound(),
-             WebkitBrowserSupport::msgLoadError(url), WebkitBrowserSupport::msgAllDocumentationSets());
-  }
-
-  QString WebkitBrowserSupport::mimeFromUrl(const QUrl &url)
+  QByteArray mimeFromUrl(const QUrl &url)
   {
     const QString &path = url.path();
     const int index = path.lastIndexOf(QLatin1Char('.'));
@@ -248,67 +71,95 @@ namespace help
     const ExtensionMap *e = extensionMap;
     while (e->extension) {
       if (ext == e->extension)
-        return QLatin1String(e->mimeType);
+        return QByteArray(e->mimeType);
       ++e;
     }
-    return QLatin1String("application/octet-stream");
+    return QByteArray("application/octet-stream");
   }
 
-  WebkitBrowserSupport::ResolveUrlResult WebkitBrowserSupport::resolveUrl(const QUrl &url, const QHelpEngineCore& helpEngineInstance, QUrl *targetUrlP, QByteArray *dataP)
+  //-----------------------------------------------------------------------
+  // Class HelpUrlSchemeHandler Definition (INTERNAL)
+  // Handing of qthelp URLs
+  //-----------------------------------------------------------------------
+  class HelpUrlSchemeHandler : public QWebEngineUrlSchemeHandler
   {
-    const QUrl targetUrl = helpEngineInstance.findFile(url);
-    if (!targetUrl.isValid())
-      return UrlResolveError;
+  public:
+    HelpUrlSchemeHandler(QHelpEngineCore& helpEngine, QObject *parent = Q_NULLPTR);
+    ~HelpUrlSchemeHandler();
 
-    if (targetUrl != url)
+    virtual void requestStarted(QWebEngineUrlRequestJob *request);
+
+  private:
+    QHelpEngineCore& helpEngineInstance;
+  };
+
+  HelpUrlSchemeHandler::HelpUrlSchemeHandler(QHelpEngineCore& helpEngine, QObject *parent) : QWebEngineUrlSchemeHandler(parent),
+    helpEngineInstance(helpEngine)
+  {
+  }
+
+  HelpUrlSchemeHandler::~HelpUrlSchemeHandler()
+  {
+  }
+
+  void HelpUrlSchemeHandler::requestStarted(QWebEngineUrlRequestJob* request)
+  {
+    Q_ASSERT(request != 0);
+    qDebug() << request->requestMethod() << request->requestUrl();
+
+    QUrl url = request->requestUrl();
+    if (!url.isValid())
     {
-      if (targetUrlP) *targetUrlP = targetUrl;
-      return UrlRedirect;
+      request->fail(QWebEngineUrlRequestJob::UrlInvalid);
     }
-
-    if (dataP) *dataP = helpEngineInstance.fileData(targetUrl);
-
-    return UrlLocalData;
-  }
-
-  QNetworkAccessManager *WebkitBrowserSupport::createNetworkAccessManager(QHelpEngine& helpEngine, QObject *parent)
-  {
-    return new HelpNetworkAccessManager(helpEngine, parent);
+    QUrl helpUrl = helpEngineInstance.findFile(url);
+    if (!helpUrl.isValid())
+    {
+      request->fail(QWebEngineUrlRequestJob::UrlNotFound);
+    }
+    QByteArray data = helpEngineInstance.fileData(helpUrl);
+    QBuffer* buffer = new QBuffer();
+    connect(request, SIGNAL(destroyed()), buffer, SLOT(deleteLater()));
+    buffer->setData(data);
+    request->reply(mimeFromUrl(helpUrl),buffer);
   }
 
   //-----------------------------------------------------------------------
   // Class ContentWindow
   //-----------------------------------------------------------------------
 
-  ContentWindow::ContentWindow(QHelpEngine& helpEngine, QWidget* parent) : QWebView(parent)
+  ContentWindow::ContentWindow(QHelpEngine& helpEngine, QWidget* parent) : QWebEngineView(parent)
   {
-    setAcceptDrops(false);
-    settings()->setAttribute(QWebSettings::JavaEnabled, false);
-    settings()->setAttribute(QWebSettings::PluginsEnabled, false);
+    // install URL scheme handler for qthelp
+    QWebEnginePage* webPage = page();
+    const char qtHelpScheme[] = "qthelp";
+    const QWebEngineUrlSchemeHandler* helpSchemeHandler = webPage->profile()->urlSchemeHandler(qtHelpScheme);
+    if (!helpSchemeHandler)
+    {
+      webPage->profile()->installUrlSchemeHandler(qtHelpScheme, new HelpUrlSchemeHandler(helpEngine,this));
+    }
 
-    page()->setNetworkAccessManager(WebkitBrowserSupport::createNetworkAccessManager(helpEngine,this));
+    setAcceptDrops(false);
+    settings()->setAttribute(QWebEngineSettings::PluginsEnabled, false);
     setViewerFont(viewerFont());
   }
 
   ContentWindow::~ContentWindow()
   {
-    QWebSettings::clearMemoryCaches();
   }
 
   QFont ContentWindow::viewerFont() const
   {
-  //  if (HelpEngineWrapper::instance().usesBrowserFont())
-  //    return HelpEngineWrapper::instance().browserFont();
-    QWebSettings *webSettings = QWebSettings::globalSettings();
-    return QFont(webSettings->fontFamily(QWebSettings::SansSerifFont),
-                 webSettings->fontSize(QWebSettings::DefaultFontSize));
+    QWebEngineSettings *webSettings = QWebEngineSettings::globalSettings();
+    return QFont(webSettings->fontFamily(QWebEngineSettings::SansSerifFont),
+                 webSettings->fontSize(QWebEngineSettings::DefaultFontSize));
   }
 
   void ContentWindow::setViewerFont(const QFont &font)
   {
-    QWebSettings *webSettings = settings();
-    webSettings->setFontFamily(QWebSettings::StandardFont, font.family());
-    webSettings->setFontSize(QWebSettings::DefaultFontSize, font.pointSize());
+    QWebEngineSettings *webSettings = settings();
+    webSettings->setFontFamily(QWebEngineSettings::StandardFont, font.family());
+    webSettings->setFontSize(QWebEngineSettings::DefaultFontSize, font.pointSize());
   }
 
   //-----------------------------------------------------------------------

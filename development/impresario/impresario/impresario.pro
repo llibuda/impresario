@@ -18,7 +18,7 @@
 #   along with Impresario in subdirectory "licenses", file "LICENSE_Impresario.GPLv3".
 #   If not, see <http://www.gnu.org/licenses/>.
 #*****************************************************************************************
-QT += core gui widgets network xmlpatterns qml quick quickwidgets concurrent help webkitwidgets
+QT += core gui widgets network xmlpatterns qml quick quickwidgets concurrent help webenginewidgets
 TARGET = Impresario
 TEMPLATE = app
 VERSION = 2.1.0
