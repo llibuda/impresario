@@ -34,12 +34,16 @@ namespace help
 {
   class ContentWindow : public QWebEngineView
   {
+    Q_OBJECT
   public:
     ContentWindow(QHelpEngine& helpEngine, QWidget* parent = 0);
     ~ContentWindow();
 
     QFont viewerFont() const;
-    void setViewerFont(const QFont &font);    
+    void setViewerFont(const QFont &font);
+
+  signals:
+    void linkHovered(const QString &url);
   };
 
   class DlgTopicSelection : public QDialog

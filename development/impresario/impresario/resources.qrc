@@ -67,6 +67,9 @@
         <file>resources/macrodb.png</file>
         <file>resources/cfgfolderdoc.png</file>
         <file>resources/help.png</file>
+        <file>resources/arrowleft.png</file>
+        <file>resources/arrowrefresh.png</file>
+        <file>resources/arrowright.png</file>
     </qresource>
     <qresource prefix="/information">
         <file>resources/license.txt</file>

@@ -136,12 +136,17 @@ namespace help
     const QWebEngineUrlSchemeHandler* helpSchemeHandler = webPage->profile()->urlSchemeHandler(qtHelpScheme);
     if (!helpSchemeHandler)
     {
-      webPage->profile()->installUrlSchemeHandler(qtHelpScheme, new HelpUrlSchemeHandler(helpEngine,this));
+      HelpUrlSchemeHandler* handler = new HelpUrlSchemeHandler(helpEngine,this);
+      connect(webPage->profile(), SIGNAL(destroyed()), handler, SLOT(deleteLater()));
+      webPage->profile()->installUrlSchemeHandler(qtHelpScheme, handler);
     }
 
     setAcceptDrops(false);
     settings()->setAttribute(QWebEngineSettings::PluginsEnabled, false);
+    settings()->setAttribute(QWebEngineSettings::FullScreenSupportEnabled, false);
+
     setViewerFont(viewerFont());
+    connect(webPage,SIGNAL(linkHovered(QString)),this,SIGNAL(linkHovered(QString)));
   }
 
   ContentWindow::~ContentWindow()
@@ -486,6 +491,20 @@ namespace help
     tabifyDockWidget(dockWidgetIndex,dockWidgetSearch);
     dockWidgetContents->raise();
 
+    // create tool bars
+    QToolBar* tbNavigation = new QToolBar(tr("&Navigation"),this);
+    QAction* navBack = ptrBrowser->pageAction(QWebEnginePage::Back);
+    QAction* navForward = ptrBrowser->pageAction(QWebEnginePage::Forward);
+    QAction* navReload = ptrBrowser->pageAction(QWebEnginePage::Reload);
+    navBack->setIcon(QIcon(":/icons/resources/arrowleft.png"));
+    navForward->setIcon(QIcon(":/icons/resources/arrowright.png"));
+    navReload->setIcon(QIcon(":/icons/resources/arrowrefresh.png"));
+    tbNavigation->addAction(navBack);
+    tbNavigation->addAction(navForward);
+    tbNavigation->addAction(navReload);
+    tbNavigation->setObjectName(tbNavigation->windowTitle());
+    addToolBar(tbNavigation);
+
     // create menu bar
     QMenu* menuFile = new QMenu(tr("&File"),this);
     QAction* action = menuFile->addAction(QIcon(":/icons/resources/quit.png"),tr("&Close"),this,SLOT(close()),QKeySequence::Close);
@@ -498,13 +517,24 @@ namespace help
     dockWidgetIndex->toggleViewAction()->setStatusTip(tr("Toggle visibility of index window"));
     menuView->addAction(dockWidgetSearch->toggleViewAction());
     dockWidgetSearch->toggleViewAction()->setStatusTip(tr("Toggle visibility of search window"));
+    menuView->addSeparator();
+    menuView->addAction(tbNavigation->toggleViewAction());
+    tbNavigation->toggleViewAction()->setStatusTip(tr("Toggle visibility of navigation toolbar"));
+
+    QMenu* menuGoTo = new QMenu(tr("&Go to"),this);
+    menuGoTo->addAction(navBack);
+    menuGoTo->addAction(navForward);
+    menuGoTo->addSeparator();
+    menuGoTo->addAction(navReload);
 
     QMenuBar* menuBar = new QMenuBar(this);
     menuBar->addMenu(menuFile);
     menuBar->addMenu(menuView);
+    menuBar->addMenu(menuGoTo);
     setMenuBar(menuBar);
 
     // connect signals
+    connect(ptrBrowser,SIGNAL(linkHovered(QString)),statusBar,SLOT(showMessage(QString)));
     connect(indexWidget,SIGNAL(linkActivated(QUrl,QString)),this,SLOT(showPage(QUrl,QString)));
     connect(indexWidget,SIGNAL(linksActivated(QMap<QString,QUrl>,QString)),this,SLOT(selectTopic(QMap<QString,QUrl>,QString)));
     connect(helpEngineInstance.contentWidget(),SIGNAL(linkActivated(QUrl)),this,SLOT(showPage(QUrl)));
