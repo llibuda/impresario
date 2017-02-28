@@ -29,7 +29,7 @@ if test -L "$me"; then
 fi
 
 bindir=`dirname "$me"`
-libdir=`cd "$bindir/lib" ; pwd`
+libdir=`cd "$bindir/qtlib" ; pwd`
 
 # Try to find user's configuration file
 userconfig=~/.config/

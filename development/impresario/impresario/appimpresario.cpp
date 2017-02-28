@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <QClipboard>
 #include <QRegularExpression>
-#include <QDebug>
+#include <QLibraryInfo>
 
 namespace app
 {
@@ -271,7 +271,7 @@ namespace app
   bool Impresario::initResourcePath()
   {
     // check for QML path
-    QDir qmlPath(applicationDirPath() + "/qml");
+    QDir qmlPath = QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath);
     if (qmlPath.exists())
     {
       qmlEngineInstance.addImportPath(qmlPath.absolutePath());
