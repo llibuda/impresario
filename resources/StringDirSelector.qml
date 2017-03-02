@@ -20,6 +20,7 @@
 ******************************************************************************************/
 import QtQuick 2.5
 import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 import QtQuick.Dialogs 1.2
 
 Item {
@@ -77,6 +78,9 @@ Item {
             maximumLength: parent.parent.maxLength
             text: styleData.value
             focus: true
+            style: TextFieldStyle {
+                renderType: Text.QtRendering
+            }
             onTextChanged: {
                 itemProperties.setProperty(styleData.row,"value",text);
             }

@@ -20,6 +20,7 @@
 ******************************************************************************************/
 import QtQuick 2.5
 import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 
 Item {
     SystemPalette { id: palette; colorGroup: SystemPalette.Active }
@@ -56,6 +57,10 @@ Item {
         maximumValue: parent.maxValue
         stepSize: parent.step
         focus: true
+        style: SpinBoxStyle {
+            renderType: Text.QtRendering
+            horizontalAlignment: Qt.AlignLeft
+        }
         property bool blockUpdate: true;
         onValueChanged: {
             if (styleData.row >= 0 && !blockUpdate) {

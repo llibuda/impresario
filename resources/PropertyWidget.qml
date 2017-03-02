@@ -150,8 +150,10 @@ Item {
 
         Rectangle {
             SystemPalette { id: palette; colorGroup: SystemPalette.Active }
+            FontMetrics { id: defaultFont; font.family: "Helvetica" }
             id: rowRectangle
-            height: 19
+            height: defaultFont.height + defaultFont.ascent + defaultFont.descent
+            //height: 19
             color: palette.base
         }
     }

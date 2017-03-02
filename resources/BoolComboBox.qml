@@ -20,6 +20,7 @@
 ******************************************************************************************/
 import QtQuick 2.5
 import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 
 Item {
     SystemPalette { id: palette; colorGroup: SystemPalette.Active }
@@ -62,6 +63,9 @@ Item {
             id: cbItems
             ListElement { text: "False"}
             ListElement { text: "True"}
+        }
+        style: ComboBoxStyle {
+            renderType: Text.QtRendering
         }
         onActivated: {
             itemProperties.setProperty(styleData.row,"value",index.toString());
