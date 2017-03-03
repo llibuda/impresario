@@ -42,6 +42,7 @@ Item {
         }
         elide: styleData.elideMode
         verticalAlignment: Text.AlignVCenter
+        renderType: Text.NativeRendering
     }
 
     // Component used as in-place editor in TableView
@@ -56,7 +57,7 @@ Item {
         currentIndex: styleData.value
         focus: true
         style: ComboBoxStyle {
-            renderType: Text.QtRendering
+            renderType: Text.NativeRendering
         }
         onActivated: {
             itemProperties.setProperty(styleData.row,"value",index.toString());

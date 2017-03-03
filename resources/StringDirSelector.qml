@@ -43,6 +43,7 @@ Item {
         }
         elide: styleData.elideMode
         verticalAlignment: Text.AlignVCenter
+        renderType: Text.NativeRendering
     }
 
     // Component used as in-place editor in TableView
@@ -79,7 +80,7 @@ Item {
             text: styleData.value
             focus: true
             style: TextFieldStyle {
-                renderType: Text.QtRendering
+                renderType: Text.NativeRendering
             }
             onTextChanged: {
                 itemProperties.setProperty(styleData.row,"value",text);

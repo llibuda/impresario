@@ -20,6 +20,7 @@
 ******************************************************************************************/
 import QtQuick 2.5
 import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 
 Item {
     width: 300
@@ -37,7 +38,7 @@ Item {
             }
             // NOTE: There is a nasty bug in the TableView component introduced in Qt 5.6
             // It seems like a racing condition between this method and loading the TableView
-            // Assigned the model to the TableView here fixes this problem
+            // Assigning the model to the TableView here fixes this problem
             propertyView.model = this;
         }
 
@@ -75,6 +76,7 @@ Item {
                             text: styleData.value
                             elide: styleData.elideMode
                             verticalAlignment: Text.AlignVCenter
+                            renderType: Text.NativeRendering
                             color: if (styleData.selected) {
                                 return palette.highlightedText
                             }
@@ -150,10 +152,9 @@ Item {
 
         Rectangle {
             SystemPalette { id: palette; colorGroup: SystemPalette.Active }
-            FontMetrics { id: defaultFont; font.family: "Helvetica" }
+            FontMetrics { id: defaultFont; }
             id: rowRectangle
-            height: defaultFont.height + defaultFont.ascent + defaultFont.descent
-            //height: 19
+            height: defaultFont.height * 1.6
             color: palette.base
         }
     }
@@ -165,7 +166,6 @@ Item {
         anchors.fill: parent;
         itemDelegate: propertyDelegate
         rowDelegate: propertyRowDelegate
-
         onClicked: {
             macro.showDescription(row);
         }

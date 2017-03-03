@@ -44,6 +44,7 @@ Item {
         }
         elide: styleData.elideMode
         verticalAlignment: Text.AlignVCenter
+        renderType: Text.NativeRendering
     }
 
     // Component used as in-place editor in TableView
@@ -58,7 +59,7 @@ Item {
         stepSize: parent.step
         focus: true
         style: SpinBoxStyle {
-            renderType: Text.QtRendering
+            renderType: Text.NativeRendering
             horizontalAlignment: Qt.AlignLeft
         }
         property bool blockUpdate: true;
