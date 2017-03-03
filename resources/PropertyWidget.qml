@@ -154,7 +154,7 @@ Item {
             SystemPalette { id: palette; colorGroup: SystemPalette.Active }
             FontMetrics { id: defaultFont; }
             id: rowRectangle
-            height: defaultFont.height * 1.6
+            height: defaultFont.height + 7
             color: palette.base
         }
     }
