@@ -166,6 +166,7 @@ Item {
         anchors.fill: parent;
         itemDelegate: propertyDelegate
         rowDelegate: propertyRowDelegate
+
         onClicked: {
             macro.showDescription(row);
         }

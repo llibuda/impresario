@@ -48,7 +48,7 @@ Item {
 
     // Component used as in-place editor in TableView
     // Component is invisible first and rendered only if row becomes active (selected)
-    Item {
+    FocusScope {
         id: valueInPlaceEditor
         anchors.fill: parent
         visible: false
@@ -85,6 +85,11 @@ Item {
             onTextChanged: {
                 itemProperties.setProperty(styleData.row,"value",text);
             }
+            Keys.onPressed: {
+                if (event.key === Qt.Key_Escape || event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+                    valueInPlaceEditor.visible = false;
+                }
+            }
         }
 
         Button {
@@ -111,13 +116,25 @@ Item {
                 dirDialog.open();
             }
         }
-
-        states: [
-            State {
-                name: "selected"
-                when: styleData.selected && styleData.column === 1
-                PropertyChanges {target: valueInPlaceEditor; visible: true}
-            }
-        ]
     }
+
+    property bool showInPlaceEditor: if (!styleData.selected) {
+        return false;
+    }
+    else if (styleData.selected && styleData.pressed) {
+        forceActiveFocus();
+        return true;
+    }
+    else {
+        return valueInPlaceEditor.visible;
+    }
+
+    states: [
+        State {
+            name: "selected"
+            when: showInPlaceEditor
+            PropertyChanges {target: valueInPlaceEditor; visible: true}
+            PropertyChanges {target: valueInPlaceEditor; focus: true}
+        }
+    ]
 }

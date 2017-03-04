@@ -53,20 +53,36 @@ Item {
         visible: false
         maximumLength: parent.maxLength
         text: styleData.value
-        focus: true
         style: TextFieldStyle {
             renderType: Text.NativeRendering
         }
         onTextChanged: {
             itemProperties.setProperty(styleData.row,"value",text);
         }
+        Keys.onPressed: {
+            if (event.key === Qt.Key_Escape || event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+                visible = false;
+            }
+        }
+    }
+
+    property bool showInPlaceEditor: if (!styleData.selected) {
+        return false;
+    }
+    else if (styleData.selected && styleData.pressed) {
+        forceActiveFocus();
+        return true;
+    }
+    else {
+        return valueInPlaceEditor.visible;
     }
 
     states: [
         State {
             name: "selected"
-            when: styleData.selected && styleData.column === 1
+            when: showInPlaceEditor
             PropertyChanges {target: valueInPlaceEditor; visible: true}
+            PropertyChanges {target: valueInPlaceEditor; focus: true}
         }
     ]
 
