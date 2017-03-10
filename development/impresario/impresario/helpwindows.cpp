@@ -105,7 +105,7 @@ namespace help
   void HelpUrlSchemeHandler::requestStarted(QWebEngineUrlRequestJob* request)
   {
     Q_ASSERT(request != 0);
-    qDebug() << request->requestMethod() << request->requestUrl();
+    //qDebug() << request->requestMethod() << request->requestUrl();
 
     QUrl url = request->requestUrl();
     if (!url.isValid())
@@ -387,11 +387,11 @@ namespace help
       }
     }
 #ifdef Q_OS_MAC
-    else if (obj == m_indexWidget && e->type() == QEvent::KeyPress)
+    else if (obj == lvIndex && e->type() == QEvent::KeyPress)
     {
       QKeyEvent *ke = static_cast<QKeyEvent*>(e);
       if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter)
-        m_indexWidget->activateCurrentItem();
+        lvIndex->activateCurrentItem();
     }
 #endif
     return QWidget::eventFilter(obj, e);
@@ -468,12 +468,14 @@ namespace help
     QDockWidget* dockWidgetContents = new QDockWidget(tr("Contents"),this);
     dockWidgetContents->setWidget(helpEngineInstance.contentWidget());
     dockWidgetContents->setObjectName(dockWidgetContents->windowTitle());
+    dockWidgetContents->toggleViewAction()->setStatusTip(tr("Toggle visibility of contents window"));
     addDockWidget(Qt::LeftDockWidgetArea,dockWidgetContents);
 
     QDockWidget* dockWidgetIndex = new QDockWidget(tr("Index"),this);
     HelpIndexWidget* indexWidget = new HelpIndexWidget(helpEngineInstance,this);
     dockWidgetIndex->setWidget(indexWidget);
     dockWidgetIndex->setObjectName(dockWidgetIndex->windowTitle());
+    dockWidgetIndex->toggleViewAction()->setStatusTip(tr("Toggle visibility of index window"));
     addDockWidget(Qt::LeftDockWidgetArea,dockWidgetIndex);
 
     QDockWidget* dockWidgetSearch = new QDockWidget(tr("Search"),this);
@@ -485,6 +487,7 @@ namespace help
     widgetSearch->setLayout(layout);
     dockWidgetSearch->setWidget(widgetSearch);
     dockWidgetSearch->setObjectName(dockWidgetSearch->windowTitle());
+    dockWidgetSearch->toggleViewAction()->setStatusTip(tr("Toggle visibility of search window"));
     addDockWidget(Qt::LeftDockWidgetArea,dockWidgetSearch);
 
     tabifyDockWidget(dockWidgetContents,dockWidgetIndex);
@@ -497,29 +500,58 @@ namespace help
     QAction* navForward = ptrBrowser->pageAction(QWebEnginePage::Forward);
     QAction* navReload = ptrBrowser->pageAction(QWebEnginePage::Reload);
     navBack->setIcon(QIcon(":/icons/resources/arrowleft.png"));
+    navBack->setStatusTip(tr("Navigate one step back"));
+    navBack->setShortcut(QKeySequence::Back);
     navForward->setIcon(QIcon(":/icons/resources/arrowright.png"));
+    navForward->setStatusTip(tr("Navigate one step forward"));
+    navForward->setShortcut(QKeySequence::Forward);
     navReload->setIcon(QIcon(":/icons/resources/arrowrefresh.png"));
+    navReload->setStatusTip(tr("Reload the current page"));
+    navReload->setShortcut(QKeySequence::Refresh);
     tbNavigation->addAction(navBack);
     tbNavigation->addAction(navForward);
     tbNavigation->addAction(navReload);
     tbNavigation->setObjectName(tbNavigation->windowTitle());
+    tbNavigation->toggleViewAction()->setStatusTip(tr("Toggle visibility of navigation toolbar"));
     addToolBar(tbNavigation);
+
+    QToolBar* tbView = new QToolBar(tr("&View"),this);
+    QAction* viewZoomIn = tbView->addAction(QIcon(":/icons/resources/zoom_in.png"),tr("Increase size"),this,SLOT(zoomIn()));
+    viewZoomIn->setShortcut(QKeySequence::ZoomIn);
+    viewZoomIn->setStatusTip(tr("Increase size of contents"));
+    QAction* viewZoomOut = tbView->addAction(QIcon(":/icons/resources/zoom_out.png"),tr("Decrease size"),this,SLOT(zoomOut()));
+    viewZoomOut->setShortcut(QKeySequence::ZoomOut);
+    viewZoomOut->setStatusTip(tr("Decrease size of contents"));
+    QAction* viewZoom100 = tbView->addAction(QIcon(":/icons/resources/zoom_100.png"),tr("Default size"),this,SLOT(zoom100()));
+    viewZoom100->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
+    viewZoom100->setStatusTip(tr("Set default size of contents"));
+    connect(this,SIGNAL(destroyed()),viewZoomIn,SLOT(deleteLater()));
+    connect(this,SIGNAL(destroyed()),viewZoomOut,SLOT(deleteLater()));
+    connect(this,SIGNAL(destroyed()),viewZoom100,SLOT(deleteLater()));
+    tbView->setObjectName(tbView->windowTitle());
+    tbView->toggleViewAction()->setStatusTip(tr("Toggle visibility of view toolbar"));
+    addToolBar(tbView);
 
     // create menu bar
     QMenu* menuFile = new QMenu(tr("&File"),this);
-    QAction* action = menuFile->addAction(QIcon(":/icons/resources/quit.png"),tr("&Close"),this,SLOT(close()),QKeySequence::Close);
-    action->setStatusTip(tr("Close help window."));
+    QAction* closeHelp = menuFile->addAction(QIcon(":/icons/resources/quit.png"),tr("&Close"),this,SLOT(close()),QKeySequence::Close);
+    closeHelp->setStatusTip(tr("Close help window."));
+    connect(this,SIGNAL(destroyed()),closeHelp,SLOT(deleteLater()));
+
+    QMenu* menuToolbars = new QMenu(tr("Toolbars"),this);
+    menuToolbars->addAction(tbNavigation->toggleViewAction());
+    menuToolbars->addAction(tbView->toggleViewAction());
 
     QMenu* menuView = new QMenu(tr("&View"),this);
     menuView->addAction(dockWidgetContents->toggleViewAction());
-    dockWidgetContents->toggleViewAction()->setStatusTip(tr("Toggle visibility of contents window"));
     menuView->addAction(dockWidgetIndex->toggleViewAction());
-    dockWidgetIndex->toggleViewAction()->setStatusTip(tr("Toggle visibility of index window"));
     menuView->addAction(dockWidgetSearch->toggleViewAction());
-    dockWidgetSearch->toggleViewAction()->setStatusTip(tr("Toggle visibility of search window"));
     menuView->addSeparator();
-    menuView->addAction(tbNavigation->toggleViewAction());
-    tbNavigation->toggleViewAction()->setStatusTip(tr("Toggle visibility of navigation toolbar"));
+    menuView->addMenu(menuToolbars);
+    menuView->addSeparator();
+    menuView->addAction(viewZoomIn);
+    menuView->addAction(viewZoomOut);
+    menuView->addAction(viewZoom100);
 
     QMenu* menuGoTo = new QMenu(tr("&Go to"),this);
     menuGoTo->addAction(navBack);
@@ -571,6 +603,34 @@ namespace help
     if (dlg.exec() > 0)
     {
       ptrBrowser->setUrl(dlg.link());
+    }
+  }
+
+  void MainWindow::zoomIn()
+  {
+    if (ptrBrowser)
+    {
+      qreal zoomFactor = ptrBrowser->zoomFactor() + qreal(0.1);
+      if (zoomFactor > qreal(5.0)) zoomFactor = qreal(5.0);
+      ptrBrowser->setZoomFactor(zoomFactor);
+    }
+  }
+
+  void MainWindow::zoomOut()
+  {
+    if (ptrBrowser)
+    {
+      qreal zoomFactor = ptrBrowser->zoomFactor() - qreal(0.1);
+      if (zoomFactor < qreal(0.25)) zoomFactor = qreal(0.25);
+      ptrBrowser->setZoomFactor(zoomFactor);
+    }
+  }
+
+  void MainWindow::zoom100()
+  {
+    if (ptrBrowser)
+    {
+      ptrBrowser->setZoomFactor(qreal(1.0));
     }
   }
 

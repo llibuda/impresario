@@ -263,27 +263,28 @@ void Resource::initActions()
   action->setStatusTip(QObject::tr("Fit complete process graph into current view"));
   (*actions)[VIEW_ZOOM_PAGE] = action;
   action = new QAction(QIcon(":/icons/resources/zoom_100.png"),QObject::tr("&Zoom 100%"), 0);
+  action->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
   action->setStatusTip(QObject::tr("Zoom to 100%"));
   (*actions)[VIEW_ZOOM_100] = action;
 
   action = new QAction(QIcon(":/icons/resources/control_play.png"), QObject::tr("&Start"), 0);
   action->setCheckable(true);
-  action->setShortcut(QKeySequence("F1"));
+  action->setShortcut(QKeySequence("F5"));
   action->setStatusTip(QObject::tr("Start processing the current graph"));
   (*actions)[CTRL_START] = action;
   action = new QAction(QIcon(":/icons/resources/control_pause.png"), QObject::tr("&Pause"), 0);
   action->setCheckable(true);
-  action->setShortcut(QKeySequence("F2"));
+  action->setShortcut(QKeySequence("F6"));
   action->setStatusTip(QObject::tr("Pause processing the current graph"));
   (*actions)[CTRL_PAUSE] = action;
   action = new QAction(QIcon(":/icons/resources/control_stop.png"), QObject::tr("S&top"), 0);
   action->setCheckable(true);
-  action->setShortcut(QKeySequence("F3"));
+  action->setShortcut(QKeySequence("F7"));
   action->setStatusTip(QObject::tr("Stop processing the current graph"));
   (*actions)[CTRL_STOP] = action;
   action = new QAction(QIcon(":/icons/resources/control_end.png"), QObject::tr("S&nap"), 0);
   action->setCheckable(true);
-  action->setShortcut(QKeySequence("F4"));
+  action->setShortcut(QKeySequence("F8"));
   action->setStatusTip(QObject::tr("Process the current graph for one cycle"));
   (*actions)[CTRL_SNAP] = action;
 
@@ -293,6 +294,7 @@ void Resource::initActions()
 
   action = new QAction(QIcon(":/icons/resources/help.png"), QObject::tr("&Contents..."), 0);
   action->setStatusTip(QObject::tr("Show the help contents"));
+  action->setShortcut(QKeySequence::HelpContents);
   (*actions)[HELP_CONTENT] = action;
   action = new QAction(QIcon(":/icons/resources/help.png"), QObject::tr("&Index..."), 0);
   action->setStatusTip(QObject::tr("Show index to select help topic"));

@@ -4,14 +4,14 @@
 <p>
 <span style="font-variant: small-caps">Impresario</span> uses the following libraries and components:
 <ul>
-<li>Qt Toolkit 5.5.1</li>
+<li>Qt Toolkit 5.6.2</li>
 <li>QtPropertyBrowser</li>
 <li>SingleApplication</li>
 <li>libavoid</li>
 <li>Silk icon set 1.3</li>
 </ul>
 </p>
-<h2>Qt Toolkit 5.5.1</h2>
+<h2>Qt Toolkit 5.6.2</h2>
 <p>
 Copyright (C) 2015 The Qt Company Ltd.<br>
 <br>

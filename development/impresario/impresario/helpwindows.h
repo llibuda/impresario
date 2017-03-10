@@ -119,6 +119,9 @@ namespace help
     void showPage(const QUrl& url);
     void showPage(const QUrl& url, const QString& keyword);
     void selectTopic(const QMap<QString,QUrl>& topicList, const QString& keyword);
+    void zoomIn();
+    void zoomOut();
+    void zoom100();
 
   protected:
     virtual void closeEvent(QCloseEvent* event);
