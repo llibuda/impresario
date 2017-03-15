@@ -31,7 +31,7 @@ unix {
   CONFIG(debug, release|debug) {
     TARGET = avoidd
   }
-  QMAKE_POST_LINK = mkdir -p $$shell_path($${IMPRESARIO_BIN_PATH})/lib && cp $$shell_path($${OUT_PWD})/*.so* $$shell_path($${IMPRESARIO_BIN_PATH})/lib
+  QMAKE_POST_LINK = mkdir -p $$shell_path($${IMPRESARIO_BIN_PATH})/qtlib && cp $$shell_path($${OUT_PWD})/*.so* $$shell_path($${IMPRESARIO_BIN_PATH})/qtlib
 }
 
 INCLUDEPATH += ./source/
