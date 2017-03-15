@@ -21,6 +21,7 @@
 #include "helpwindows.h"
 #include "helpsystem.h"
 #include <QApplication>
+#include <QDesktopServices>
 #include <QDebug>
 
 namespace help
@@ -125,13 +126,48 @@ namespace help
   }
 
   //-----------------------------------------------------------------------
+  // Class ContentPage
+  // Redirect non-qthelp URLs to standard web browser
+  //-----------------------------------------------------------------------
+  class ContentPage : public QWebEnginePage
+  {
+  public:
+    ContentPage(QObject* parent = 0);
+    ~ContentPage();
+
+  protected:
+    virtual bool acceptNavigationRequest(const QUrl &url, NavigationType type, bool isMainFrame);
+  };
+
+  ContentPage::ContentPage(QObject* parent) : QWebEnginePage(parent)
+  {
+  }
+
+  ContentPage::~ContentPage()
+  {
+  }
+
+  bool ContentPage::acceptNavigationRequest(const QUrl &url, NavigationType type, bool isMainFrame)
+  {
+    if (url.scheme() == QLatin1String("qthelp"))
+    {
+      return QWebEnginePage::acceptNavigationRequest(url,type,isMainFrame);
+    }
+    else
+    {
+      QDesktopServices::openUrl(url);
+      return false;
+    }
+  }
+
+  //-----------------------------------------------------------------------
   // Class ContentWindow
   //-----------------------------------------------------------------------
-
   ContentWindow::ContentWindow(QHelpEngine& helpEngine, QWidget* parent) : QWebEngineView(parent)
   {
     // install URL scheme handler for qthelp
-    QWebEnginePage* webPage = page();
+    ContentPage* webPage = new ContentPage(this);
+    setPage(webPage);
     const char qtHelpScheme[] = "qthelp";
     const QWebEngineUrlSchemeHandler* helpSchemeHandler = webPage->profile()->urlSchemeHandler(qtHelpScheme);
     if (!helpSchemeHandler)
