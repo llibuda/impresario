@@ -551,7 +551,7 @@ namespace config
   // Class DlgPageDirectories
   //-----------------------------------------------------------------------
   DlgPageDirectories::DlgPageDirectories(QWidget *parent) : DlgPageBase(parent), btnDirProcessGraphs(0),
-    btnDirMacros(0), btnDirDependencies(0), btnDirResources(0)
+    btnDirMacros(0), btnDirDependencies(0), btnDirDocumentation(0), btnDirResources(0)
   {
     btnDirProcessGraphs = new QPushButton(this);
     btnDirProcessGraphs->setIcon(QIcon(":/icons/resources/cfgfolderpg.png"));
@@ -559,6 +559,8 @@ namespace config
     btnDirMacros->setIcon(QIcon(":/icons/resources/cfgfoldermacros.png"));
     btnDirDependencies = new QPushButton(this);
     btnDirDependencies->setIcon(QIcon(":/icons/resources/cfgfolderdep.png"));
+    btnDirDocumentation = new QPushButton(this);
+    btnDirDocumentation->setIcon(QIcon(":/icons/resources/cfgfolderdoc.png"));
     btnDirResources = new QPushButton(this);
     btnDirResources->setIcon(QIcon(":/icons/resources/cfgfolderres.png"));
 
@@ -566,8 +568,11 @@ namespace config
     connect(btnDirProcessGraphs,SIGNAL(clicked()),this,SLOT(clkDirProcessGraphs()));
     connect(btnDirMacros,SIGNAL(clicked()),this,SLOT(clkDirMacros()));
     connect(btnDirDependencies,SIGNAL(clicked()),this,SLOT(clkDirDependencies()));
+    connect(btnDirDocumentation,SIGNAL(clicked()),this,SLOT(clkDirDocumentation()));
     connect(btnDirResources,SIGNAL(clicked()),this,SLOT(clkDirResources()));
     connect(this,SIGNAL(pageChanged(DlgSettings::DlgPage)),dlg,SLOT(changePage(DlgSettings::DlgPage)));
+
+    setHelpID("Impresario-Settings-Directories");
   }
 
   void DlgPageDirectories::setContent(QGroupBox* groupContent)
@@ -576,6 +581,7 @@ namespace config
     overviewLayout->addRow(btnDirProcessGraphs,new QLabel(tr("Directory for Impresario Process Graphs")));
     overviewLayout->addRow(btnDirMacros,new QLabel(tr("Directories for Impresario Macro Libraries")));
     overviewLayout->addRow(btnDirDependencies,new QLabel(tr("Directories for dependent libraries")));
+    overviewLayout->addRow(btnDirDocumentation,new QLabel(tr("Directory for documentation")));
     overviewLayout->addRow(btnDirResources,new QLabel(tr("Directory for Impresario resources")));
 
     groupContent->setTitle(tr("Directories"));
@@ -605,6 +611,11 @@ namespace config
     emit pageChanged(DlgSettings::DirDependencies);
   }
 
+  void DlgPageDirectories::clkDirDocumentation()
+  {
+    emit pageChanged(DlgSettings::DirDocumentation);
+  }
+
   void DlgPageDirectories::clkDirResources()
   {
     emit pageChanged(DlgSettings::DirResources);
@@ -631,6 +642,7 @@ namespace config
   //-----------------------------------------------------------------------
   DlgPageDirProcessGraphs::DlgPageDirProcessGraphs(QWidget *parent) : DlgPageDirSingle(parent)
   {
+    setHelpID("Impresario-Settings-Process-Graph-Directory");
   }
 
   void DlgPageDirProcessGraphs::loadSettings()
@@ -678,10 +690,63 @@ namespace config
   }
 
   //-----------------------------------------------------------------------
+  // Class DlgPageDirDocumentation
+  //-----------------------------------------------------------------------
+  DlgPageDirDocumentation::DlgPageDirDocumentation(QWidget *parent) : DlgPageDirSingle(parent)
+  {
+    setHelpID("Impresario-Settings-Documentation-Directory");
+  }
+
+  void DlgPageDirDocumentation::loadSettings()
+  {
+    QString dirValue = Resource::getPath(Resource::SETTINGS_PATH_DOCUMENTATION);
+    edtDir->setValue(dirValue);
+  }
+
+  void DlgPageDirDocumentation::saveSettings()
+  {
+    QDir dir(edtDir->value());
+    if (dir.exists())
+    {
+      if (Resource::getPath(Resource::SETTINGS_PATH_DOCUMENTATION) != QDir::toNativeSeparators(dir.absolutePath()))
+      {
+        Resource::setPath(Resource::SETTINGS_PATH_DOCUMENTATION,dir.absolutePath());
+        emit changedSetting(Resource::SETTINGS_PATH_DOCUMENTATION);
+      }
+    }
+  }
+
+  bool DlgPageDirDocumentation::validateSettings(QStringList& msgList)
+  {
+    QDir dir(edtDir->value());
+    if (!dir.exists())
+    {
+      msgList += QString(tr("Page Directories->Documentation: Specified path '%1' does not exist. Path is not stored.")).arg(edtDir->value());
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+  void DlgPageDirDocumentation::setContent(QGroupBox* groupContent)
+  {
+    DlgPageDirSingle::setContent(groupContent);
+    groupContent->setTitle(tr("Directory for Impresario Documentation"));
+  }
+
+  void DlgPageDirDocumentation::setInformation(QString& info)
+  {
+    info = tr("In this directory Impresario help is stored. This change takes effect immediately.");
+  }
+
+  //-----------------------------------------------------------------------
   // Class DlgPageDirResources
   //-----------------------------------------------------------------------
   DlgPageDirResources::DlgPageDirResources(QWidget *parent) : DlgPageDirSingle(parent)
   {
+    setHelpID("Impresario-Settings-Resources-Directory");
   }
 
   void DlgPageDirResources::loadSettings()
@@ -854,6 +919,7 @@ namespace config
   //-----------------------------------------------------------------------
   DlgPageDirMacroLibs::DlgPageDirMacroLibs(QWidget *parent) : DlgPageDirMulti(parent)
   {
+    setHelpID("Impresario-Settings-Macro-Library-Directories");
   }
 
   void DlgPageDirMacroLibs::loadSettings()
@@ -937,6 +1003,7 @@ namespace config
   //-----------------------------------------------------------------------
   DlgPageDirDependencies::DlgPageDirDependencies(QWidget *parent) : DlgPageDirMulti(parent)
   {
+    setHelpID("Impresario-Settings-Dependent-Library-Directories");
   }
 
   void DlgPageDirDependencies::loadSettings()
@@ -1023,6 +1090,8 @@ namespace config
   {
     db::WndMacros* macroWnd = frame::MainWindow::instance().findChild<db::WndMacros*>("WndMacros");
     connect(this,SIGNAL(changedSetting(Resource::SettingsIDs)),macroWnd,SLOT(viewConfigChanged(Resource::SettingsIDs)));
+
+    setHelpID("Impresario-Settings-MacroDB");
   }
 
   DlgPageViewMacroDB::~DlgPageViewMacroDB()
@@ -1272,6 +1341,8 @@ namespace config
   {
     model.setItemValidator(new db::ViewFormat());
     settingsPath = Resource::SETTINGS_DB_VIEWFORMATS;
+
+    setHelpID("Impresario-Settings-MacroDB-View");
   }
 
   bool DlgPageViewFormat::validateSettings(QStringList& msgList)
@@ -1336,6 +1407,8 @@ namespace config
   {
     model.setItemValidator(new db::ViewFilter());
     settingsPath = Resource::SETTINGS_DB_VIEWFILTERS;
+
+    setHelpID("Impresario-Settings-MacroDB-Filter");
   }
 
   bool DlgPageViewFilter::validateSettings(QStringList& msgList)
@@ -1398,6 +1471,7 @@ namespace config
   //-----------------------------------------------------------------------
   DlgPagePropertyWnd::DlgPagePropertyWnd(QWidget *parent) : DlgPageBase(parent), cbDefQmlFile(0), cbMacroPropFav(0), cbOthersPropFav(0)
   {
+    setHelpID("Impresario-Settings-PropertyWnd");
   }
 
   DlgPagePropertyWnd::~DlgPagePropertyWnd()

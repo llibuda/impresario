@@ -767,6 +767,7 @@ namespace pge
   {
     setWindowTitle(tr("Create multiple macro instances"));
     setWindowIcon(QIcon(":/icons/resources/macrocreate.png"));
+    setWindowModality(Qt::WindowModal);
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     spinBox = new QSpinBox();

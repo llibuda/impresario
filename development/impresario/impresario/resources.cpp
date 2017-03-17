@@ -170,6 +170,7 @@ void Resource::initPaths()
   paths[SETTINGS_PATH_MACROS] = "/Data/Paths/Macros";
   paths[SETTINGS_PATH_DEPLIBS] = "/Data/Paths/DepLibs";
   paths[SETTINGS_PATH_RESOURCES] = "/Data/Paths/Resources";
+  paths[SETTINGS_PATH_DOCUMENTATION] = "/Data/Paths/Documentation";
   paths[SETTINGS_DB_VIEWFORMATS] = "/GUI/DB/ViewFormats";
   paths[SETTINGS_DB_VIEWFILTERS] = "/GUI/DB/ViewFilters";
   paths[SETTINGS_DB_AUTORESETSEARCH] = "/GUI/DB/AutoResetSearch";
@@ -262,27 +263,28 @@ void Resource::initActions()
   action->setStatusTip(QObject::tr("Fit complete process graph into current view"));
   (*actions)[VIEW_ZOOM_PAGE] = action;
   action = new QAction(QIcon(":/icons/resources/zoom_100.png"),QObject::tr("&Zoom 100%"), 0);
+  action->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_0));
   action->setStatusTip(QObject::tr("Zoom to 100%"));
   (*actions)[VIEW_ZOOM_100] = action;
 
   action = new QAction(QIcon(":/icons/resources/control_play.png"), QObject::tr("&Start"), 0);
   action->setCheckable(true);
-  action->setShortcut(QKeySequence("F1"));
+  action->setShortcut(QKeySequence("F5"));
   action->setStatusTip(QObject::tr("Start processing the current graph"));
   (*actions)[CTRL_START] = action;
   action = new QAction(QIcon(":/icons/resources/control_pause.png"), QObject::tr("&Pause"), 0);
   action->setCheckable(true);
-  action->setShortcut(QKeySequence("F2"));
+  action->setShortcut(QKeySequence("F6"));
   action->setStatusTip(QObject::tr("Pause processing the current graph"));
   (*actions)[CTRL_PAUSE] = action;
   action = new QAction(QIcon(":/icons/resources/control_stop.png"), QObject::tr("S&top"), 0);
   action->setCheckable(true);
-  action->setShortcut(QKeySequence("F3"));
+  action->setShortcut(QKeySequence("F7"));
   action->setStatusTip(QObject::tr("Stop processing the current graph"));
   (*actions)[CTRL_STOP] = action;
   action = new QAction(QIcon(":/icons/resources/control_end.png"), QObject::tr("S&nap"), 0);
   action->setCheckable(true);
-  action->setShortcut(QKeySequence("F4"));
+  action->setShortcut(QKeySequence("F8"));
   action->setStatusTip(QObject::tr("Process the current graph for one cycle"));
   (*actions)[CTRL_SNAP] = action;
 
@@ -290,7 +292,14 @@ void Resource::initActions()
   action->setStatusTip(QObject::tr("Edit Impresario's settings"));
   (*actions)[EXTRAS_SETTINGS] = action;
 
-  action = new QAction(QObject::tr("&About Impresario..."), 0);
+  action = new QAction(QIcon(":/icons/resources/help.png"), QObject::tr("&Contents..."), 0);
+  action->setStatusTip(QObject::tr("Show the help contents"));
+  action->setShortcut(QKeySequence::HelpContents);
+  (*actions)[HELP_CONTENT] = action;
+  action = new QAction(QIcon(":/icons/resources/help.png"), QObject::tr("&Index..."), 0);
+  action->setStatusTip(QObject::tr("Show index to select help topic"));
+  (*actions)[HELP_IDX] = action;
+  action = new QAction(QIcon(":/icons/resources/information.png"), QObject::tr("&About Impresario..."), 0);
   action->setStatusTip(QObject::tr("View information about Impresario"));
   (*actions)[HELP_ABOUT] = action;
 

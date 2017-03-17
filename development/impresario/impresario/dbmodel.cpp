@@ -349,7 +349,7 @@ namespace db
   {
     itemType = MODELITEMTYPE_LIBRARYFILE;
     QFileInfo fileInfo(libRef->getPath());
-    searchKey = fileInfo.baseName();
+    searchKey = fileInfo.completeBaseName();
   }
 
   QVariant ModelItemLibraryFile::data(int column, int role) const
@@ -440,7 +440,7 @@ namespace db
       case 'F':
         {
           QFileInfo info(macroRef.getLibrary().getPath());
-          return info.baseName();
+          return info.completeBaseName();
         }
       case 'T':
         return macroRef.getClass();

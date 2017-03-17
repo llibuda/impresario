@@ -276,7 +276,7 @@ namespace db
     edtSearch->setBuddy(vwMacros);
 
     // connect signals
-    connect(&app::Impresario::instance(),SIGNAL(initNonCriticalSuccessful()),this,SLOT(initDBView()));
+    connect(&app::Impresario::instance(),SIGNAL(initNonCriticalFinished(bool)),this,SLOT(initDBView(bool)));
     connect(btnSearchReset,SIGNAL(clicked()),this,SLOT(resetSearch()));
     connect(btnView,SIGNAL(clicked()),this,SLOT(manageViews()));
     connect(btnFilter,SIGNAL(clicked()),this,SLOT(manageFilters()));
@@ -298,7 +298,7 @@ namespace db
     modelFilters.save(Resource::path(Resource::SETTINGS_DB_VIEWFILTERS));
   }
 
-  void WndMacros::initDBView()
+  void WndMacros::initDBView(bool /*appInitOk*/)
   {
     // connect status bar for subsequent indications of model changes
     connect(&modelMacros,SIGNAL(modelUpdateStart(db::Model::ModelUpdateReason)),static_cast<frame::StatusBar*>(frame::MainWindow::instance().statusBar()),SLOT(indicateViewUpdate(db::Model::ModelUpdateReason)));

@@ -21,6 +21,7 @@
 
 #include "configdlgsettings.h"
 #include "configdlgpages.h"
+#include "appimpresario.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QIcon>
@@ -34,6 +35,8 @@ namespace config
 {
   DlgSettings::DlgSettings(QWidget *parent, DlgPage startPage) : QDialog(parent)
   {
+    setWindowModality(Qt::WindowModal);
+
     // create layout
     selectionPane = new QTreeWidget;
     selectionPane->header()->hide();
@@ -46,7 +49,7 @@ namespace config
     horizontalLayout->setStretchFactor(0,30);
     horizontalLayout->setStretchFactor(1,70);
 
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(horizontalLayout,1);
@@ -60,6 +63,7 @@ namespace config
     // set signal handlers
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(saveSettings()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
+    connect(buttonBox, SIGNAL(helpRequested()), this, SLOT(showHelp()));
     connect(selectionPane,SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),this, SLOT(changePage(QTreeWidgetItem*,QTreeWidgetItem*)));
 
     // create dialog pages
@@ -98,6 +102,14 @@ namespace config
     dlgPage = new DlgPageDirDependencies(this);
     contentPane->addWidget(dlgPage);
     pageMap[DirDependencies] = qMakePair(dlgItem,dlgPage);
+
+    dlgItem = new QTreeWidgetItem(dlgItemRoot,DirDocumentation);
+    dlgItem->setIcon(0,QIcon(":/icons/resources/cfgfolderdoc.png"));
+    dlgItem->setText(0,tr("Documentation"));
+    dlgItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    dlgPage = new DlgPageDirDocumentation(this);
+    contentPane->addWidget(dlgPage);
+    pageMap[DirDocumentation] = qMakePair(dlgItem,dlgPage);
 
     dlgItem = new QTreeWidgetItem(dlgItemRoot,DirResources);
     dlgItem->setIcon(0,QIcon(":/icons/resources/cfgfolderres.png"));
@@ -205,5 +217,17 @@ namespace config
         (*it).second->saveSettings();
       }
     }
+  }
+
+  void DlgSettings::showHelp()
+  {
+    QString strHelpID = "Impresario-Settings";
+    QWidget* widget = contentPane->currentWidget();
+    DlgPageBase* dlgPage = qobject_cast<DlgPageBase*>(widget);
+    if (dlgPage)
+    {
+      strHelpID = dlgPage->helpID();
+    }
+    app::Impresario::instance().helpEngine().showHelpContents(strHelpID);
   }
 }

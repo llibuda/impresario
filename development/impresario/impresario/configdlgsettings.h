@@ -44,6 +44,7 @@ namespace config
       DirProcessGraphs,
       DirMacroLibs,
       DirDependencies,
+      DirDocumentation,
       DirResources,
       MacroDBGeneral,
       MacroDBView,
@@ -57,6 +58,7 @@ namespace config
     void changePage(QTreeWidgetItem *current, QTreeWidgetItem *previous);
     void changePage(DlgSettings::DlgPage page);
     void saveSettings();
+    void showHelp();
 
   private:
     typedef QMap<DlgPage, QPair<QTreeWidgetItem*, DlgPageBase*> > PageMap;

@@ -20,6 +20,7 @@
 ******************************************************************************************/
 import QtQuick 2.5
 import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 
 Item {
     SystemPalette { id: palette; colorGroup: SystemPalette.Active }
@@ -41,6 +42,7 @@ Item {
         }
         elide: styleData.elideMode
         verticalAlignment: Text.AlignVCenter
+        renderType: Text.NativeRendering
     }
 
     // Component used as in-place editor in TableView
@@ -53,17 +55,36 @@ Item {
         editable: false
         model: parent.items
         currentIndex: styleData.value
-        focus: true
+        style: ComboBoxStyle {
+            renderType: Text.NativeRendering
+        }
         onActivated: {
             itemProperties.setProperty(styleData.row,"value",index.toString());
         }
+        Keys.onPressed: {
+            if (event.key === Qt.Key_Escape || event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+                visible = false;
+            }
+        }
+    }
+
+    property bool showInPlaceEditor: if (!styleData.selected) {
+        return false;
+    }
+    else if (styleData.selected && styleData.pressed) {
+        forceActiveFocus();
+        return true;
+    }
+    else {
+        return valueInPlaceEditor.visible;
     }
 
     states: [
         State {
             name: "selected"
-            when: styleData.selected && styleData.column === 1
+            when: showInPlaceEditor
             PropertyChanges {target: valueInPlaceEditor; visible: true}
+            PropertyChanges {target: valueInPlaceEditor; focus: true}
         }
     ]
 

@@ -38,6 +38,7 @@ namespace frame
   class MainWindow : public QMainWindow
   {
     Q_OBJECT
+    Q_DISABLE_COPY(MainWindow)
 
   public:
     enum AppState
@@ -59,6 +60,7 @@ namespace frame
 
   signals:
     void changedState(MainWindow::AppState oldState, MainWindow::AppState newState);
+    void closeHelpSystem();
 
   public slots:
     void mdiChildDestroy(pge::ProcessGraphEditor* child);
@@ -76,7 +78,6 @@ namespace frame
 
   private:
     MainWindow(QWidget* parent = 0);
-    MainWindow& operator=(const MainWindow&) { return *this; }
     ~MainWindow();
 
     static MainWindow* wndInstance;

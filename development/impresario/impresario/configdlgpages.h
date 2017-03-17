@@ -186,6 +186,16 @@ namespace config
     virtual void saveSettings() = 0;
     virtual bool validateSettings(QStringList& msgList) = 0;
 
+    void setHelpID(const QString& id)
+    {
+      strHelpID = id;
+    }
+
+    const QString& helpID() const
+    {
+      return strHelpID;
+    }
+
   signals:
     void changedSetting(Resource::SettingsIDs id);
 
@@ -199,7 +209,8 @@ namespace config
   private:
     void createLayout();
 
-    bool initPage;
+    bool    initPage;
+    QString strHelpID;
 };
 
   class DlgPageDirectories : public DlgPageBase
@@ -222,12 +233,14 @@ namespace config
     void clkDirProcessGraphs();
     void clkDirMacros();
     void clkDirDependencies();
+    void clkDirDocumentation();
     void clkDirResources();
 
   private:
     QPushButton* btnDirProcessGraphs;
     QPushButton* btnDirMacros;
     QPushButton* btnDirDependencies;
+    QPushButton* btnDirDocumentation;
     QPushButton* btnDirResources;
   };
 
@@ -248,6 +261,20 @@ namespace config
     Q_OBJECT
   public:
     explicit DlgPageDirProcessGraphs(QWidget *parent = 0);
+    virtual void loadSettings();
+    virtual void saveSettings();
+    virtual bool validateSettings(QStringList& msgList);
+
+  protected:
+    virtual void setContent(QGroupBox* groupContent);
+    virtual void setInformation(QString& info);
+  };
+
+  class DlgPageDirDocumentation : public DlgPageDirSingle
+  {
+    Q_OBJECT
+  public:
+    explicit DlgPageDirDocumentation(QWidget *parent = 0);
     virtual void loadSettings();
     virtual void saveSettings();
     virtual bool validateSettings(QStringList& msgList);

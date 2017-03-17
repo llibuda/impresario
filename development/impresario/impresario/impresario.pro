@@ -18,16 +18,45 @@
 #   along with Impresario in subdirectory "licenses", file "LICENSE_Impresario.GPLv3".
 #   If not, see <http://www.gnu.org/licenses/>.
 #*****************************************************************************************
-QT += core gui widgets network xmlpatterns qml quick quickwidgets concurrent
+QT += core gui widgets network xmlpatterns qml quick quickwidgets concurrent help webenginewidgets
 TARGET = Impresario
 TEMPLATE = app
-VERSION = 2.0.0
+VERSION = 2.1.0
 QMAKE_TARGET_DESCRIPTION = "Image Processing Engineering System applying Reusable Interactive Objects"
-QMAKE_TARGET_COPYRIGHT = "Copyright 2015 Lars Libuda"
+QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2015-2017  Lars Libuda"
 
-INCLUDEPATH += $$quote($$_PRO_FILE_PWD_/../components/qtpropertybrowser/src)
-INCLUDEPATH += $$quote($$_PRO_FILE_PWD_/../components/libavoid/source)
-INCLUDEPATH += $$quote($$_PRO_FILE_PWD_/../components/singleapplication)
+!include(../impresario_bin_path.pri) {
+  error(Failed to include impresario_bin_path.pri)
+}
+DESTDIR = $${IMPRESARIO_BIN_PATH}
+
+win32 {
+  RC_ICONS += ../misc/impresario.ico
+  DEFINES += QT_QTPROPERTYBROWSER_IMPORT
+  CONFIG(release, release|debug) {
+    LIBS += $$quote(-L../components/libavoid/release) -llibavoid
+    LIBS += $$quote(-L../components/qtpropertybrowser/release) -lQt5PropertyBrowser
+  }
+  CONFIG(debug, release|debug) {
+    LIBS += $$quote(-L../components/libavoid/debug) -llibavoidd
+    LIBS += $$quote(-L../components/qtpropertybrowser/debug) -lQt5PropertyBrowserd
+  }
+}
+
+unix {
+  CONFIG(release, release|debug) {
+    LIBS += $$quote(-L../components/libavoid) -lavoid
+    LIBS += $$quote(-L../components/qtpropertybrowser) -lQt5PropertyBrowser
+  }
+  CONFIG(debug, release|debug) {
+    LIBS += $$quote(-L../components/libavoid) -lavoidd
+    LIBS += $$quote(-L../components/qtpropertybrowser) -lQt5PropertyBrowserd
+  }
+}
+
+INCLUDEPATH += $$quote($${_PRO_FILE_PWD_}/../components/qtpropertybrowser/src)
+INCLUDEPATH += $$quote($${_PRO_FILE_PWD_}/../components/libavoid/source)
+INCLUDEPATH += $$quote($${_PRO_FILE_PWD_}/../components/singleapplication)
 
 SOURCES += main.cpp \
     appimpresario.cpp \
@@ -66,7 +95,9 @@ SOURCES += main.cpp \
     graphresources.cpp \
     graphserializer.cpp \
     stdconsoleinterface.cpp \
-    ../components/singleapplication/singleapplication.cpp
+    ../components/singleapplication/singleapplication.cpp \
+    helpsystem.cpp \
+    helpwindows.cpp
 
 HEADERS  += appimpresario.h \
     framemainwindow.h \
@@ -106,66 +137,12 @@ HEADERS  += appimpresario.h \
     graphresources.h \
     graphserializer.h \
     stdconsoleinterface.h \
-    ../components/singleapplication/singleapplication.h
+    ../components/singleapplication/singleapplication.h \
+    helpsystem.h \
+    helpwindows.h
 
 RESOURCES += \
     resources.qrc
-
-win32 {
-  RC_ICONS += ../misc/impresario.ico
-  DEFINES += QT_QTPROPERTYBROWSER_IMPORT
-  contains(QT_ARCH, i386) {
-    CONFIG(release, release|debug) {
-      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-win32-release
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/win32) -lQt5PropertyBrowser
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/win32) -llibavoid
-    }
-    CONFIG(debug, release|debug) {
-      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-win32-debug
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/win32) -lQt5PropertyBrowserd
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/win32) -llibavoidd
-    }
-  }
-  else {
-    CONFIG(release, release|debug) {
-      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-win64-release
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/win64) -lQt5PropertyBrowser
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/win64) -llibavoid
-    }
-    CONFIG(debug, release|debug) {
-      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-win64-debug
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/win64) -lQt5PropertyBrowserd
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/win64) -llibavoidd
-    }
-  }
-}
-
-unix {
-  contains(QT_ARCH, i386) {
-    CONFIG(release, release|debug) {
-      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-unix32-release
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/unix32) -lQt5PropertyBrowser
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/unix32) -lavoid
-    }
-    CONFIG(debug, release|debug) {
-      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-unix32-debug
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/unix32) -lQt5PropertyBrowserd
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/unix32) -lavoidd
-    }
-  }
-  else {
-    CONFIG(release, release|debug) {
-      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-unix64-release
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/unix64) -lQt5PropertyBrowser
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/unix64) -lavoid
-    }
-    CONFIG(debug, release|debug) {
-      DESTDIR = $$_PRO_FILE_PWD_/../../../bin-unix64-debug
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/qtpropertybrowser/lib/unix64) -lQt5PropertyBrowserd
-      LIBS += $$quote(-L$$_PRO_FILE_PWD_/../components/libavoid/lib/unix64) -lavoidd
-    }
-  }
-}
 
 OTHER_FILES += \
     ../../../resources/PropertyWidget.qml \

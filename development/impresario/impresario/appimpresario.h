@@ -23,6 +23,7 @@
 
 #include "resources.h"
 #include "singleapplication.h"
+#include "helpsystem.h"
 #include <QString>
 #include <QIODevice>
 #include <QSettings>
@@ -52,13 +53,18 @@ namespace app
       return qmlEngineInstance;
     }
 
+    help::System& helpEngine()
+    {
+      return helpSystemInstance;
+    }
+
   public slots:
     void settingChanged(Resource::SettingsIDs id);
     void initMacroLibraries();
 
   signals:
-    void initCriticalSuccessful();
-    void initNonCriticalSuccessful();
+    void initCriticalFinished(bool successful);
+    void initNonCriticalFinished(bool successful);
     void raiseMainWindow();
 
   private slots:
@@ -74,14 +80,16 @@ namespace app
     virtual ~Impresario();
 
     bool initResourcePath();
+    bool initDocumentationPath();
     bool initProcessGraphPath();
     bool initDepLibPaths();
     bool initMacroLibPaths();
 
     static Impresario* appInstance;
 
-    QQmlEngine qmlEngineInstance;
-    QWidget*   wndActWindow;
+    QQmlEngine   qmlEngineInstance;
+    help::System helpSystemInstance;
+    QWidget*     wndActWindow;
   };
 }
 #endif // APPIMPRESARIO_H

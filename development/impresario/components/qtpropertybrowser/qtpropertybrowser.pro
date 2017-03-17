@@ -1,6 +1,10 @@
 QT += core gui widgets
 TEMPLATE = lib
-CONFIG += dll
+CONFIG += shared
+
+!include(../../impresario_bin_path.pri) {
+  error(Failed to include impresario_bin_path.pri)
+}
 
 win32 {
   DEFINES += QT_QTPROPERTYBROWSER_EXPORT
@@ -10,12 +14,7 @@ win32 {
   CONFIG(debug, release|debug) {
     TARGET = Qt5PropertyBrowserd
   }
-  contains(QT_ARCH, i386) {
-    DESTDIR = $$_PRO_FILE_PWD_/lib/win32
-  }
-  else {
-    DESTDIR = $$_PRO_FILE_PWD_/lib/win64
-  }
+  QMAKE_POST_LINK = copy /Y $$shell_path($${OUT_PWD})\\$${BUILD_TYPE}\*.dll $$shell_path($${IMPRESARIO_BIN_PATH})
 }
 
 unix {
@@ -25,12 +24,7 @@ unix {
   CONFIG(debug, release|debug) {
     TARGET = Qt5PropertyBrowserd
   }
-  contains(QT_ARCH, i386) {
-    DESTDIR = $$_PRO_FILE_PWD_/lib/unix32
-  }
-  else {
-    DESTDIR = $$_PRO_FILE_PWD_/lib/unix64
-  }
+  QMAKE_POST_LINK = mkdir -p $$shell_path($${IMPRESARIO_BIN_PATH})/qtlib && cp $$shell_path($${OUT_PWD})/*.so* $$shell_path($${IMPRESARIO_BIN_PATH})/qtlib
 }
 
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0

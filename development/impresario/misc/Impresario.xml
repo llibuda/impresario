@@ -5,6 +5,7 @@
             <Macros>../lib</Macros>
             <ProcessGraphs>../processgraphs</ProcessGraphs>
             <Resources>../resources</Resources>
+            <Documentation>../doc</Documentation>
         </Paths>
     </Data>
     <GUI>

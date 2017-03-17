@@ -70,6 +70,7 @@ namespace frame
     this->addAction(Resource::action(Resource::FILE_SAVE));
     this->addSeparator();
     this->addAction(Resource::action(Resource::FILE_QUIT));
+    toggleViewAction()->setStatusTip(tr("Toggle visibility of File toolbar"));
   }
 
   //-----------------------------------------------------------------------
@@ -84,6 +85,7 @@ namespace frame
     this->addSeparator();
     this->addAction(Resource::action(Resource::EDIT_UNDO));
     this->addAction(Resource::action(Resource::EDIT_REDO));
+    toggleViewAction()->setStatusTip(tr("Toggle visibility of Edit toolbar"));
   }
 
   void ToolBarEdit::changeState(MainWindow::AppState oldState, MainWindow::AppState newState)
@@ -126,6 +128,7 @@ namespace frame
     sbZoom.setSingleStep(10);
     sbZoom.setSuffix("%");
     sbZoom.setButtonSymbols(QAbstractSpinBox::PlusMinus);
+    toggleViewAction()->setStatusTip(tr("Toggle visibility of View toolbar"));
   }
 
   void ToolBarView::changeState(MainWindow::AppState oldState, MainWindow::AppState newState)
@@ -163,6 +166,7 @@ namespace frame
     this->addAction(Resource::action(Resource::CTRL_STOP));
     this->addSeparator();
     this->addAction(Resource::action(Resource::CTRL_SNAP));
+    toggleViewAction()->setStatusTip(tr("Toggle visibility of Control toolbar"));
   }
 
   void ToolBarCtrl::changeState(MainWindow::AppState oldState, MainWindow::AppState newState)

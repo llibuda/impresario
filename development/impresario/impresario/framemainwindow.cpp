@@ -150,7 +150,10 @@ namespace frame
     connect(Resource::action(Resource::FILE_CLOSEALL), SIGNAL(triggered()), mdiArea, SLOT(closeAllSubWindows()));
     connect(Resource::action(Resource::FILE_QUIT), SIGNAL(triggered()), this, SLOT(close()));
     connect(Resource::action(Resource::EXTRAS_SETTINGS), SIGNAL(triggered()), this, SLOT(extrasSettings()));
+    connect(Resource::action(Resource::HELP_CONTENT), SIGNAL(triggered()), &app::Impresario::instance().helpEngine(), SLOT(showHelpContents()));
+    connect(Resource::action(Resource::HELP_IDX), SIGNAL(triggered()), &app::Impresario::instance().helpEngine(), SLOT(showHelpIndex()));
     connect(Resource::action(Resource::HELP_ABOUT), SIGNAL(triggered()), this, SLOT(helpAbout()));
+    connect(this,SIGNAL(closeHelpSystem()),&app::Impresario::instance().helpEngine(), SLOT(closeHelp()));
     connect(Resource::action(Resource::MACRO_FINDINSTANCE),SIGNAL(triggered()),this,SLOT(mdiNavigateMacro()));
 
     // connect variable actions to be handled in the different MDI windows
@@ -281,6 +284,7 @@ namespace frame
       QSettings settings;
       settings.setValue(Resource::path(Resource::SETTINGS_GUI_WINDOWGEOMETRY), saveGeometry().toBase64());
       settings.setValue(Resource::path(Resource::SETTINGS_GUI_WINDOWSTATE), saveState().toBase64());
+      emit closeHelpSystem();
       event->accept();
     }
   }

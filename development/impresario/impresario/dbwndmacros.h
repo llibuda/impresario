@@ -93,7 +93,7 @@ namespace db
     void viewConfigChanged(Resource::SettingsIDs id);
 
   private slots:
-    void initDBView();
+    void initDBView(bool appInitOk);
     void updateView(int level);
     void manageViews();
     void manageFilters();
