@@ -5,9 +5,9 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario">
+		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario 2.1">
 		<link rel="icon" href="http://llibuda.github.io/impresario/web/impresario.png">
-		<title>Setup of Development Environment - Impresario</title>
+		<title>Setup of Development Environment - Impresario 2.1</title>
 		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/highlight.js.min.css">
 		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap.min.css">
 		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
@@ -34,7 +34,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="http://llibuda.github.io/impresario/web">Impresario</a>
+				<a class="navbar-brand" href="http://llibuda.github.io/impresario/web">Impresario 2.1</a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
@@ -112,7 +112,7 @@ you need a development enviroment.</p>
 <p>In general three components are required:</p>
 
 <ul>
-<li>Qt Framework 5.5 with QtCreator</li>
+<li>Qt Framework 5.6 with QtCreator</li>
 <li>A suitable compiler for QtCreator</li>
 <li><em>Git</em> as version control system</li>
 </ul>
@@ -121,8 +121,8 @@ you need a development enviroment.</p>
 
 <h1 id="setup-for-windows-systems">Setup for Windows systems</h1>
 
-<p>On Windows systems Impresario currently supports the MinGW C++ compiler 4.9.2 (GNU gcc 32bit) and Microsoft&rsquo;s C++ compiler
-version 18.0 with runtime 12.0 in 32bit and 64bit. The Microsoft compiler for example is shipped with Visual Studio 2013.</p>
+<p>On Windows systems Impresario currently supports Microsoft&rsquo;s C++ compilers version 18.0 with runtime 12.0 and version 19.0 with runtime 14.0.
+Both 32bit and 64bit builds are supported. These compilers are shipped with Visual Studio 2013 and Visual Studio 2015 respectively.</p>
 
 <ul>
 <li>Go to <a href="http://www.qt.io/download-open-source/">http://www.qt.io/download-open-source/</a> and download the Qt Online Installer for Windows.</li>
@@ -138,17 +138,16 @@ screenshot shows what is needed by Impresario:
         
     </figcaption>
     
-</figure>
+</figure><br>
 Color legend:
 
 <ul>
 <li>Green: Mandatory components to be installed in any case</li>
-<li>Yellow: To be installed if you like to use MinGW compiler</li>
-<li>Blue: To be installed if you like to use Microsoft&rsquo;s C++ compiler</li>
+<li>Blue: Install one or more, depending on which compiler and build type you prefer.</li>
 </ul></li>
-<li>If you choose one of the msvc2013 packages during installation of Qt, you have to install the Microsoft compiler as well. The easiest way is
-to install MS Visual Studio 2013 Express for Desktop. You can download it from
-<a href="https://www.visualstudio.com/downloads/download-visual-studio-vs">https://www.visualstudio.com/downloads/download-visual-studio-vs</a> (it&rsquo;s free).</li>
+<li>For <em>msvc2013</em> packages you have to install Visual Studio 2013. For <em>msvc2015</em> packages you have to install Visual Studio 2015.
+You can get the Visual Studio 2013 Express Edition or Visual Studio 2015 Community Edition free of charge from
+<a href="https://www.visualstudio.com/downloads/download-visual-studio-vs">https://www.visualstudio.com/downloads/download-visual-studio-vs</a>.</li>
 <li>Download Git for Windows from <a href="https://git-scm.com/download/win">https://git-scm.com/download/win</a>. Afterwards, run the installer.</li>
 </ul>
 
@@ -215,7 +214,7 @@ maintenance this is achieved by running <code>sudo apt-get install build-essenti
 </div> 
 
 <footer class="doc-footer">
-	<p>Copyright 2015-2016 Lars Libuda</p>
+	<p>Copyright 2015-2017 Lars Libuda</p>
 </footer>
 
 
