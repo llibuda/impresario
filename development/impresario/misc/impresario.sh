@@ -35,6 +35,7 @@ libdir=`cd "$bindir/qtlib" ; pwd`
 userconfig=~/.config/
 config=`find $userconfig -path "*/.*Impresario.xml"`
 depdirs=""
+systemfallback=false
 if test -e "$config"; then
     # If config file exists, try to read line with directories containing dependent shared objects
     #echo "Using Impresario's user configuration file" $config
@@ -42,8 +43,14 @@ if test -e "$config"; then
     depdirlist=`sed -nr 's/^.*<DepLibs>(.*)<\/DepLibs>/\1/p' "$config" | sed -nr 's/\|/:/gp'`
     if test -n "$depdirlist"; then
         depdirs="$depdirlist"
+    else
+        systemfallback=true
     fi
 else
+    systemfallback=true
+fi
+
+if $systemfallback; then
     # user configuration file does not exist, try to locate Impresario's global configuration file
     config=$bindir/Impresario.xml
     if test -e "$config"; then
