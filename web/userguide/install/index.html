@@ -106,40 +106,41 @@
 				<section>
 					
 
-<p>Impresario binaries are distributed in compressed archives, &ldquo;zip&rdquo; archives on Windows platforms and &ldquo;tar.gz&rdquo; archives
-on Linux platforms. Impresario does not make any changes to the operating system, it runs locally from
+<p>Impresario binaries are distributed in self-extracting archives for Windows and Linux platforms.
+Impresario does not make any changes to the operating system, it runs locally from
 the folder you installed it to.</p>
 
 <h1 id="installation-on-windows">Installation on Windows</h1>
 
 <ul>
-<li>Download the two zip archives <code>Impresario-win64-X.Y.Z.zip</code> and <code>ImpresarioMacros-win64-X.Y.Z.zip</code>
+<li>Download the two executable files <code>Impresario-win64-X.Y.Z.exe</code> and <code>ImpresarioMacros-win64-X.Y.Z.exe</code>
 respectively, where <code>X</code>, <code>Y</code>, and <code>Z</code> denote the major, minor, and patch version of the packages.</li>
-<li>Create a new folder somewhere on your hard drive where you would like Impresario to be installed to,
-e.g. <code>D:\Impresario-2.0.0</code>.</li>
-<li>Call your favorite zip handling tool to uncompress both archives into the just created folder.<br>
-<strong>Important:</strong> Uncompress <code>Impresario-win64-X.Y.Z.zip</code> <strong>first</strong>! During uncompression of
-<code>ImpresarioMacros-win64-X.Y.Z.zip</code>, the zip tool may prompt you to overwrite the file <code>bin\Impresario.xml</code>.
-Please let it overwrite the file.</li>
+<li>Run <code>Impresario-win64-X.Y.Z.exe</code> <strong>first</strong>. It will prompt for an installation directory, please provide it,
+e.g. <code>D:\Impresario-2.1.0</code>. The directory will be created if it does not exist already.</li>
+<li>Next, run <code>ImpresarioMacros-win64-X.Y.Z.exe</code>, it will also prompt for an installation directory. Please provide
+the <em>same</em> directory as you did in the first step. During extraction the tool may ask to overwrite
+the file <code>bin\Impresario.xml</code>. Please let it overwrite the file.</li>
 <li>You are done. You can now start Impresario by running <code>Impresario.exe</code> in the <code>bin</code> subdirectory.<br /></li>
 </ul>
 
 <h1 id="installation-on-linux">Installation on Linux</h1>
 
 <ul>
-<li>Download the two compressed tar archives <code>Impresario-linux64-X.Y.Z.tar.gz</code> and <code>ImpresarioMacros-linux64-X.Y.Z.tar.gz</code>
+<li>Download the two self-extracting archives <code>Impresario-linux64-X.Y.Z.run</code> and <code>ImpresarioMacros-linux64-X.Y.Z.run</code>
 respectively, where <code>X</code>, <code>Y</code>, and <code>Z</code> denote the major, minor, and patch version of the packages.</li>
-<li>Create a new folder somewhere on your hard drive where you would like Impresario to be installed to,
-e.g. <code>~/Impresario-2.0.0</code>.</li>
 
-<li><p>Move both tar.gz archives into the just created folder and then run the following commands
-from within this folder in the given order:</p>
+<li><p>Make both downloaded files executable:</p>
 
-<pre><code class="language-bash">tar xzvf Impresario-linux64-X.Y.Z.tar.gz
-tar xzvf ImpresarioMacros-linux64-X.Y.Z.tar.gz
-# optional clean up
-rm *.tar.gz
+<pre><code class="language-bash">
+chmod +x Impresario-linux64-X.Y.Z.run
+chmod +x ImpresarioMacros-linux64-X.Y.Z.tar.gz
 </code></pre></li>
+
+<li><p>Run <code>Impresario-linux64-X.Y.Z.run</code> <strong>first</strong>. You can provide an installation directory with the <code>--target</code> option,
+e.g. <code>Impresario-linux64-X.Y.Z.run --target ./Impresario</code>. If no <code>--target</code> option is given, the default
+installation directory will be used, which is <code>./Impresario-X.Y.Z</code>.</p></li>
+
+<li><p>Next, run <code>ImpresarioMacros-linux64-X.Y.Z.run</code>, providing the <em>same</em> directory as you did in the first step.</p></li>
 
 <li><p>You are done. You can now start Impresario by running <code>./impresario.sh</code> in the <code>bin</code> subdirectory.<br>
 <strong>Important:</strong> Do not run the program <code>./Impresario</code>! This will run Impresario with an incorrect setup of
