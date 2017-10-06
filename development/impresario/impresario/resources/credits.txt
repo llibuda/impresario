@@ -4,16 +4,16 @@
 <p>
 <span style="font-variant: small-caps">Impresario</span> uses the following libraries and components:
 <ul>
-<li>Qt Toolkit 5.6.2</li>
+<li>Qt Toolkit 5.9.1</li>
 <li>QtPropertyBrowser</li>
 <li>SingleApplication</li>
 <li>libavoid</li>
 <li>Silk icon set 1.3</li>
 </ul>
 </p>
-<h2>Qt Toolkit 5.6.2</h2>
+<h2>Qt Toolkit 5.9.1</h2>
 <p>
-Copyright (C) 2015 The Qt Company Ltd.<br>
+Copyright (C) 2017 The Qt Company Ltd.<br>
 <br>
 Contact: <a href="http://www.qt.io/licensing/">http://www.qt.io/licensing/</a><br>
 <br>
@@ -28,11 +28,7 @@ The source code is available for download at <a href="http://www.qt.io/download/
 </p>
 <h2>QtPropertyBrowser</h2>
 <p>
-QtPropertyBrowser is part of the Qt Solutions 
-Archive (<a href="http://qt.gitorious.org/qt-solutions">
-http://qt.gitorious.org/qt-solutions</a>). However, a ported version to Qt 5
-is used in <span style="font-variant: small-caps">Impresario</span> which
-can be downloaded from <a href="https://bitbucket.org/eligt/qtpropertybrowser">
+QtPropertyBrowser can be downloaded from <a href="https://bitbucket.org/eligt/qtpropertybrowser">
 https://bitbucket.org/eligt/qtpropertybrowser</a>.
 QtPropertyBrowser is used under the terms of the BSD license as follows:
 </p>
