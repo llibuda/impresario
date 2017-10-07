@@ -23,12 +23,7 @@
 
 #include "graphmain.h"
 #include <QObject>
-#include <QThread>
-#include <QFuture>
 #include <QFutureWatcher>
-#include <QWaitCondition>
-#include <QQueue>
-#include <QMutex>
 #include <QEvent>
 
 namespace app

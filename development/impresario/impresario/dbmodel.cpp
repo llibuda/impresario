@@ -694,83 +694,48 @@ namespace db
   //-----------------------------------------------------------------------
   // Class ModelCreator
   //-----------------------------------------------------------------------
-  ModelCreator::ModelCreator(QObject* parent) : QThread(parent), format(0), filter(0), restart(false)
+  ModelCreator::ModelCreator(QObject* parent) : QObject(parent), watcher()
   {
+    connect(&watcher,SIGNAL(finished()),this,SLOT(creatingViewModelFinished()));
   }
 
   ModelCreator::~ModelCreator()
   {
-    format = 0;
-    filter = 0;
   }
 
   void ModelCreator::createViewModel(const ViewFormat& format, const ViewFilter& filter)
   {
-    QMutexLocker locker(&mutex);
-    this->format = &format;
-    this->filter = &filter;
-    if (!isRunning())
+    QFuture<ModelItemRoot*> future = QtConcurrent::run(ModelCreator::doCreateModel,format,filter);
+    watcher.setFuture(future);
+  }
+
+  void ModelCreator::creatingViewModelFinished()
+  {
+    emit modelCreated(watcher.result());
+  }
+
+  ModelItemRoot* ModelCreator::doCreateModel(const ViewFormat& format, const ViewFilter& filter)
+  {
+    QString fmtTree;
+    QString fmtTable;
+    if (format.valid())
     {
-      start();
+      fmtTree = format.getTreePart();
+      fmtTable = format.getTablePart();
     }
     else
     {
-      restart = true;
+      return 0;
     }
-  }
-
-  void ModelCreator::run()
-  {
-    bool repeat = false;
-    do
+    // create new model tree
+    ModelItemRoot* root = new ModelItemRoot(fmtTable,0);
+    app::MacroManager::instance().iterateVertexDataTypes(ModelCreator::handleVertexDataType,&fmtTree,&fmtTable,&filter,root);
+    QSettings settings;
+    if (settings.value(Resource::path(Resource::SETTINGS_DB_SHOWVIEWERS),false).toBool())
     {
-      // copy private attributes to thread internal stack
-      mutex.lock();
-      ViewFilter* fltIntern = new ViewFilter(*(this->filter));
-      QString fmtTree;
-      QString fmtTable;
-      if (this->format->valid())
-      {
-        fmtTree = this->format->getTreePart();
-        fmtTable = this->format->getTablePart();
-        mutex.unlock();
-      }
-      else
-      {
-        delete fltIntern;
-        emit modelCreated(0);
-        mutex.unlock();
-        return;
-      }
-
-      // create new model tree
-      ModelItemRoot* root = new ModelItemRoot(fmtTable,0);
-      app::MacroManager::instance().iterateVertexDataTypes(this,&fmtTree,&fmtTable,fltIntern,root);
-      QSettings settings;
-      if (settings.value(Resource::path(Resource::SETTINGS_DB_SHOWVIEWERS),false).toBool())
-      {
-        app::MacroManager::instance().iterateViewerTypes(this,&fmtTree,&fmtTable,fltIntern,root);
-      }
-      delete fltIntern;
-
-      // check whether we need to restart or can deliver result
-      mutex.lock();
-      repeat = this->restart;
-      if (this->restart)
-      {
-        this->restart = false;
-      }
-      mutex.unlock();
-      if (repeat)
-      {
-        delete root;
-        root = 0;
-      }
-      else
-      {
-        emit modelCreated(root);
-      }
-    } while(repeat == true);
+      app::MacroManager::instance().iterateViewerTypes(ModelCreator::handleVertexDataType,&fmtTree,&fmtTable,&filter,root);
+    }
+    return root;
   }
 
   bool ModelCreator::handleVertexDataType(graph::VertexData::Ptr macroPtr, va_list args)

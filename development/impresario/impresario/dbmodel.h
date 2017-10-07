@@ -27,7 +27,6 @@
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 #include <QVariant>
-#include <QThread>
 #include <QMutex>
 #include <QObject>
 #include <QMimeData>
@@ -35,6 +34,7 @@
 #include <QtVariantPropertyManager>
 #include <QList>
 #include <QtVariantProperty>
+#include <QtConcurrent>
 
 namespace db
 {
@@ -199,7 +199,7 @@ namespace db
     virtual QList<QtVariantProperty*> properties(QtVariantPropertyManager& propManager) const;
   };
 
-  class ModelCreator : public QThread, public graph::ElementManager::VertexDataTypeIterator
+  class ModelCreator : public QObject
   {
     Q_OBJECT
   public:
@@ -211,17 +211,15 @@ namespace db
   signals:
     void modelCreated(ModelItemRoot* rootItem);
 
-  protected:
-    virtual void run();
+  private slots:
+    void creatingViewModelFinished();
 
   private:
-    virtual bool handleVertexDataType(graph::VertexData::Ptr macroPtr, va_list args);
-    void addModelItem(const app::Macro& macro, const QString& treeFormat, const QString& tableFormat, int pos, ModelItem* parent);
+    static ModelItemRoot* doCreateModel(const ViewFormat& format, const ViewFilter& filter);
+    static bool handleVertexDataType(graph::VertexData::Ptr macroPtr, va_list args);
+    static void addModelItem(const app::Macro& macro, const QString& treeFormat, const QString& tableFormat, int pos, ModelItem* parent);
 
-    QMutex            mutex;
-    const ViewFormat* format;
-    const ViewFilter* filter;
-    bool              restart;
+    QFutureWatcher<ModelItemRoot*> watcher;
   };
 
   class Model : public QAbstractItemModel

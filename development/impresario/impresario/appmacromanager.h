@@ -51,7 +51,7 @@ namespace app
       return viewers.contains(dataType);
     }
 
-    void iterateViewerTypes(VertexDataTypeIterator* iterator, ... ) const;
+    void iterateViewerTypes(IteratorFunction iterator, ... ) const;
 
   protected:
     virtual QString matchVertexSignature(const VertexDataTypeMap& vertexDataTypes, const QString& signature);

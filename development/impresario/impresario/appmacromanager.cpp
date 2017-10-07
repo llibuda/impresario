@@ -167,7 +167,7 @@ namespace app
     return viewerPtr->clone().staticCast<MacroViewer>();
   }
 
-  void MacroManager::iterateViewerTypes(VertexDataTypeIterator* iterator, ... ) const
+  void MacroManager::iterateViewerTypes(IteratorFunction iterator, ... ) const
   {
     Q_ASSERT(iterator != 0);
     QMutexLocker lock(&mutex);
@@ -179,7 +179,7 @@ namespace app
         visitedViewers.insert(it.value().data());
         va_list args;
         va_start(args,iterator);
-        if (!iterator->handleVertexDataType(it.value(),args))
+        if (!(*iterator)(it.value(),args))
         {
           va_end(args);
           return;

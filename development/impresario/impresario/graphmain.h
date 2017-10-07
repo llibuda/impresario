@@ -45,10 +45,7 @@ namespace graph
     typedef QList<Vertex::Ptr> VertexInstanceList;
     typedef QList<Edge::Ptr>   EdgeInstanceList;
 
-    struct VertexDataTypeIterator
-    {
-      virtual bool handleVertexDataType(VertexData::Ptr vertexDataType, va_list args) = 0;
-    };
+    typedef bool (*IteratorFunction)(VertexData::Ptr, va_list);
 
     ElementManager();
     virtual ~ElementManager();
@@ -74,7 +71,7 @@ namespace graph
     Vertex::Ptr vertexFromId(const QUuid& id) const;
     Edge::Ptr edgeFromId(const QUuid& id) const;
 
-    void iterateVertexDataTypes(VertexDataTypeIterator* iterator, ... ) const;
+    void iterateVertexDataTypes(IteratorFunction iterator, ... ) const;
 
   signals:
     void vertexCreated(graph::Vertex::Ptr vertexInstance);
