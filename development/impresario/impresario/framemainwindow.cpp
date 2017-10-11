@@ -156,9 +156,13 @@ namespace frame
     connect(Resource::action(Resource::HELP_ABOUT), SIGNAL(triggered()), this, SLOT(helpAbout()));
     connect(this,SIGNAL(closeHelpSystem()),&app::Impresario::instance().helpEngine(), SLOT(closeHelp()));
     connect(Resource::action(Resource::MACRO_FINDINSTANCE),SIGNAL(triggered()),this,SLOT(mdiNavigateMacro()));
-    connect(&app::MacroManager::instance(),SIGNAL(loadPrototypesStarted()),statBar,SLOT(showProgressBar()),Qt::QueuedConnection);
-    connect(&app::MacroManager::instance(),SIGNAL(loadPrototypesFinished()),statBar,SLOT(hideProgressBar()),Qt::QueuedConnection);
-    connect(&app::MacroManager::instance(),SIGNAL(loadPrototypesProgress(int,int,QString)),statBar,SLOT(updateProgress(int,int,QString)),Qt::QueuedConnection);
+
+    connect(&app::MacroManager::instance(),&app::MacroManager::loadPrototypesStarted,statBar,&StatusBar::showProgressBar,Qt::QueuedConnection);
+    connect(&app::MacroManager::instance(),&app::MacroManager::loadPrototypesFinished,statBar,&StatusBar::hideProgressBar,Qt::QueuedConnection);
+    connect(&app::MacroManager::instance(),&app::MacroManager::loadPrototypesProgress,statBar,&StatusBar::updateProgress,Qt::QueuedConnection);
+    QAction* fileLoadAction = Resource::action(Resource::FILE_LOAD);
+    connect(&app::MacroManager::instance(), &app::MacroManager::loadPrototypesStarted, this, [=] () { fileLoadAction->setEnabled(false); },Qt::QueuedConnection);
+    connect(&app::MacroManager::instance(), &app::MacroManager::loadPrototypesFinished, this, [=] () { fileLoadAction->setEnabled(true); },Qt::QueuedConnection);
 
     // connect variable actions to be handled in the different MDI windows
     db::WndMacros* wndMacros = findChild<db::WndMacros*>("WndMacros");
