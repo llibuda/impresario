@@ -76,7 +76,7 @@ namespace app
         files.append(dirs[dindex] + '/' + dirFileList[findex]);
       }
     }
-    emit loadPrototypesProgress(0,files.count());
+    emit loadPrototypesProgress(0,files.count(),tr("Loading macro library file %v of %m."));
     for(int findex = 0; findex < files.count(); ++findex)
     {
 #ifdef Q_OS_WIN
@@ -109,7 +109,6 @@ namespace app
       }
 #endif
       emit loadPrototypesProgress(findex + 1,files.count());
-      QThread::msleep(200);
     }
     if (libList.size() > 0)
     {

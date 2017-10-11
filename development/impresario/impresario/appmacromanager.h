@@ -57,7 +57,7 @@ namespace app
   signals:
     void loadPrototypesStarted();
     void loadPrototypesFinished();
-    void loadPrototypesProgress(int current, int total);
+    void loadPrototypesProgress(int current, int total, const QString& format = QString());
 
   protected:
     virtual QString matchVertexSignature(const VertexDataTypeMap& vertexDataTypes, const QString& signature);
