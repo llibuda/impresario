@@ -8,6 +8,7 @@ TEMPLATE = lib
 CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += shared
+CONFIG += c++11
 
 !include(../../impresario_bin_path.pri) {
   error(Failed to include impresario_bin_path.pri)
