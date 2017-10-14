@@ -105,6 +105,8 @@ namespace db
     void resetSearch();
     void macroSelectionChanged(const QModelIndex& current, const QModelIndex& previous);
     void macroContextMenu(const QPoint& pos);
+    void macroDatabaseLoadStarted();
+    void macroDatabaseLoadFinished();
 
   private:
     QPushButton*   btnSearchReset;

@@ -276,7 +276,8 @@ namespace db
     edtSearch->setBuddy(vwMacros);
 
     // connect signals
-    connect(&app::MacroManager::instance(),SIGNAL(loadPrototypesFinished()),this,SLOT(rebuildViewModel()),Qt::QueuedConnection);
+    connect(&app::MacroManager::instance(),SIGNAL(loadPrototypesStarted()),this,SLOT(macroDatabaseLoadStarted()),Qt::QueuedConnection);
+    connect(&app::MacroManager::instance(),SIGNAL(loadPrototypesFinished()),this,SLOT(macroDatabaseLoadFinished()),Qt::QueuedConnection);
     connect(&app::Impresario::instance(),SIGNAL(initNonCriticalFinished(bool)),this,SLOT(initDBView(bool)));
     connect(btnSearchReset,SIGNAL(clicked()),this,SLOT(resetSearch()));
     connect(btnView,SIGNAL(clicked()),this,SLOT(manageViews()));
@@ -450,6 +451,35 @@ namespace db
         popup.exec(vwMacros->mapToGlobal(pos),createInstance1);
       }
     }
+  }
+
+  void WndMacros::macroDatabaseLoadStarted()
+  {
+    cbView->setEnabled(false);
+    cbFilter->setEnabled(false);
+    edtSearch->setEnabled(false);
+    QLabel* lblHint = new QLabel(this);
+    lblHint->setAlignment(Qt::AlignHCenter | Qt::AlignCenter);
+    lblHint->setTextFormat(Qt::RichText);
+    lblHint->setAutoFillBackground(true);
+    lblHint->setBackgroundRole(QPalette::Base);
+    lblHint->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+    lblHint->setText(tr("<h3>Database is loading...</h3>"));
+    QLayoutItem* item = this->layout()->replaceWidget(vwMacros,lblHint,0);
+    delete item;
+    vwMacros->hide();
+  }
+
+  void WndMacros::macroDatabaseLoadFinished()
+  {
+    cbView->setEnabled(true);
+    cbFilter->setEnabled(true);
+    edtSearch->setEnabled(true);
+    QLayoutItem* item = this->layout()->replaceWidget(dynamic_cast<QWidget*>(this->layout()->itemAt(1)->widget()),vwMacros,0);
+    delete item->widget();
+    delete item;
+    vwMacros->show();
+    rebuildViewModel();
   }
 
   void WndMacros::resetSearchAndAddMacro()
