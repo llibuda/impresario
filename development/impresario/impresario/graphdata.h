@@ -44,9 +44,7 @@ namespace graph
     virtual QSharedPointer<BaseItem> createVisualization(BaseElement& elementRef, BaseItem* parent = 0);
 
   public slots:
-    virtual void elementStatusUpdated(graph::BaseElement& /*element*/, int /*change*/)
-    {
-    }
+    virtual void elementStatusUpdated(graph::BaseElement& element, int change);
 
   signals:
     void dataUpdated();
