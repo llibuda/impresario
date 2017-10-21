@@ -26,9 +26,29 @@
 #include <QToolBar>
 #include <QTreeView>
 #include <QMenu>
+#include <QStyledItemDelegate>
 
 namespace syslog
 {
+
+  class LoggerItemDelegate : public QStyledItemDelegate
+  {
+    Q_OBJECT
+  public:
+    LoggerItemDelegate(QObject* parent = nullptr);
+    virtual ~LoggerItemDelegate();
+
+    virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
+  private slots:
+    void sectionResized(int logicalIndex, int oldSize, int newSize);
+
+  private:
+    QMap<int,int> sectionSizes;
+    bool          wrappingEnabled;
+  };
+
 
   class WndLogger : public QWidget
   {
@@ -41,16 +61,16 @@ namespace syslog
     void contextMenuEvent(QContextMenuEvent* event);
 
   private slots:
-    void updateUI(Logger::MsgType type, unsigned int count);
+    void updateUI(Logger::MsgType type, int typeCount, int totalCount);
     void toggleFilterError(bool checked);
     void toggleFilterWarning(bool checked);
     void toggleFilterMessage(bool checked);
 
   private:
-    QToolBar*  tbFilter;
-    QToolBar*  tbActions;
-    QTreeView* logView;
-    QMenu*     menu;
+    QToolBar*   tbFilter;
+    QToolBar*   tbActions;
+    QTreeView*  logView;
+    QMenu*      menu;
   };
 
 }

@@ -29,11 +29,6 @@
 #include <QFont>
 #include <QSettings>
 
-namespace Qt
-{
-  const int ModelItemTypeRole = UserRole + 1;
-}
-
 class Resource
 {
 public:

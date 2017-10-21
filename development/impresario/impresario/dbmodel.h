@@ -41,6 +41,8 @@ namespace db
   class ModelItem
   {
   public:
+    static const int TypeRole = Qt::UserRole + 1;
+
     enum ModelItemType
     {
       MODELITEMTYPE_GENERIC,
@@ -226,6 +228,7 @@ namespace db
   {
     Q_OBJECT
   public:
+
     enum ModelUpdateReason
     {
       UPDATE_INITIAL,

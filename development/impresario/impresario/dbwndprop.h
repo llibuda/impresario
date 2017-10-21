@@ -88,6 +88,8 @@ namespace db
   private:
     QStandardItem* findItem(graph::Vertex* vertexPtr) const;
 
+    static const int MacroVertexPtrRole = Qt::UserRole + 2;
+
     QStandardItemModel    model;
     QSortFilterProxyModel sortModel;
     const app::Macro*     currentMacroPrototype;

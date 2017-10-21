@@ -395,7 +395,7 @@ namespace db
   {
     btnSearchReset->setEnabled(!pattern.isEmpty());
     sortModel.setFilterRegExp(pattern);
-    QModelIndexList matchedMacro = sortModel.match(sortModel.index(0,0),Qt::ModelItemTypeRole,db::ModelItem::MODELITEMTYPE_MACRO,1,Qt::MatchExactly | Qt::MatchRecursive);
+    QModelIndexList matchedMacro = sortModel.match(sortModel.index(0,0),ModelItem::TypeRole,db::ModelItem::MODELITEMTYPE_MACRO,1,Qt::MatchExactly | Qt::MatchRecursive);
     if (matchedMacro.count() > 0 && !pattern.isEmpty())
     {
       vwMacros->selectionModel()->setCurrentIndex(matchedMacro[0],QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);

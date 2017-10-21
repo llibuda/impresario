@@ -25,6 +25,7 @@
 #include <QMap>
 #include <QIcon>
 #include <QMutex>
+#include <QFile>
 
 namespace syslog
 {
@@ -44,9 +45,9 @@ namespace syslog
       Error = 'E'
     };
 
-    void addMessage(MsgType type, const QString& msg);
+    void write(MsgType type, const QString& msg);
 
-    unsigned int getMessageCount(MsgType type)
+    int getMessageCount(MsgType type)
     {
       return stat[type];
     }
@@ -54,11 +55,11 @@ namespace syslog
     static Logger& instance();
 
   signals:
-    void changedMsgCount(Logger::MsgType type, unsigned int count);
+    void changedMsgCount(Logger::MsgType type, int countType, int countTotal);
 
   public slots:
-    void clearLog();
-    void saveLog();
+    void clear();
+    void save();
 
   private:
     Logger(QObject *parent = 0);
@@ -68,11 +69,14 @@ namespace syslog
     static int idMsgType;
     static int idVectorInt;
 
-    typedef QMap<MsgType,unsigned int> MsgStats;
-    MsgStats stat;
-    QIcon    icoError;
-    QIcon    icoWarning;
-    QIcon    icoInfo;
+    static const int SaveTimeStampRole = Qt::UserRole + 3;
+
+    typedef QMap<MsgType,int> MsgStats;
+
+    MsgStats       stat;
+    QIcon          icoError;
+    QIcon          icoWarning;
+    QIcon          icoInfo;
     mutable QMutex mutex;
 
   };

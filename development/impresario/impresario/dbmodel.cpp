@@ -123,7 +123,7 @@ namespace db
         QChar colId = searchKey.at(column);
         return ViewFormat::columnName(colId);
       }
-    case Qt::ModelItemTypeRole:
+    case TypeRole:
       return type();
     default:
       return QVariant();
@@ -171,7 +171,7 @@ namespace db
         return searchKey;
       case Qt::DecorationRole:
         return QIcon(":/icons/resources/macrocreator.png");
-      case Qt::ModelItemTypeRole:
+      case TypeRole:
         return type();
       default:
         return QVariant();
@@ -209,7 +209,7 @@ namespace db
         return searchKey;
       case Qt::DecorationRole:
         return QIcon(":/icons/resources/macrogroup.png");
-      case Qt::ModelItemTypeRole:
+      case TypeRole:
         return type();
       default:
         return QVariant();
@@ -247,7 +247,7 @@ namespace db
         return searchKey;
       case Qt::DecorationRole:
         return QIcon(":/icons/resources/macrobuild.png");
-      case Qt::ModelItemTypeRole:
+      case TypeRole:
         return type();
       default:
         return QVariant();
@@ -285,7 +285,7 @@ namespace db
         return searchKey;
       case Qt::DecorationRole:
         return QIcon(":/icons/resources/macrotype.png");
-      case Qt::ModelItemTypeRole:
+      case TypeRole:
         return type();
       default:
         return QVariant();
@@ -323,7 +323,7 @@ namespace db
         return searchKey;
       case Qt::DecorationRole:
         return QIcon(":/icons/resources/macrodb.png");
-      case Qt::ModelItemTypeRole:
+      case TypeRole:
         return type();
       default:
         return QVariant();
@@ -362,7 +362,7 @@ namespace db
         return searchKey;
       case Qt::DecorationRole:
         return QIcon(":/icons/resources/macrolib.png");
-      case Qt::ModelItemTypeRole:
+      case TypeRole:
         return type();
       default:
         return QVariant();
@@ -472,7 +472,7 @@ namespace db
         return QVariant();
       }
     }
-    else if (role == Qt::ModelItemTypeRole)
+    else if (role == TypeRole)
     {
       return type();
     }
@@ -863,7 +863,7 @@ namespace db
     {
       return QVariant();
     }
-    if ((role != Qt::DisplayRole) && (role != Qt::DecorationRole) && (role != Qt::ModelItemTypeRole) && (role != Qt::ForegroundRole))
+    if ((role != Qt::DisplayRole) && (role != Qt::DecorationRole) && (role != ModelItem::TypeRole) && (role != Qt::ForegroundRole))
     {
       return QVariant();
     }
