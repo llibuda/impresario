@@ -117,6 +117,7 @@ namespace syslog
     logView = new QTreeView(this);
     logView->setRootIsDecorated(false);
     logView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    logView->setUniformRowHeights(false);
     logView->setWordWrap(true);
     logView->setModel(model);
     logView->hideColumn(1);
@@ -174,13 +175,13 @@ namespace syslog
     QString text;
     Resource::action(Resource::SYSLOG_CLEAR)->setEnabled(totalCount>0);
     Resource::action(Resource::SYSLOG_SAVE)->setEnabled(totalCount>0);
-    if (totalCount == 0)
+    if (totalCount == 0 && typeCount == 0)
     {
-      text = QString(tr("%1 Messages")).arg(typeCount);
+      text = QString(tr("%1 Messages")).arg(Logger::instance().getMessageCount(Logger::Information));
       Resource::action(Resource::SYSLOG_FILTERMESSAGES)->setIconText(text);
-      text = QString(tr("%1 Warnings")).arg(typeCount);
+      text = QString(tr("%1 Warnings")).arg(Logger::instance().getMessageCount(Logger::Warning));
       Resource::action(Resource::SYSLOG_FILTERWARNINGS)->setIconText(text);
-      text = QString(tr("%1 Errors")).arg(typeCount);
+      text = QString(tr("%1 Errors")).arg(Logger::instance().getMessageCount(Logger::Error));
       Resource::action(Resource::SYSLOG_FILTERERRORS)->setIconText(text);
       return;
     }

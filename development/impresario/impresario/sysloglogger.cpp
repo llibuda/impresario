@@ -87,15 +87,35 @@ namespace syslog
       item->setIcon(icoError);
       break;
     }
+
     QMutexLocker locker(&mutex);
     appendRow(item);
     QDateTime timeStamp = QDateTime::currentDateTime();
     setData(index(rowCount()-1,0),timeStamp.toString("hh:mm:ss.zzz"));
     setData(index(rowCount()-1,0),timeStamp.toString("yyyy-MM-dd hh:mm:ss.zzz"),SaveTimeStampRole);
     setData(index(rowCount()-1,1),QChar(type));
+#ifdef Q_OS_WIN
+    // On Windows we cann just add the message because Qt takes care of \n while painting
     setData(index(rowCount()-1,2),msg);
+#else
+    // On Linux Qt ignores \n while painting so we have to split up the message to several items
+    QStringList list = msg.split('\n',QString::SkipEmptyParts);
+    if (!list.isEmpty())
+    {
+      setData(index(rowCount()-1,2),list[0]);
+
+      list.pop_front();
+      for(QStringList::Iterator it = list.begin(); it != list.end(); ++it)
+      {
+        item = new QStandardItem();
+        appendRow(item);
+        setData(index(rowCount()-1,1),QChar(type));
+        setData(index(rowCount()-1,2),*it);
+      }
+    }
+#endif
     stat[type]++;
-    emit changedMsgCount(type,stat[type],rowCount());
+    emit changedMsgCount(type,stat[type],stat[Information] + stat[Warning] + stat[Error]);
   }
 
   void Logger::clear()
@@ -138,7 +158,11 @@ namespace syslog
         out.setFieldWidth(typeFieldWidth);
         out << data(index(i,1)).toChar();
         out.setFieldWidth(0);
-
+#ifndef Q_OS_WIN
+        // On Ljnux we just save the string
+        out << data(index(i,2)).toString() << endl;
+#else
+        // On Windows we need to take care of \n for formatted output
         QStringList textLines = data(index(i,2)).toString().split('\n');
         for(int index = 0; index < textLines.count(); ++index)
         {
@@ -148,6 +172,7 @@ namespace syslog
           }
           out << textLines.at(index) << endl;
         }
+#endif
       }
 
       file.close();

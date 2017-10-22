@@ -24,7 +24,6 @@
 #include <QMainWindow>
 #include <QMdiArea>
 #include <QMdiSubWindow>
-#include <QMap>
 #include <QDockWidget>
 #include <QUndoGroup>
 #include <QSignalMapper>
