@@ -30,7 +30,6 @@
 #include <QHeaderView>
 #include <QFileDialog>
 #include <QDate>
-#include <QDebug>
 
 namespace syslog
 {
@@ -75,7 +74,6 @@ namespace syslog
   {
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
-    qDebug() << opt.features;
     if (wrappingEnabled)
     {
       opt.decorationAlignment = (option.decorationAlignment & Qt::AlignHorizontal_Mask) | Qt::AlignTop;
@@ -131,6 +129,7 @@ namespace syslog
     logView->setRootIsDecorated(false);
     logView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     logView->setUniformRowHeights(false);
+    logView->setAllColumnsShowFocus(true);
     logView->setWordWrap(true);
     logView->setModel(model);
     logView->hideColumn(1);
