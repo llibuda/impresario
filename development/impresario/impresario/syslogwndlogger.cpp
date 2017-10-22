@@ -21,7 +21,7 @@
 
 #include "syslogwndlogger.h"
 #include "resources.h"
-#include <QCoreApplication>
+#include <QApplication>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSortFilterProxyModel>
@@ -30,6 +30,7 @@
 #include <QHeaderView>
 #include <QFileDialog>
 #include <QDate>
+#include <QDebug>
 
 namespace syslog
 {
@@ -72,6 +73,17 @@ namespace syslog
 
   void LoggerItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
   {
+    QStyleOptionViewItem opt = option;
+    initStyleOption(&opt, index);
+    qDebug() << opt.features;
+    if (wrappingEnabled)
+    {
+      opt.decorationAlignment = (option.decorationAlignment & Qt::AlignHorizontal_Mask) | Qt::AlignTop;
+      opt.displayAlignment = (option.displayAlignment & Qt::AlignHorizontal_Mask) | Qt::AlignTop;
+    }
+    QStyle *style = QApplication::style();
+    style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, nullptr);
+    /*
     if (wrappingEnabled)
     {
       QStyleOptionViewItem newOption(option);
@@ -83,6 +95,7 @@ namespace syslog
     {
       QStyledItemDelegate::paint(painter,option,index);
     }
+    */
   }
 
   void LoggerItemDelegate::sectionResized(int logicalIndex, int /*oldSize*/, int newSize)
