@@ -30,6 +30,8 @@
 #include <QHeaderView>
 #include <QFileDialog>
 #include <QDate>
+#include <QTextOption>
+#include <QTextLayout>
 
 namespace syslog
 {
@@ -59,10 +61,34 @@ namespace syslog
   {
     if (wrappingEnabled && index.isValid() && index.column() == index.model()->columnCount() - 1)
     {
+      QStyleOptionViewItem opt = option;
+      initStyleOption(&opt, index);
+      QTextOption textOption;
+      textOption.setWrapMode(QTextOption::WordWrap);
+      textOption.setTextDirection(opt.direction);
+      textOption.setAlignment(QStyle::visualAlignment(opt.direction, opt.displayAlignment));
+      QTextLayout textLayout(opt.text, opt.font);
+      textLayout.setTextOption(textOption);
+      qreal height = 0;
+      qreal widthUsed = 0;
+      textLayout.beginLayout();
+      while (true) {
+        QTextLine line = textLayout.createLine();
+        if (!line.isValid())
+          break;
+        line.setLineWidth(sectionSizes[index.column()]);
+        line.setPosition(QPointF(0, height));
+        height += line.height();
+        widthUsed = qMax(widthUsed, line.naturalTextWidth());
+      }
+      textLayout.endLayout();
+      return QSize(widthUsed,height);
+      /*
       QSize baseSize(sectionSizes[index.column()],10000);
       QRect outRect = option.fontMetrics.boundingRect(QRect(QPoint(0, 0), baseSize), option.displayAlignment | Qt::TextWordWrap, index.data().toString());
-      baseSize.setHeight(outRect.height());
+      baseSize.setHeight(outRect.height() + 2);
       return baseSize;
+      */
     }
     else
     {
@@ -81,19 +107,6 @@ namespace syslog
     }
     QStyle *style = QApplication::style();
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, nullptr);
-    /*
-    if (wrappingEnabled)
-    {
-      QStyleOptionViewItem newOption(option);
-      newOption.decorationAlignment = (option.decorationAlignment & Qt::AlignHorizontal_Mask) | Qt::AlignTop;
-      newOption.displayAlignment = (option.displayAlignment & Qt::AlignHorizontal_Mask) | Qt::AlignTop;
-      QStyledItemDelegate::paint(painter,newOption,index);
-    }
-    else
-    {
-      QStyledItemDelegate::paint(painter,option,index);
-    }
-    */
   }
 
   void LoggerItemDelegate::sectionResized(int logicalIndex, int /*oldSize*/, int newSize)
@@ -128,7 +141,6 @@ namespace syslog
     logView = new QTreeView(this);
     logView->setRootIsDecorated(false);
     logView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    logView->setUniformRowHeights(false);
     logView->setAllColumnsShowFocus(true);
     logView->setWordWrap(true);
     logView->setModel(model);
