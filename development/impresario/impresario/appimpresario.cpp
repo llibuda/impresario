@@ -184,13 +184,13 @@ namespace app
   bool Impresario::initNonCritical()
   {
     bool result = true;
-    result = initDocumentationPath() && result;
     result = initProcessGraphPath() && result;
-    result = initDepLibPaths() && result;
     result = initMacroLibPaths() && result;
-    initMacroLibraries();
-
+    result = initDepLibPaths() && result;
+    result = initDocumentationPath() && result;
     emit initNonCriticalFinished(result);
+
+    initMacroLibraries();
     return result;
   }
 

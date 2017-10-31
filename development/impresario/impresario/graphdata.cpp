@@ -39,6 +39,10 @@ namespace graph
     return BaseItem::Ptr();
   }
 
+  void BaseData::elementStatusUpdated(graph::BaseElement& /*element*/, int /*change*/)
+  {
+  }
+
   //-----------------------------------------------------------------------
   // Class VertexData
   //-----------------------------------------------------------------------

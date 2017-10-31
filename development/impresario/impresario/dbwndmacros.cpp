@@ -276,6 +276,8 @@ namespace db
     edtSearch->setBuddy(vwMacros);
 
     // connect signals
+    connect(&app::MacroManager::instance(),SIGNAL(loadPrototypesStarted()),this,SLOT(macroDatabaseLoadStarted()),Qt::QueuedConnection);
+    connect(&app::MacroManager::instance(),SIGNAL(loadPrototypesFinished()),this,SLOT(macroDatabaseLoadFinished()),Qt::QueuedConnection);
     connect(&app::Impresario::instance(),SIGNAL(initNonCriticalFinished(bool)),this,SLOT(initDBView(bool)));
     connect(btnSearchReset,SIGNAL(clicked()),this,SLOT(resetSearch()));
     connect(btnView,SIGNAL(clicked()),this,SLOT(manageViews()));
@@ -285,8 +287,6 @@ namespace db
     connect(edtSearch,SIGNAL(textEdited(QString)),this,SLOT(searchMacro(QString)));
     connect(edtSearch,SIGNAL(returnPressed()),this,SLOT(resetSearchAndAddMacro()));
     connect(&modelMacros,SIGNAL(modelUpdateDone(int)),this,SLOT(updateView(int)));
-    connect(&modelViews,SIGNAL(activeViewConfigItemChanged()),this,SLOT(rebuildViewModel()));
-    connect(&modelFilters,SIGNAL(activeViewConfigItemChanged()),this,SLOT(rebuildViewModel()));
     connect(vwMacros,SIGNAL(activated(QModelIndex)),this,SLOT(resetSearchAndAddMacro()));
     connect(vwMacros->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(macroSelectionChanged(QModelIndex,QModelIndex)));
     connect(vwMacros,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(macroContextMenu(QPoint)));
@@ -300,22 +300,16 @@ namespace db
 
   void WndMacros::initDBView(bool /*appInitOk*/)
   {
-    // connect status bar for subsequent indications of model changes
-    connect(&modelMacros,SIGNAL(modelUpdateStart(db::Model::ModelUpdateReason)),static_cast<frame::StatusBar*>(frame::MainWindow::instance().statusBar()),SLOT(indicateViewUpdate(db::Model::ModelUpdateReason)));
-    connect(&modelMacros,SIGNAL(modelUpdateDone(int)),static_cast<frame::StatusBar*>(frame::MainWindow::instance().statusBar()),SLOT(unindicateViewUpdate(int)));
-
-    // block model signals to avoid emitting signal "activeViewConfigItemChanged" in load method called in viewConfigChanged
-    modelViews.blockSignals(true);
-    modelFilters.blockSignals(true);
     // load data base views
     viewConfigChanged(Resource::SETTINGS_DB_VIEWFORMATS);
     // load data base views
     viewConfigChanged(Resource::SETTINGS_DB_VIEWFILTERS);
-    // activate model signals again
-    modelViews.blockSignals(false);
-    modelFilters.blockSignals(false);
-    // build inital view model
-    modelMacros.updateModel(Model::UPDATE_INITIAL,static_cast<const ViewFormat*>(modelViews.getActiveViewConfig()),static_cast<const ViewFilter*>(modelFilters.getActiveViewConfig()));
+    // connect signals for updating
+    connect(&modelViews,SIGNAL(activeViewConfigItemChanged()),this,SLOT(rebuildViewModel()));
+    connect(&modelFilters,SIGNAL(activeViewConfigItemChanged()),this,SLOT(rebuildViewModel()));
+    // connect status bar for subsequent indications of model changes
+    connect(&modelMacros,SIGNAL(modelUpdateStart(db::Model::ModelUpdateReason)),static_cast<frame::StatusBar*>(frame::MainWindow::instance().statusBar()),SLOT(indicateViewUpdate(db::Model::ModelUpdateReason)));
+    connect(&modelMacros,SIGNAL(modelUpdateDone(int)),static_cast<frame::StatusBar*>(frame::MainWindow::instance().statusBar()),SLOT(unindicateViewUpdate(int)));
   }
 
   void WndMacros::viewConfigChanged(Resource::SettingsIDs id)
@@ -401,7 +395,7 @@ namespace db
   {
     btnSearchReset->setEnabled(!pattern.isEmpty());
     sortModel.setFilterRegExp(pattern);
-    QModelIndexList matchedMacro = sortModel.match(sortModel.index(0,0),Qt::ModelItemTypeRole,db::ModelItem::MODELITEMTYPE_MACRO,1,Qt::MatchExactly | Qt::MatchRecursive);
+    QModelIndexList matchedMacro = sortModel.match(sortModel.index(0,0),ModelItem::TypeRole,db::ModelItem::MODELITEMTYPE_MACRO,1,Qt::MatchExactly | Qt::MatchRecursive);
     if (matchedMacro.count() > 0 && !pattern.isEmpty())
     {
       vwMacros->selectionModel()->setCurrentIndex(matchedMacro[0],QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
@@ -457,6 +451,35 @@ namespace db
         popup.exec(vwMacros->mapToGlobal(pos),createInstance1);
       }
     }
+  }
+
+  void WndMacros::macroDatabaseLoadStarted()
+  {
+    cbView->setEnabled(false);
+    cbFilter->setEnabled(false);
+    edtSearch->setEnabled(false);
+    QLabel* lblHint = new QLabel(this);
+    lblHint->setAlignment(Qt::AlignHCenter | Qt::AlignCenter);
+    lblHint->setTextFormat(Qt::RichText);
+    lblHint->setAutoFillBackground(true);
+    lblHint->setBackgroundRole(QPalette::Base);
+    lblHint->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+    lblHint->setText(tr("<h3>Database is loading...</h3>"));
+    QLayoutItem* item = this->layout()->replaceWidget(vwMacros,lblHint,0);
+    delete item;
+    vwMacros->hide();
+  }
+
+  void WndMacros::macroDatabaseLoadFinished()
+  {
+    cbView->setEnabled(true);
+    cbFilter->setEnabled(true);
+    edtSearch->setEnabled(true);
+    QLayoutItem* item = this->layout()->replaceWidget(dynamic_cast<QWidget*>(this->layout()->itemAt(1)->widget()),vwMacros,0);
+    delete item->widget();
+    delete item;
+    vwMacros->show();
+    rebuildViewModel();
   }
 
   void WndMacros::resetSearchAndAddMacro()

@@ -178,7 +178,7 @@ namespace db
     foreach(graph::Vertex::Ptr inst, instList)
     {
       QStandardItem* item = new QStandardItem(QIcon(":/icons/resources/macro.png"),inst->id().toString());
-      item->setData(reinterpret_cast<qulonglong>(inst.data()),Qt::UserRole + 1);
+      item->setData(reinterpret_cast<qulonglong>(inst.data()),MacroVertexPtrRole);
       model.setItem(row,0,item);
       QIcon icoState;
       if (inst->safeToDelete())
@@ -209,7 +209,7 @@ namespace db
     if (!currentMacroPrototype || instance->dataRef()->signature() != currentMacroPrototype->signature()) return;
     int row = model.rowCount();
     QStandardItem* item = new QStandardItem(QIcon(":/icons/resources/macro.png"),instance->id().toString());
-    item->setData(reinterpret_cast<qulonglong>(instance.data()),Qt::UserRole + 1);
+    item->setData(reinterpret_cast<qulonglong>(instance.data()),MacroVertexPtrRole);
     model.setItem(row,0,item);
     QIcon icoState;
     if (instance->safeToDelete())
@@ -279,7 +279,7 @@ namespace db
       QModelIndex srcIndex = sortModel.mapToSource(index);
       QStandardItem* item = model.item(srcIndex.row());
       QAction* navAction = Resource::action(Resource::MACRO_FINDINSTANCE);
-      graph::Vertex* macroInstance = reinterpret_cast<graph::Vertex*>(item->data(Qt::UserRole+1).toULongLong());
+      graph::Vertex* macroInstance = reinterpret_cast<graph::Vertex*>(item->data(MacroVertexPtrRole).toULongLong());
       if (macroInstance->safeToDelete())
       {
         navAction->setText(tr("Navigate to Process Graph"));
@@ -288,7 +288,7 @@ namespace db
       {
         navAction->setText(tr("Navigate to Macro instance"));
       }
-      navAction->setData(item->data(Qt::UserRole+1));
+      navAction->setData(item->data(MacroVertexPtrRole));
       QList<QAction*> actions;
       actions.append(navAction);
       QMenu::exec(actions,vwInstances->mapToGlobal(pos),actions[0],this);
@@ -300,7 +300,7 @@ namespace db
     for(int i = 0; i < model.rowCount(); ++i)
     {
       QStandardItem* item = model.item(i);
-      graph::Vertex* itemData = reinterpret_cast<graph::Vertex*>(item->data(Qt::UserRole+1).toULongLong());
+      graph::Vertex* itemData = reinterpret_cast<graph::Vertex*>(item->data(MacroVertexPtrRole).toULongLong());
       if (vertexPtr == itemData)
       {
         return item;

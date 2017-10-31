@@ -24,6 +24,7 @@
 #include "dbmodel.h"
 #include <QStatusBar>
 #include <QLabel>
+#include <QProgressBar>
 
 namespace frame
 {
@@ -39,10 +40,13 @@ namespace frame
   public slots:
     void indicateViewUpdate(db::Model::ModelUpdateReason reason);
     void unindicateViewUpdate(int level);
+    void showProgressBar();
+    void hideProgressBar();
+    void updateProgress(int current, int total, const QString& format);
 
   private:
-    QLabel* lblUpdateView;
-
+    QLabel*       lblUpdateView;
+    QProgressBar* progressBar;
   };
 
 }

@@ -21,15 +21,103 @@
 
 #include "syslogwndlogger.h"
 #include "resources.h"
+#include <QApplication>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSortFilterProxyModel>
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <QHeaderView>
+#include <QFileDialog>
+#include <QDate>
+#include <QTextOption>
+#include <QTextLayout>
 
 namespace syslog
 {
+  //-----------------------------------------------------------------------
+  // Class LoggerItemDelegate
+  //-----------------------------------------------------------------------
+
+  LoggerItemDelegate::LoggerItemDelegate(QObject *parent) : QStyledItemDelegate(parent), sectionSizes(), wrappingEnabled(false)
+  {
+    QTreeView* view = qobject_cast<QTreeView*>(parent);
+    if (view != nullptr)
+    {
+      QHeaderView* header = view->header();
+      if (header != nullptr)
+      {
+        connect(header,&QHeaderView::sectionResized,this,&LoggerItemDelegate::sectionResized);
+        wrappingEnabled = true;
+      }
+    }
+  }
+
+  LoggerItemDelegate::~LoggerItemDelegate()
+  {
+  }
+
+  QSize LoggerItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+  {
+    if (wrappingEnabled && index.isValid() && index.column() == index.model()->columnCount() - 1)
+    {
+      QStyleOptionViewItem opt = option;
+      initStyleOption(&opt, index);
+      QTextOption textOption;
+      textOption.setWrapMode(QTextOption::WordWrap);
+      textOption.setTextDirection(opt.direction);
+      textOption.setAlignment(QStyle::visualAlignment(opt.direction, opt.displayAlignment));
+      QTextLayout textLayout(opt.text, opt.font);
+      textLayout.setTextOption(textOption);
+      qreal height = 0;
+      qreal widthUsed = 0;
+      textLayout.beginLayout();
+      while (true) {
+        QTextLine line = textLayout.createLine();
+        if (!line.isValid())
+          break;
+        line.setLineWidth(sectionSizes[index.column()]);
+        line.setPosition(QPointF(0, height));
+        height += line.height();
+        widthUsed = qMax(widthUsed, line.naturalTextWidth());
+      }
+      textLayout.endLayout();
+      return QSize(widthUsed,height);
+      /*
+      QSize baseSize(sectionSizes[index.column()],10000);
+      QRect outRect = option.fontMetrics.boundingRect(QRect(QPoint(0, 0), baseSize), option.displayAlignment | Qt::TextWordWrap, index.data().toString());
+      baseSize.setHeight(outRect.height() + 2);
+      return baseSize;
+      */
+    }
+    else
+    {
+      return QStyledItemDelegate::sizeHint(option, index);
+    }
+  }
+
+  void LoggerItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+  {
+    QStyleOptionViewItem opt = option;
+    initStyleOption(&opt, index);
+    if (wrappingEnabled)
+    {
+      opt.decorationAlignment = (option.decorationAlignment & Qt::AlignHorizontal_Mask) | Qt::AlignTop;
+      opt.displayAlignment = (option.displayAlignment & Qt::AlignHorizontal_Mask) | Qt::AlignTop;
+    }
+    QStyle *style = QApplication::style();
+    style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, nullptr);
+  }
+
+  void LoggerItemDelegate::sectionResized(int logicalIndex, int /*oldSize*/, int newSize)
+  {
+    sectionSizes[logicalIndex] = newSize;
+    emit sizeHintChanged(QModelIndex());
+  }
+
+  //-----------------------------------------------------------------------
+  // Class WndLogger
+  //-----------------------------------------------------------------------
 
   WndLogger::WndLogger(QWidget *parent) : QWidget(parent), tbFilter(0), tbActions(0), logView(0), menu(0)
   {
@@ -44,20 +132,23 @@ namespace syslog
     tbActions->addAction(Resource::action(Resource::SYSLOG_CLEAR));
 
     // set up actual widget for log message visualization
-    logView = new QTreeView(this);
-    logView->setRootIsDecorated(false);
-    logView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
     QSortFilterProxyModel* model = new QSortFilterProxyModel(this);
-    model->setSourceModel(&Logger::instance());
     model->setFilterRegExp("[IEW]");
     model->setFilterKeyColumn(1);
     model->setDynamicSortFilter(true);
+    model->setSourceModel(&Logger::instance());
+
+    logView = new QTreeView(this);
+    logView->setRootIsDecorated(false);
+    logView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    logView->setAllColumnsShowFocus(true);
+    logView->setWordWrap(true);
     logView->setModel(model);
     logView->hideColumn(1);
     logView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     logView->header()->hide();
     logView->setSelectionMode(QAbstractItemView::NoSelection);
+    logView->setItemDelegate(new LoggerItemDelegate(logView));
 
     // create layout of WndLogger
     QHBoxLayout* tbLayout = new QHBoxLayout();
@@ -82,16 +173,14 @@ namespace syslog
     menu->addAction(Resource::action(Resource::SYSLOG_CLEAR));
 
     // connect actions
-    connect(Resource::action(Resource::SYSLOG_SAVE),SIGNAL(triggered()),&Logger::instance(),SLOT(saveLog()));
-    connect(Resource::action(Resource::SYSLOG_CLEAR),SIGNAL(triggered()),&Logger::instance(),SLOT(clearLog()));
+    connect(Resource::action(Resource::SYSLOG_SAVE),SIGNAL(triggered()),&Logger::instance(),SLOT(save()));
+    connect(Resource::action(Resource::SYSLOG_CLEAR),SIGNAL(triggered()),&Logger::instance(),SLOT(clear()));
     connect(Resource::action(Resource::SYSLOG_FILTERERRORS),SIGNAL(toggled(bool)),this,SLOT(toggleFilterError(bool)));
     connect(Resource::action(Resource::SYSLOG_FILTERWARNINGS),SIGNAL(toggled(bool)),this,SLOT(toggleFilterWarning(bool)));
     connect(Resource::action(Resource::SYSLOG_FILTERMESSAGES),SIGNAL(toggled(bool)),this,SLOT(toggleFilterMessage(bool)));
-    connect(&Logger::instance(),SIGNAL(changedMsgCount(Logger::MsgType,uint)),this,SLOT(updateUI(Logger::MsgType,uint)));
+    connect(&Logger::instance(),SIGNAL(changedMsgCount(Logger::MsgType,int,int)),this,SLOT(updateUI(Logger::MsgType,int,int)));
 
-    updateUI(Logger::Information,Logger::instance().getMessageCount(Logger::Information));
-    updateUI(Logger::Warning,Logger::instance().getMessageCount(Logger::Warning));
-    updateUI(Logger::Error,Logger::instance().getMessageCount(Logger::Error));
+    updateUI(Logger::Error,0,0);
   }
 
   WndLogger::~WndLogger()
@@ -105,47 +194,57 @@ namespace syslog
     menu->popup(event->globalPos());
   }
 
-  void WndLogger::updateUI(Logger::MsgType type, unsigned int count)
+  void WndLogger::updateUI(Logger::MsgType type, int typeCount, int totalCount)
   {
     QString text;
+    Resource::action(Resource::SYSLOG_CLEAR)->setEnabled(totalCount>0);
+    Resource::action(Resource::SYSLOG_SAVE)->setEnabled(totalCount>0);
+    if (totalCount == 0 && typeCount == 0)
+    {
+      text = QString(tr("%1 Messages")).arg(Logger::instance().getMessageCount(Logger::Information));
+      Resource::action(Resource::SYSLOG_FILTERMESSAGES)->setIconText(text);
+      text = QString(tr("%1 Warnings")).arg(Logger::instance().getMessageCount(Logger::Warning));
+      Resource::action(Resource::SYSLOG_FILTERWARNINGS)->setIconText(text);
+      text = QString(tr("%1 Errors")).arg(Logger::instance().getMessageCount(Logger::Error));
+      Resource::action(Resource::SYSLOG_FILTERERRORS)->setIconText(text);
+      return;
+    }
     switch(type)
     {
     case Logger::Information:
-      if (count == 1)
+      if (typeCount == 1)
       {
         Resource::action(Resource::SYSLOG_FILTERMESSAGES)->setIconText(tr("1 Message"));
       }
       else
       {
-        text = QString(tr("%1 Messages")).arg(count);
+        text = QString(tr("%1 Messages")).arg(typeCount);
         Resource::action(Resource::SYSLOG_FILTERMESSAGES)->setIconText(text);
       }
       break;
     case Logger::Warning:
-      if (count == 1)
+      if (typeCount == 1)
       {
         Resource::action(Resource::SYSLOG_FILTERWARNINGS)->setIconText(tr("1 Warning"));
       }
       else
       {
-        text = QString(tr("%1 Warnings")).arg(count);
+        text = QString(tr("%1 Warnings")).arg(typeCount);
         Resource::action(Resource::SYSLOG_FILTERWARNINGS)->setIconText(text);
       }
       break;
     case Logger::Error:
-      if (count == 1)
+      if (typeCount == 1)
       {
         Resource::action(Resource::SYSLOG_FILTERERRORS)->setIconText(tr("1 Error"));
       }
       else
       {
-        text = QString(tr("%1 Errors")).arg(count);
-       Resource::action(Resource::SYSLOG_FILTERERRORS)->setIconText(text);
+        text = QString(tr("%1 Errors")).arg(typeCount);
+        Resource::action(Resource::SYSLOG_FILTERERRORS)->setIconText(text);
       }
       break;
     }
-    Resource::action(Resource::SYSLOG_CLEAR)->setEnabled(Logger::instance().rowCount()>0);
-    Resource::action(Resource::SYSLOG_SAVE)->setEnabled(Logger::instance().rowCount()>0);
     logView->scrollToBottom();
   }
 
@@ -205,5 +304,4 @@ namespace syslog
     }
     model->setFilterRegExp(filter);
   }
-
 }

@@ -19,9 +19,10 @@
 #   If not, see <http://www.gnu.org/licenses/>.
 #*****************************************************************************************
 QT += core gui widgets network xmlpatterns qml quick quickwidgets concurrent help webenginewidgets
+CONFIG += c++11
 TARGET = Impresario
 TEMPLATE = app
-VERSION = 2.1.0
+VERSION = 2.1.1
 QMAKE_TARGET_DESCRIPTION = "Image Processing Engineering System applying Reusable Interactive Objects"
 QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2015-2017  Lars Libuda"
 

@@ -282,7 +282,7 @@ namespace graph
     }
   }
 
-  void ElementManager::iterateVertexDataTypes(VertexDataTypeIterator* iterator, ... ) const
+  void ElementManager::iterateVertexDataTypes(IteratorFunction iterator, ... ) const
   {
     Q_ASSERT(iterator != 0);
     QMutexLocker lock(&mutex);
@@ -290,7 +290,7 @@ namespace graph
     {
       va_list args;
       va_start(args,iterator);
-      if (!iterator->handleVertexDataType(it.value(),args))
+      if (!(*iterator)(it.value(),args))
       {
         va_end(args);
         return;

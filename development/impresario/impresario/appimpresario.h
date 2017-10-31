@@ -65,7 +65,6 @@ namespace app
   signals:
     void initCriticalFinished(bool successful);
     void initNonCriticalFinished(bool successful);
-    void raiseMainWindow();
 
   private slots:
     void activatedByAnotherInstance();

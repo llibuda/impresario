@@ -25,12 +25,13 @@
 namespace frame
 {
 
-  StatusBar::StatusBar(QWidget *parent) : QStatusBar(parent)
+  StatusBar::StatusBar(QWidget *parent) : QStatusBar(parent), lblUpdateView(0), progressBar(0)
   {
-    lblUpdateView = new QLabel();
+    lblUpdateView = new QLabel(this);
     lblUpdateView->setPixmap(QPixmap(":/icons/resources/dbview_grey.png"));
     lblUpdateView->setToolTip(tr("Indicator for database view update"));
     addPermanentWidget(lblUpdateView);
+    progressBar = new QProgressBar(this);
   }
 
   void StatusBar::indicateViewUpdate(db::Model::ModelUpdateReason /*reason*/)
@@ -43,6 +44,34 @@ namespace frame
   {
     lblUpdateView->setPixmap(QPixmap(":/icons/resources/dbview_grey.png"));
     lblUpdateView->setToolTip(tr("Indicator for database view update"));
+  }
+
+  void StatusBar::showProgressBar()
+  {
+    insertPermanentWidget(0,progressBar,1);
+    progressBar->setMaximumHeight(lblUpdateView->height());
+  }
+
+  void StatusBar::hideProgressBar()
+  {
+    removeWidget(progressBar);
+  }
+
+  void StatusBar::updateProgress(int current, int total, const QString& format)
+  {
+    if (current == 0)
+    {
+      progressBar->setRange(current,total);
+      if (!format.isEmpty())
+      {
+        progressBar->setFormat(format);
+        progressBar->setTextVisible(true);
+      }
+    }
+    else
+    {
+      progressBar->setValue(current);
+    }
   }
 
 }

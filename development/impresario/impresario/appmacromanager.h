@@ -34,6 +34,7 @@ namespace app
   class MacroManager : public graph::ElementManager
   {
     Q_OBJECT
+    Q_DISABLE_COPY(MacroManager)
   public:
     static MacroManager& instance()
     {
@@ -51,24 +52,28 @@ namespace app
       return viewers.contains(dataType);
     }
 
-    void iterateViewerTypes(VertexDataTypeIterator* iterator, ... ) const;
+    void iterateViewerTypes(IteratorFunction iterator, ... ) const;
+
+  signals:
+    void loadPrototypesStarted();
+    void loadPrototypesFinished();
+    void loadPrototypesProgress(int current, int total, const QString& format = QString());
 
   protected:
     virtual QString matchVertexSignature(const VertexDataTypeMap& vertexDataTypes, const QString& signature);
 
   private:
-    Q_DISABLE_COPY(MacroManager)
-
     MacroManager();
     virtual ~MacroManager();
+    void doLoadPrototypes(const QStringList& dirs);
 
     static MacroManager macroManager;
 
     typedef QList<MacroLibrary*> LibraryList;
     typedef QMultiMap<QString, MacroViewer::Ptr> ViewerMap;
 
-    LibraryList libList;
-    ViewerMap   viewers;
+    LibraryList          libList;
+    ViewerMap            viewers;
   };
 
 }

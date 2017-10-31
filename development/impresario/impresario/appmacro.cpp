@@ -24,6 +24,7 @@
 #include "pgeitems.h"
 #include "sysloglogger.h"
 #include <QMetaProperty>
+#include <QCoreApplication>
 #include <QMetaObject>
 #include <QStringList>
 #include <QElapsedTimer>
@@ -100,6 +101,12 @@ namespace app
   //-----------------------------------------------------------------------
   // Class MacroLink
   //-----------------------------------------------------------------------
+  MacroLink::MacroLink() : graph::EdgeData()
+  {
+    // Initially, prototype links are loaded in separate thread. The following makes sure, that all link instances live in the application's main thread
+    moveToThread(QCoreApplication::instance()->thread());
+  }
+
   QSharedPointer<graph::BaseItem> MacroLink::createVisualization(graph::BaseElement& elementRef, graph::BaseItem* parent)
   {
     return QSharedPointer<graph::BaseItem>(new pge::MacroLinkItem(static_cast<graph::Edge&>(elementRef),parent));
@@ -139,6 +146,8 @@ namespace app
   Macro::Macro(const MacroLibrary& lib) : graph::VertexData(), library(lib), name(), creator(), group(), description(), errorMsg(), propertyWidgetComponent(),
     macroClass(), type(Undefined), params(), prototype(0), mutex(QMutex::Recursive), runTime(0), state(Idle), viewers()
   {
+    // Initially, prototype macros are loaded in separate thread. The following makes sure, that all macro instances live in the application's main thread
+    moveToThread(QCoreApplication::instance()->thread());
   }
 
   Macro::~Macro()

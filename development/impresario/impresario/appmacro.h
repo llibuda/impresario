@@ -243,9 +243,7 @@ namespace app
   public:
     typedef QSharedPointer<MacroLink> Ptr;
 
-    MacroLink() : graph::EdgeData()
-    {
-    }
+    MacroLink();
 
     virtual graph::EdgeData::Ptr clone()
     {

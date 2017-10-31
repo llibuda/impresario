@@ -35,23 +35,26 @@
 
 namespace syslog
 {
-  int Logger::idMsgType = qRegisterMetaType<Logger::MsgType>("Logger::MsgType");
-  int Logger::idVectorInt = qRegisterMetaType< QVector<int> >("Logger::Vector<int>");
-
   void info(const QString& msg)
   {
-    Logger::instance().addMessage(Logger::Information,msg);
+    Logger::instance().write(Logger::Information,msg);
   }
 
   void warning(const QString& msg)
   {
-    Logger::instance().addMessage(Logger::Warning,msg);
+    Logger::instance().write(Logger::Warning,msg);
   }
 
   void error(const QString& msg)
   {
-    Logger::instance().addMessage(Logger::Error,msg);
+    Logger::instance().write(Logger::Error,msg);
   }
+
+  //-----------------------------------------------------------------------
+  // Class Logger
+  //-----------------------------------------------------------------------
+  int Logger::idMsgType = qRegisterMetaType<Logger::MsgType>("Logger::MsgType");
+  int Logger::idVectorInt = qRegisterMetaType< QVector<int> >("Logger::Vector<int>");
 
   Logger& Logger::instance()
   {
@@ -69,64 +72,45 @@ namespace syslog
     setHeaderData(2, Qt::Horizontal, QObject::tr("Message"));
   }
 
-  void Logger::addMessage(MsgType type, const QString& msg)
+  void Logger::write(MsgType type, const QString& msg)
   {
-    QStringList list = msg.split('\n',QString::SkipEmptyParts);
     QStandardItem* item = new QStandardItem();
     switch(type)
     {
     case Information:
       item->setIcon(icoInfo);
-      emit changedMsgCount(Information,++stat[Information]);
       break;
     case Warning:
       item->setIcon(icoWarning);
-      emit changedMsgCount(Warning,++stat[Warning]);
       break;
     case Error:
       item->setIcon(icoError);
-      emit changedMsgCount(Error,++stat[Error]);
       break;
     }
+
     QMutexLocker locker(&mutex);
     appendRow(item);
-    setData(index(rowCount()-1,0),QDateTime::currentDateTime());
+    QDateTime timeStamp = QDateTime::currentDateTime();
+    setData(index(rowCount()-1,0),timeStamp.toString("hh:mm:ss.zzz"));
+    setData(index(rowCount()-1,0),timeStamp.toString("yyyy-MM-dd hh:mm:ss.zzz"),SaveTimeStampRole);
     setData(index(rowCount()-1,1),QChar(type));
-    if (!list.isEmpty())
-    {
-      setData(index(rowCount()-1,2),list[0]);
-
-      list.pop_front();
-      for(QStringList::Iterator it = list.begin(); it != list.end(); ++it)
-      {
-        item = new QStandardItem();
-        appendRow(item);
-        setData(index(rowCount()-1,1),QChar(type));
-        setData(index(rowCount()-1,2),*it);
-      }
-    }
-    else
-    {
-      setData(index(rowCount()-1,2),"");
-    }
+    setData(index(rowCount()-1,2),msg);
+    stat[type]++;
+    emit changedMsgCount(type,stat[type],stat[Information] + stat[Warning] + stat[Error]);
   }
 
-  void Logger::clearLog()
+  void Logger::clear()
   {
     QMutexLocker locker(&mutex);
     removeRows(0,rowCount());
-    for(MsgStats::iterator iter = stat.begin(); iter != stat.end(); ++iter)
-    {
-      emit changedMsgCount(iter.key(),0);
-    }
+    emit changedMsgCount(Error,0,0);
     stat.clear();
   }
 
-  void Logger::saveLog()
+  void Logger::save()
   {
-    // ask for file
     QString filters = tr("Log files (*.log);;All files (*.*)");
-    QString defFileName = app::Impresario::instance().applicationName() + tr("_Log_") + QDate::currentDate().toString("yyyy-MM-dd") + ".log";
+    QString defFileName = QCoreApplication::applicationName() + QDate::currentDate().toString("_yyyy-MM-dd") + ".log";
     QString filename = QFileDialog::getSaveFileName(0, tr("Save log file"),defFileName,filters,0,QFileDialog::DontConfirmOverwrite);
     if (filename.length() == 0)
     {
@@ -135,48 +119,38 @@ namespace syslog
     // check whether file exists
     QFile file(filename);
     QFile::OpenMode mode = QFile::Text | QFile::WriteOnly;
-    if (file.exists())
-    {
-      QString msg = QString(tr("File %1 already exists. What would you like to do?")).arg(filename);
-      QMessageBox msgBox;
-      QPushButton *appendButton = msgBox.addButton(tr("Append"), QMessageBox::ActionRole);
-      QPushButton *overwriteButton = msgBox.addButton(tr("Overwrite"), QMessageBox::ActionRole);
-      QPushButton *abortButton = msgBox.addButton(QMessageBox::Abort);
-      msgBox.setText(msg);
-      msgBox.setWindowTitle(tr("Save log file"));
-      msgBox.exec();
-      if (msgBox.clickedButton() == appendButton)
-      {
-        mode |= QFile::Append;
-      }
-      else if (msgBox.clickedButton() == overwriteButton)
-      {
-        mode |= QFile::Truncate;
-      }
-      else if (msgBox.clickedButton() == abortButton)
-      {
-        return;
-      }
-    }
+    mode |= (file.exists()) ? QFile::Append : QFile::Truncate;
+
     // save log to file
     if (file.open(mode))
     {
       QTextStream out(&file);
+      out.setFieldAlignment(QTextStream::AlignLeft);
       out << "------- " << app::Impresario::instance().applicationName();
       out << " log written " << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
       out << " -------" << endl;
 
+      const int timeFieldWidth = 24;
+      const int typeFieldWidth = 2;
       for(int i = 0; i < rowCount(); ++i)
       {
-        out.setFieldWidth(19);
-        out << data(index(i,0)).toDateTime().toString("yyyy-MM-dd hh:mm:ss");
+        out.setFieldWidth(timeFieldWidth);
+        out << data(index(i,0),SaveTimeStampRole).toString();
+        out.setFieldWidth(typeFieldWidth);
+        out << data(index(i,1)).toChar();
         out.setFieldWidth(0);
-        out << "  " << data(index(i,1)).toChar() << "  ";
-        out << data(index(i,2)).toString() << endl;
+        QStringList textLines = data(index(i,2)).toString().split('\n');
+        for(int index = 0; index < textLines.count(); ++index)
+        {
+          if (index > 0)
+          {
+            out << QString(timeFieldWidth + typeFieldWidth,' ');
+          }
+          out << textLines.at(index) << endl;
+        }
       }
 
       file.close();
     }
   }
-
 }

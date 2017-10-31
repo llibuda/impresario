@@ -360,7 +360,6 @@ namespace graph
     if (!pinType.isNull())
     {
       vertexPins.insert(pinType->direction(),Pin::Ptr(new Pin(*this,pinType)));
-      emit statusUpdated(*this,DataRef);
     }
   }
 

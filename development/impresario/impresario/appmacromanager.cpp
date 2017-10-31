@@ -24,6 +24,7 @@
 #include "sysloglogger.h"
 #include <QDir>
 #include <QRegularExpression>
+#include <QtConcurrent>
 
 namespace app
 {
@@ -41,6 +42,13 @@ namespace app
 
   void MacroManager::loadPrototypes(const QStringList &dirs)
   {
+    QtConcurrent::run(this,&MacroManager::doLoadPrototypes,dirs);
+  }
+
+  void MacroManager::doLoadPrototypes(const QStringList &dirs)
+  {
+    emit loadPrototypesStarted();
+
     unloadPrototypes();
 
     graph::EdgeData::Ptr impresarioEdge = graph::EdgeData::Ptr(new app::MacroLink());
@@ -58,15 +66,37 @@ namespace app
 #endif
     unsigned int cntMacros = 0;
     unsigned int cntViewers = 0;
+    QStringList files;
     for(int dindex = 0; dindex < dirs.count(); ++dindex)
     {
       QDir dir(dirs[dindex]);
-      QStringList files = dir.entryList(patterns, QDir::Files | QDir::NoSymLinks, QDir::Name | QDir::IgnoreCase);
-      for(int findex = 0; findex < files.count(); ++findex)
+      QStringList dirFileList = dir.entryList(patterns, QDir::Files | QDir::NoSymLinks, QDir::Name | QDir::IgnoreCase);
+      for(int findex = 0; findex < dirFileList.count(); ++findex)
       {
+        files.append(dirs[dindex] + '/' + dirFileList[findex]);
+      }
+    }
+    emit loadPrototypesProgress(0,files.count(),tr("Loading macro library file %v of %m."));
+    for(int findex = 0; findex < files.count(); ++findex)
+    {
 #ifdef Q_OS_WIN
+      MacroLibrary* lib = new MacroLibraryDLL();
+      if (lib->load(files[findex],*this))
+      {
+        cntMacros += lib->countMacros();
+        cntViewers += lib->countViewers();
+        libList.append(lib);
+      }
+      else
+      {
+        delete lib;
+      }
+#else
+      QRegularExpression regExp("(.*\\.so)(\\.\\d+){0,3}");
+      if (regExp.match(files[findex]).hasMatch())
+      {
         MacroLibrary* lib = new MacroLibraryDLL();
-        if (lib->load(dirs[dindex] + '/' + files[findex],*this))
+        if (lib->load(files[findex],*this))
         {
           cntMacros += lib->countMacros();
           cntViewers += lib->countViewers();
@@ -76,24 +106,9 @@ namespace app
         {
           delete lib;
         }
-#else
-        QRegularExpression regExp("(.*\\.so)(\\.\\d+){0,3}");
-        if (regExp.match(files[findex]).hasMatch())
-        {
-          MacroLibrary* lib = new MacroLibraryDLL();
-          if (lib->load(dirs[dindex] + '/' + files[findex],*this))
-          {
-            cntMacros += lib->countMacros();
-            cntViewers += lib->countViewers();
-            libList.append(lib);
-          }
-          else
-          {
-            delete lib;
-          }
-        }
-#endif
       }
+#endif
+      emit loadPrototypesProgress(findex + 1,files.count());
     }
     if (libList.size() > 0)
     {
@@ -126,6 +141,8 @@ namespace app
     {
       syslog::warning(QObject::tr("Libraries: No libraries loaded. Please check the search paths in settings."));
     }
+
+    emit loadPrototypesFinished();
   }
 
   void MacroManager::unloadPrototypes()
@@ -167,7 +184,7 @@ namespace app
     return viewerPtr->clone().staticCast<MacroViewer>();
   }
 
-  void MacroManager::iterateViewerTypes(VertexDataTypeIterator* iterator, ... ) const
+  void MacroManager::iterateViewerTypes(IteratorFunction iterator, ... ) const
   {
     Q_ASSERT(iterator != 0);
     QMutexLocker lock(&mutex);
@@ -179,7 +196,7 @@ namespace app
         visitedViewers.insert(it.value().data());
         va_list args;
         va_start(args,iterator);
-        if (!iterator->handleVertexDataType(it.value(),args))
+        if (!(*iterator)(it.value(),args))
         {
           va_end(args);
           return;
