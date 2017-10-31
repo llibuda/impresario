@@ -224,7 +224,7 @@ namespace help
     edtFilter->installEventFilter(this);
     connect(edtFilter,SIGNAL(textChanged(QString)),this,SLOT(setTopicFilter(QString)));
 
-    QStandardItemModel* mdlItems = new QStandardItemModel();
+    QStandardItemModel* mdlItems = new QStandardItemModel(this);
     QMap<QString,QUrl>::ConstIterator it;
     for(it = helpTopics.begin(); it != helpTopics.end(); ++it)
     {
@@ -234,7 +234,7 @@ namespace help
       mdlItems->appendRow(item);
     }
 
-    mdlFilter = new QSortFilterProxyModel();
+    mdlFilter = new QSortFilterProxyModel(this);
     mdlFilter->setSourceModel(mdlItems);
     mdlFilter->setFilterCaseSensitivity(Qt::CaseInsensitive);
     lvTopics = new QListView(this);
