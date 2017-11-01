@@ -70,4 +70,4 @@ export LD_LIBRARY_PATH
 # Change to Impresario's executable directory so that initialization works properly
 cd $bindir
 # Run Impresario main process
-exec "$bindir/Impresario" ${1+"$@"}
+exec "$bindir/Impresario" ${1+"$@"} --disable-seccomp-filter-sandbox
