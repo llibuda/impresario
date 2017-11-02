@@ -22,11 +22,24 @@
 #include "appimpresario.h"
 #include "framemainwindow.h"
 #include "appdlgterminate.h"
+#include <vector>
 
 int main(int argc, char *argv[])
 {
+  /* We add command line parameter --disable-seccomp-filter-sandbox here
+   * This parameter is passed to QtWebEngineProcess which is started by the help system.
+   * In general, this parameter speeds up loading contents significantly.
+   * On Manjaro Linux it prevents the process from crashing
+   */
+  const char* webEngineParameter = "--disable-seccomp-filter-sandbox";
+  int argumentCount = argc + 1;
+  std::vector<char*> arguments(argumentCount);
+  for(int i = 0; i < argc; ++i)
+    arguments[i] = argv[i];
+  arguments[argumentCount - 1] = const_cast<char*>(webEngineParameter);
+
   int result = 1;
-  app::Impresario& a = app::Impresario::instance(argc, argv);
+  app::Impresario& a = app::Impresario::instance(argumentCount, arguments.data());
   if (a.initCritical())
   {
     frame::MainWindow& mw = frame::MainWindow::instance();
