@@ -47,7 +47,7 @@ namespace help
     // if help is already initialized, we close it first
     destroyHelpEngine();
     // create new help engine
-    ptrHelpEngine = new QHelpEngine(helpCollectionFilePath);
+    ptrHelpEngine = new QHelpEngine(helpCollectionFilePath,this);
     if (!ptrHelpEngine)
     {
       syslog::error(QString(tr("Help system: Online help is not available. Could not allocate memory.")));

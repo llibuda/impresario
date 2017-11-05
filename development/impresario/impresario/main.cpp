@@ -24,6 +24,15 @@
 #include "appdlgterminate.h"
 #include <vector>
 
+#ifdef _MSC_VER
+/* The following line includes the header of Visual Leak Detection (see
+ * https://kinddragon.github.io/vld/ for more details).
+ * This tool can be used in Visual Studio on Windows systems to detect
+ * memory leaks in your code quite comfortably.
+ */
+//#include <vld.h>
+#endif // _MSC_VER
+
 int main(int argc, char *argv[])
 {
   /* We add command line parameter --disable-seccomp-filter-sandbox here

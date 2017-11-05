@@ -17,7 +17,7 @@ public:
     void startServer(QString &serverName)
     {
         // Start a QLocalServer to listen for connections
-        server = new QLocalServer();
+        server = new QLocalServer(q_ptr);
         server->removeServer(serverName);
         server->listen(serverName);
         QObject::connect(server, SIGNAL(newConnection()), q_ptr, SLOT(slotConnectionEstablished()));
@@ -119,6 +119,7 @@ SingleApplication::~SingleApplication()
 {
     delete d_ptr->memory;
     d_ptr->server->close();
+	delete d_ptr;
 }
 
 /**

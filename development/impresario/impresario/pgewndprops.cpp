@@ -92,27 +92,27 @@ namespace pge
 
     // Initialize QML property window
     qmlDlgTitle = tr("Failed to display properties:");
-    qmlPropWnd = new QQuickWidget(&(app::Impresario::instance().qmlEngine()),0);
+    qmlPropWnd = new QQuickWidget(&(app::Impresario::instance().qmlEngine()),this);
     qmlPropWnd->setResizeMode(QQuickWidget::SizeRootObjectToView);
     connect(qmlPropWnd->engine(),SIGNAL(warnings(QList<QQmlError>)),this,SLOT(notifyQmlErrors(QList<QQmlError>)));
     connect(qmlPropWnd,SIGNAL(statusChanged(QQuickWidget::Status)),this,SLOT(notifyQmlErrors(QQuickWidget::Status)));
     connect(&qmlMacro,SIGNAL(displayHelp(int)),this,SLOT(showDescription(int)));
 
     // Setup stacked widget to either display QML properties or standard properties
-    propChangeWnd = new QStackedWidget();
+    propChangeWnd = new QStackedWidget(this);
     propChangeWnd->addWidget(stdPropWnd);
     propChangeWnd->addWidget(qmlPropWnd);
 
     // Initialize information property window
-    infoPropWnd = new WndItemProperties();
+    infoPropWnd = new WndItemProperties(this);
     infoPropWnd->setHeaderVisible(false);
     infoPropWnd->setResizeMode(QtTreePropertyBrowser::ResizeToContents);
 
     // Initialize help window
-    helpPropWnd = new db::WndDescription();
+    helpPropWnd = new db::WndDescription(this);
 
     // Initialize tab widget for information display
-    tabWnd = new QTabWidget();
+    tabWnd = new QTabWidget(this);
     tabWnd->setTabShape(QTabWidget::Triangular);
     tabWnd->setTabPosition(QTabWidget::South);
     tabWnd->addTab(infoPropWnd,tr("General"));
@@ -126,7 +126,7 @@ namespace pge
     splitter->setCollapsible(1,true);
     splitter->restoreState(QByteArray::fromBase64(settings.value(Resource::path(Resource::SETTINGS_GUI_PROPWND_SPLITTER)).toByteArray()));
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    QVBoxLayout* layout = new QVBoxLayout(this);
     layout->setMargin(0);
     layout->addWidget(splitter);
     setLayout(layout);
