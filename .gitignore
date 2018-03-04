@@ -4,6 +4,7 @@
 *.o
 *.d
 *.obj
+*.qmlc
 
 # Precompiled Headers
 *.gch
