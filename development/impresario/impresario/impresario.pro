@@ -1,6 +1,6 @@
 #******************************************************************************************
 #   Impresario - Image Processing Engineering System applying Reusable Interactive Objects
-#   Copyright (C) 2015-2017  Lars Libuda
+#   Copyright (C) 2015-2018  Lars Libuda
 #
 #   This file is part of Impresario.
 #
@@ -24,7 +24,7 @@ TARGET = Impresario
 TEMPLATE = app
 VERSION = 2.1.1
 QMAKE_TARGET_DESCRIPTION = "Image Processing Engineering System applying Reusable Interactive Objects"
-QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2015-2017  Lars Libuda"
+QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2015-2018  Lars Libuda"
 
 !include(../impresario_bin_path.pri) {
   error(Failed to include impresario_bin_path.pri)

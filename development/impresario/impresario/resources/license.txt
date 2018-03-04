@@ -2,7 +2,7 @@
 <body>
 <h1 style="font-variant: small-caps">Impresario</h1>
 <p>
-<b>Copyright (C) 2015-2017  Lars Libuda</b>
+<b>Copyright (C) 2015-2018  Lars Libuda</b>
 </p>
 <p>
     <span style="font-variant: small-caps">Impresario</span> is free software: you can redistribute it and/or modify
