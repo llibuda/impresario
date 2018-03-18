@@ -1,0 +1,39 @@
+#! /bin/sh
+
+echo "Deploy Qt on Linux"
+
+# check number of arguments
+if [ $# -ne 1 ]; then
+  echo "Invalid number of arguments. Usage: qt_deploy_unix <QT_BINARY_APP>"
+  exit 1
+fi
+
+# check whether file given in first argument exists
+if [ ! -f "$1" ]; then
+  echo "$1 does not exist."
+  exit 1
+fi
+
+# check whether file is executable
+if [ ! -x "$1" ]; then
+  echo "$1 is not executable."
+  exit 1
+fi
+
+# check for environment variable QTDIR
+if [ -z "$QTDIR" ]; then
+    echo "Environment variable QTDIR is not set."
+    exit 1
+fi
+
+# check whether environment variable QTDIR points to existing directory
+if [ ! -d "$QTDIR" ]; then
+    echo "Environment variable QTDIR points to non-existing directory $QTDIR."
+    exit 1
+fi
+
+echo "Deploy Qt for $1 using $QTDIR..."
+
+
+
+

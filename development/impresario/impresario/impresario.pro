@@ -32,7 +32,7 @@ QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2015-2018  Lars Libuda"
 DESTDIR = $${IMPRESARIO_BIN_PATH}
 
 win32 {
-  QMAKE_POST_LINK = $$quote($${_PRO_FILE_PWD_}/../impresario_deploy_win.bat) "$${DESTDIR}/$${TARGET}.exe"
+  QMAKE_POST_LINK = $$quote($${_PRO_FILE_PWD_}/../qt_deploy_win.bat) "$${DESTDIR}/$${TARGET}.exe"
   RC_ICONS += ../misc/impresario.ico
   DEFINES += QT_QTPROPERTYBROWSER_IMPORT
   CONFIG(release, release|debug) {
@@ -46,6 +46,7 @@ win32 {
 }
 
 unix {
+  QMAKE_POST_LINK = $$quote($${_PRO_FILE_PWD_}/../qt_deploy_unix) "$${DESTDIR}/$${TARGET}"
   CONFIG(release, release|debug) {
     LIBS += $$quote(-L../components/libavoid) -lavoid
     LIBS += $$quote(-L../components/qtpropertybrowser) -lQt5PropertyBrowser
