@@ -25,7 +25,7 @@ unix {
   CONFIG(debug, release|debug) {
     TARGET = Qt5PropertyBrowserd
   }
-  QMAKE_POST_LINK = mkdir -p $$shell_path($${IMPRESARIO_BIN_PATH})/qtlib && cp $$shell_path($${OUT_PWD})/*.so* $$shell_path($${IMPRESARIO_BIN_PATH})/qtlib
+  QMAKE_POST_LINK = mkdir -p $$shell_path($${IMPRESARIO_BIN_PATH})/qtlib && cp --preserve=links $$shell_path($${OUT_PWD})/*.so* $$shell_path($${IMPRESARIO_BIN_PATH})/qtlib
 }
 
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0

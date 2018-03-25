@@ -46,7 +46,7 @@ win32 {
 }
 
 unix {
-  QMAKE_POST_LINK = $$quote($${_PRO_FILE_PWD_}/../qt_deploy_unix) "$${DESTDIR}/$${TARGET}"
+  QMAKE_POST_LINK = $$quote($${_PRO_FILE_PWD_}/../qt_deploy_unix.sh) "$${DESTDIR}/$${TARGET}"
   CONFIG(release, release|debug) {
     LIBS += $$quote(-L../components/libavoid) -lavoid
     LIBS += $$quote(-L../components/qtpropertybrowser) -lQt5PropertyBrowser
