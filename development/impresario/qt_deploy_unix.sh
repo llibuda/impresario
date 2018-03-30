@@ -56,6 +56,18 @@ do
   fi
 done
 
+# copy Qt plugins to target directory
+if [ -d "$targetDirectory/qtplugins" ]; then
+  echo "Cleaning up existing Qt plugins..."
+  rm -r "$targetDirectory/qtplugins"
+fi
+echo "Copying Qt plugins..."
+cp -r "$QTDIR/plugins" "$targetDirectory/qtplugins"
+
+# copy Qt libraries for some plugins, especially for X11 support
+cp "$QTDIR/lib/libQt5DBus.so.5" "$targetDirectory/qtlib"
+cp "$QTDIR/lib/libQt5XcbQpa.so.5" "$targetDirectory/qtlib"
+
 # deploy Qt Webengine
 if [ -d "$targetDirectory/qtweb" ]; then
   echo "Cleaning up existing Qt Webengine..."
