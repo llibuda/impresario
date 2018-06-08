@@ -55,6 +55,8 @@ namespace app
   compiler.append(" (Visual C++ 2013)");
 #elif _MSC_VER == 1900
   compiler.append(" (Visual C++ 2015)");
+#elif _MSC_VER == 1914
+  compiler.append(" (Visual C++ 2017)");
 #endif
     return compiler;
 #else
