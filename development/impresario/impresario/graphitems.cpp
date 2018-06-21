@@ -403,7 +403,7 @@ namespace graph
 
   void VertexItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* /*option*/, QWidget* /*widget*/)
   {
-    prepareGeometryChange();
+    //prepareGeometryChange();
     const Palette& pal = palette();
     // check layout direction and change it if necessary
     Defines::LayoutDirectionType dir = itemLayout();
