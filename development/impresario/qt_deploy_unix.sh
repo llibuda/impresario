@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 scriptPath=`which "$0"`
 scriptFileName="${scriptPath##*/}"
