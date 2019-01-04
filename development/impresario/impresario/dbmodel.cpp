@@ -686,6 +686,18 @@ namespace db
     item = propManager.addProperty(QVariant::String, QObject::tr("Qt version"));
     item->setValue(macroRef.getLibrary().getQtVersionString());
     libGroup->addSubProperty(item);
+    item = propManager.addProperty(QVariant::Int, QObject::tr("Loaded macros"));
+    item->setValue(macroRef.getLibrary().countMacros());
+    libGroup->addSubProperty(item);
+    item = propManager.addProperty(QVariant::Int, QObject::tr("Loaded viewers"));
+    item->setValue(macroRef.getLibrary().countViewers());
+    libGroup->addSubProperty(item);
+    item = propManager.addProperty(QVariant::String, QObject::tr("Creator"));
+    item->setValue(macroRef.getLibrary().getCreator());
+    libGroup->addSubProperty(item);
+    item = propManager.addProperty(QVariant::String, QObject::tr("API Version"));
+    item->setValue(macroRef.getLibrary().getAPIVersionString());
+    libGroup->addSubProperty(item);
     propList.append(group);
 
     return propList;

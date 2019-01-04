@@ -102,6 +102,8 @@ const wchar_t* libGetCompiler() {
   wcsncat(g_szCompiler,L" (Visual C++ 2013)",sizeof(g_szCompiler));
 #elif _MSC_VER == 1900
   wcsncat(g_szCompiler,L" (Visual C++ 2015)",sizeof(g_szCompiler));
+#elif _MSC_VER == 1914
+  wcsncat(g_szCompiler,L" (Visual C++ 2017)",sizeof(g_szCompiler));
 #endif
   return g_szCompiler;
 #else
@@ -145,7 +147,7 @@ unsigned int libGetVersion() {
 }
 
 unsigned int libGetAPIVersion() {
-  return (INTERFACE_API_MAJOR << 16) + (INTERFACE_API_MINOR << 8);
+  return (INTERFACE_API_MAJOR << 16) + (INTERFACE_API_MINOR << 8) + INTERFACE_API_PATCH;
 }
 
 const wchar_t* libGetCreator() {

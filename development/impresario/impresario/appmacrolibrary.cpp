@@ -166,20 +166,21 @@ namespace app
       unsigned int patch = libQtVersion & 0xFF;
       unsigned int minor = (libQtVersion & 0xFF00) >> 8;
       unsigned int major = (libQtVersion & 0xFF0000) >> 16;
-      libQtVersionString = QString("%1.%2.%3").arg(major,0,16).arg(minor,0,16).arg(patch,0,16);
+      libQtVersionString = QString("%1.%2.%3").arg(major).arg(minor).arg(patch);
     }
     if (libAPIVersion > 0)
     {
+      unsigned int patch = libAPIVersion & 0xFF;
       unsigned int minor = (libAPIVersion & 0xFF00) >> 8;
       unsigned int major = (libAPIVersion & 0xFF0000) >> 16;
-      libAPIVersionString = QString("%1.%2").arg(major).arg(minor);
+      libAPIVersionString = QString("%1.%2.%3").arg(major).arg(minor).arg(patch);
     }
     if (libVersion > 0)
     {
       unsigned int patch = libVersion & 0xFF;
       unsigned int minor = (libVersion & 0xFF00) >> 8;
       unsigned int major = (libVersion & 0xFF0000) >> 16;
-      libVersionString = QString("%1.%2.%3").arg(major,0,16).arg(minor).arg(patch);
+      libVersionString = QString("%1.%2.%3").arg(major).arg(minor).arg(patch);
     }
     libIsDebug = PFN_LIBBOOL(functions[libIsDebugVersion])();
     libBuildType = app::BuildInfo::instance().buildString(libCompilerVersion,libIsDebug);
