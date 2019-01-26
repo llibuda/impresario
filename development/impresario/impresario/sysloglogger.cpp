@@ -70,25 +70,30 @@ namespace syslog
     setHeaderData(0, Qt::Horizontal, QObject::tr("Time"));
     setHeaderData(1, Qt::Horizontal, QObject::tr("Type"));
     setHeaderData(2, Qt::Horizontal, QObject::tr("Message"));
+
+    QObject::connect(this,SIGNAL(newLogEntry(Logger::MsgType,QString)),this,SLOT(createNewLogEntry(Logger::MsgType,QString)),Qt::QueuedConnection);
   }
 
   void Logger::write(MsgType type, const QString& msg)
   {
+    emit newLogEntry(type,msg);
+  }
+
+  void Logger::createNewLogEntry(Logger::MsgType type, const QString msg)
+  {
     QStandardItem* item = new QStandardItem();
     switch(type)
     {
-    case Information:
-      item->setIcon(icoInfo);
-      break;
-    case Warning:
-      item->setIcon(icoWarning);
-      break;
-    case Error:
-      item->setIcon(icoError);
-      break;
+      case Information:
+        item->setIcon(icoInfo);
+        break;
+      case Warning:
+        item->setIcon(icoWarning);
+        break;
+      case Error:
+        item->setIcon(icoError);
+        break;
     }
-
-    QMutexLocker locker(&mutex);
     appendRow(item);
     QDateTime timeStamp = QDateTime::currentDateTime();
     setData(index(rowCount()-1,0),timeStamp.toString("hh:mm:ss.zzz"));
@@ -101,7 +106,6 @@ namespace syslog
 
   void Logger::clear()
   {
-    QMutexLocker locker(&mutex);
     removeRows(0,rowCount());
     emit changedMsgCount(Error,0,0);
     stat.clear();

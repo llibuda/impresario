@@ -37,9 +37,12 @@ REM @echo Name is: %TARGETNAME%
 REM call windeployqt to get required Qt components
 "%WINDEPLOYTOOL%" "%TARGETFILE%" --plugindir="%TARGETDIR%qtplugins" --no-quick-import
 REM clean up and reorder some files and directories
+If exist "%TARGETDIR%qtweb" (
+  rmdir %TARGETDIR%qtweb /S /Q
+)
 move %TARGETDIR%QtWebEngineProcess*.exe %TARGETDIR%resources
 move %TARGETDIR%translations\qtwebengine_locales %TARGETDIR%resources
-move %TARGETDIR%resources %TARGETDIR%qtweb
+rename %TARGETDIR%resources qtweb
 rmdir %TARGETDIR%translations /S /Q
 
 REM copy files from misc directory

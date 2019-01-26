@@ -24,7 +24,6 @@
 #include <QStandardItemModel>
 #include <QMap>
 #include <QIcon>
-#include <QMutex>
 #include <QFile>
 
 namespace syslog
@@ -56,10 +55,14 @@ namespace syslog
 
   signals:
     void changedMsgCount(Logger::MsgType type, int countType, int countTotal);
+    void newLogEntry(Logger::MsgType type, QString msg);
 
   public slots:
     void clear();
     void save();
+
+  private slots:
+    void createNewLogEntry(Logger::MsgType type, const QString msg);
 
   private:
     Logger(QObject *parent = 0);
@@ -73,12 +76,10 @@ namespace syslog
 
     typedef QMap<MsgType,int> MsgStats;
 
-    MsgStats       stat;
-    QIcon          icoError;
-    QIcon          icoWarning;
-    QIcon          icoInfo;
-    mutable QMutex mutex;
-
+    MsgStats stat;
+    QIcon    icoError;
+    QIcon    icoWarning;
+    QIcon    icoInfo;
   };
 
 }
