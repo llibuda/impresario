@@ -81,25 +81,31 @@ namespace syslog
 
   void Logger::createNewLogEntry(Logger::MsgType type, const QString msg)
   {
-    QStandardItem* item = new QStandardItem();
+    QStandardItem* itemTime = new QStandardItem();
     switch(type)
     {
       case Information:
-        item->setIcon(icoInfo);
+        itemTime->setIcon(icoInfo);
         break;
       case Warning:
-        item->setIcon(icoWarning);
+        itemTime->setIcon(icoWarning);
         break;
       case Error:
-        item->setIcon(icoError);
+        itemTime->setIcon(icoError);
         break;
     }
-    appendRow(item);
     QDateTime timeStamp = QDateTime::currentDateTime();
-    setData(index(rowCount()-1,0),timeStamp.toString("hh:mm:ss.zzz"));
-    setData(index(rowCount()-1,0),timeStamp.toString("yyyy-MM-dd hh:mm:ss.zzz"),SaveTimeStampRole);
-    setData(index(rowCount()-1,1),QChar(type));
-    setData(index(rowCount()-1,2),msg);
+    itemTime->setData(timeStamp.toString("hh:mm:ss.zzz"),Qt::DisplayRole);
+    itemTime->setData(timeStamp.toString("yyyy-MM-dd hh:mm:ss.zzz"),SaveTimeStampRole);
+    QStandardItem* itemType = new QStandardItem();
+    itemType->setData(QChar(type),Qt::DisplayRole);
+    QStandardItem* itemMsg = new QStandardItem();
+    itemMsg->setData(msg,Qt::DisplayRole);
+    QList<QStandardItem*> item;
+    item.append(itemTime);
+    item.append(itemType);
+    item.append(itemMsg);
+    appendRow(item);
     stat[type]++;
     emit changedMsgCount(type,stat[type],stat[Information] + stat[Warning] + stat[Error]);
   }
