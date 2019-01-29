@@ -209,7 +209,7 @@ namespace app
           QFile* file = qobject_cast<QFile*>(stream.device());
           Q_ASSERT(file != 0);
           QString filename = file->fileName().split('/').last();
-          syslog::warning(QString(tr("%5: Parameter '%1' of type '%2' is not supported by macro '%3' with signature '%4'. Ignored.")).arg(paramName).arg(paramType).arg(getName()).arg(getTypeSignature()).arg(filename));
+          syslog::warning(QString(tr("%5: Parameter '%1' of type '%2' is not supported by macro '%3' with signature '%4'. Ignored.")).arg(paramName).arg(paramType).arg(getName()).arg(getTypeSignature()).arg(filename),tr("Process Graph"));
         }
       }
     }

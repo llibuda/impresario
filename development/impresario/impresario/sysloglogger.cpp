@@ -35,26 +35,25 @@
 
 namespace syslog
 {
-  void info(const QString& msg)
+  void info(const QString& msg, const QString& category)
   {
-    Logger::instance().write(Logger::Information,msg);
+    Logger::instance().write(Logger::Information,msg,category);
   }
 
-  void warning(const QString& msg)
+  void warning(const QString& msg, const QString& category)
   {
-    Logger::instance().write(Logger::Warning,msg);
+    Logger::instance().write(Logger::Warning,msg,category);
   }
 
-  void error(const QString& msg)
+  void error(const QString& msg, const QString& category)
   {
-    Logger::instance().write(Logger::Error,msg);
+    Logger::instance().write(Logger::Error,msg,category);
   }
 
   //-----------------------------------------------------------------------
   // Class Logger
   //-----------------------------------------------------------------------
   int Logger::idMsgType = qRegisterMetaType<Logger::MsgType>("Logger::MsgType");
-  int Logger::idVectorInt = qRegisterMetaType< QVector<int> >("Logger::Vector<int>");
 
   Logger& Logger::instance()
   {
@@ -62,24 +61,25 @@ namespace syslog
     return log;
   }
 
-  Logger::Logger(QObject *parent) :  QStandardItemModel(0,3,parent),
+  Logger::Logger(QObject *parent) :  QStandardItemModel(0,4,parent),
     icoError(":/icons/resources/error.png"),
     icoWarning(":/icons/resources/warning.png"),
     icoInfo(":/icons/resources/information.png")
   {
     setHeaderData(0, Qt::Horizontal, QObject::tr("Time"));
     setHeaderData(1, Qt::Horizontal, QObject::tr("Type"));
-    setHeaderData(2, Qt::Horizontal, QObject::tr("Message"));
+    setHeaderData(2, Qt::Horizontal, QObject::tr("Category"));
+    setHeaderData(3, Qt::Horizontal, QObject::tr("Message"));
 
-    QObject::connect(this,SIGNAL(newLogEntry(Logger::MsgType,QString)),this,SLOT(createNewLogEntry(Logger::MsgType,QString)),Qt::QueuedConnection);
+    QObject::connect(this,SIGNAL(newLogEntry(Logger::MsgType,QString,QString)),this,SLOT(createNewLogEntry(Logger::MsgType,QString,QString)),Qt::QueuedConnection);
   }
 
-  void Logger::write(MsgType type, const QString& msg)
+  void Logger::write(MsgType type, const QString& msg,const QString& category)
   {
-    emit newLogEntry(type,msg);
+    emit newLogEntry(type,msg,category);
   }
 
-  void Logger::createNewLogEntry(Logger::MsgType type, const QString msg)
+  void Logger::createNewLogEntry(Logger::MsgType type, const QString msg, const QString category)
   {
     QStandardItem* itemTime = new QStandardItem();
     switch(type)
@@ -99,11 +99,14 @@ namespace syslog
     itemTime->setData(timeStamp.toString("yyyy-MM-dd hh:mm:ss.zzz"),SaveTimeStampRole);
     QStandardItem* itemType = new QStandardItem();
     itemType->setData(QChar(type),Qt::DisplayRole);
+    QStandardItem* itemCategory = new QStandardItem();
+    itemCategory->setData(category,Qt::DisplayRole);
     QStandardItem* itemMsg = new QStandardItem();
     itemMsg->setData(msg,Qt::DisplayRole);
     QList<QStandardItem*> item;
     item.append(itemTime);
     item.append(itemType);
+    item.append(itemCategory);
     item.append(itemMsg);
     appendRow(item);
     stat[type]++;
@@ -149,7 +152,7 @@ namespace syslog
         out.setFieldWidth(typeFieldWidth);
         out << data(index(i,1)).toChar();
         out.setFieldWidth(0);
-        QStringList textLines = data(index(i,2)).toString().split('\n');
+        QStringList textLines = data(index(i,3)).toString().split('\n');
         for(int index = 0; index < textLines.count(); ++index)
         {
           if (index > 0)

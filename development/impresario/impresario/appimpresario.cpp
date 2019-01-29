@@ -196,7 +196,7 @@ namespace app
 
   void Impresario::activatedByAnotherInstance()
   {
-    syslog::info(tr("Activated by another instance."));
+    syslog::info(tr("Activated by another instance."),tr("Impresario"));
     if (wndActWindow)
     {
       wndActWindow->setWindowState(wndActWindow->windowState() & ~Qt::WindowMinimized);
@@ -256,12 +256,12 @@ namespace app
           {
             Resource::setPath(Resource::SETTINGS_PATH_PROCESSGRAPH,path);
           }
-          syslog::info(QString(tr("Configuration: Path to process graphs is '%1'.")).arg(path));
+          syslog::info(QString(tr("Path to process graphs is '%1'.")).arg(path),tr("Configuration"));
           break; // quit loop
         }
         else // path does not exist
         {
-          syslog::warning(QString(tr("Configuration: Specified path '%1' to process graphs does not exist.")).arg(pgPaths[i]));
+          syslog::warning(QString(tr("Specified path '%1' to process graphs does not exist.")).arg(pgPaths[i]),tr("Configuration"));
         }
       }
     }
@@ -278,7 +278,7 @@ namespace app
     }
     else
     {
-      syslog::error(QString(tr("Configuration: Path to QML resources '%1' does not exists. Please reinstall Impresario.")).arg(QDir::toNativeSeparators(qmlPath.absolutePath())));
+      syslog::error(QString(tr("Path to QML resources '%1' does not exists. Please reinstall Impresario.")).arg(QDir::toNativeSeparators(qmlPath.absolutePath())),tr("Configuration"));
       return false;
     }
     // check resource path and required files
@@ -304,25 +304,25 @@ namespace app
         }
         else // path does not exist
         {
-          syslog::warning(QString(tr("Configuration: Specified path '%1' to resources does not exist.")).arg(resPaths[i]));
+          syslog::warning(QString(tr("Specified path '%1' to resources does not exist.")).arg(resPaths[i]),tr("Configuration"));
         }
       }
     }
     if (path.isEmpty())
     {
-      syslog::error(QString(tr("Configuration: No valid path to resources found. Please reinstall Impresario.")));
+      syslog::error(QString(tr("No valid path to resources found. Please reinstall Impresario.")),tr("Configuration"));
       return false;
     }
     else
     {
-      syslog::info(QString(tr("Configuration: Path to resources is '%1'.")).arg(path));
+      syslog::info(QString(tr("Path to resources is '%1'.")).arg(path),tr("Configuration"));
     }
 
     // check for process graph schema file
     QFileInfo xsdFile(path + "/processgraph.xsd");
     if (!xsdFile.exists() || !xsdFile.isFile())
     {
-      syslog::error(QString(tr("Configuration: Schema file '%1' for process graphs does not exists. Please reinstall Impresario.")).arg(QDir::toNativeSeparators(xsdFile.fileName())));
+      syslog::error(QString(tr("Schema file '%1' for process graphs does not exists. Please reinstall Impresario.")).arg(QDir::toNativeSeparators(xsdFile.fileName())),tr("Configuration"));
       return false;
     }
     // check for default property widget
@@ -330,7 +330,7 @@ namespace app
     QFileInfo defPropFile(Resource::getPath(Resource::SETTINGS_PATH_RESOURCES) + '/' + settings.value(Resource::path((Resource::SETTINGS_PROP_DEFAULTWIDGET))).toString());
     if (!defPropFile.exists() || !defPropFile.isFile())
     {
-      syslog::error(QString(tr("Configuration: Default QML property widget '%1' does not exists. Please reinstall Impresario.")).arg(QDir::toNativeSeparators(defPropFile.absoluteFilePath())));
+      syslog::error(QString(tr("Default QML property widget '%1' does not exists. Please reinstall Impresario.")).arg(QDir::toNativeSeparators(defPropFile.absoluteFilePath())),tr("Configuration"));
       return false;
     }
     return true;
@@ -356,7 +356,7 @@ namespace app
           {
             Resource::setPath(Resource::SETTINGS_PATH_DOCUMENTATION,path);
           }
-          syslog::info(QString(tr("Configuration: Path to documenation is '%1'.")).arg(path));
+          syslog::info(QString(tr("Path to documenation is '%1'.")).arg(path),tr("Configuration"));
 
           // setup help engine
           const QString helpCollectionFileName = "impresario.qhc";
@@ -365,7 +365,7 @@ namespace app
         }
         else // path does not exist
         {
-          syslog::warning(QString(tr("Configuration: Specified path '%1' to documentation does not exist.")).arg(docPaths[i]));
+          syslog::warning(QString(tr("Specified path '%1' to documentation does not exist.")).arg(docPaths[i]),tr("Configuration"));
         }
       }
     }
@@ -385,7 +385,7 @@ namespace app
       {
         if (paths[i].length() == 0)
         {
-          syslog::warning(tr("Configuration: Empty path for dependend libraries specified. Ignored."));
+          syslog::warning(tr("Empty path for dependend libraries specified. Ignored."),tr("Configuration"));
         }
         else
         {
@@ -396,7 +396,7 @@ namespace app
           }
           else
           {
-            syslog::warning(QString(tr("Configuration: Specified path '%1' for dependend libraries does not exist. Ignored.")).arg(paths[i]));
+            syslog::warning(QString(tr("Specified path '%1' for dependend libraries does not exist. Ignored.")).arg(paths[i]),tr("Configuration"));
           }
         }
       }
@@ -407,7 +407,7 @@ namespace app
     } while(libPaths.size() == 0 && index < settingsScopes.size());
     if (libPaths.size() > 0)
     {
-      syslog::info(QString(tr("Configuration: Using the following paths for dependend libraries\n%1")).arg(libPaths.join("\n")));
+      syslog::info(QString(tr("Using the following paths for dependend libraries\n%1")).arg(libPaths.join("\n")),tr("Configuration"));
       //foreach(QString path, libPaths)
       //{
       //  addLibraryPath(path);
@@ -429,7 +429,7 @@ namespace app
     }
     else
     {
-      syslog::info(tr("Configuration: No valid paths for dependend libraries specified."));
+      syslog::info(tr("No valid paths for dependend libraries specified."),tr("Configuration"));
     }
     return true;
   }
@@ -447,7 +447,7 @@ namespace app
       {
         if (paths[i].length() == 0)
         {
-          syslog::warning(tr("Configuration: Empty path for macro libraries specified. Ignored."));
+          syslog::warning(tr("Empty path for macro libraries specified. Ignored."),tr("Configuration"));
         }
         else
         {
@@ -458,7 +458,7 @@ namespace app
           }
           else
           {
-            syslog::warning(QString(tr("Configuration: Specified path '%1' for macro libraries does not exist. Ignored.")).arg(paths[i]));
+            syslog::warning(QString(tr("Specified path '%1' for macro libraries does not exist. Ignored.")).arg(paths[i]),tr("Configuration"));
           }
         }
       }
@@ -469,11 +469,11 @@ namespace app
     } while(libPaths.size() == 0 && index < settingsScopes.size());
     if (libPaths.size() == 0)
     {
-      syslog::warning(QString(tr("Configuration: No valid paths for macro libraries specified. Added '%1' as default.")).arg(QDir::toNativeSeparators(applicationDirPath())));
+      syslog::warning(QString(tr("No valid paths for macro libraries specified. Added '%1' as default.")).arg(QDir::toNativeSeparators(applicationDirPath())),tr("Configuration"));
       libPaths.append(QDir::toNativeSeparators(applicationDirPath()));
       Resource::setPaths(Resource::SETTINGS_PATH_MACROS,libPaths);
     }
-    syslog::info(QString(tr("Configuration: Using the following paths for macro libraries\n%1")).arg(libPaths.join("\n")));
+    syslog::info(QString(tr("Using the following paths for macro libraries\n%1")).arg(libPaths.join("\n")),tr("Configuration"));
     return true;
   }
 

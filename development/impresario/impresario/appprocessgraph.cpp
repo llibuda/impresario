@@ -80,11 +80,11 @@ namespace app
       QString msg = QString(QObject::tr("%2: Error returned in method 'apply' of macro '%1'.")).arg(macro->getName()).arg(vertex->graph()->name());
       QString macroMsg = macro->getErrorMsg();
       if (!macroMsg.isEmpty()) msg += '\n' + macroMsg;
-      syslog::error(msg);
+      syslog::error(msg,QObject::tr("Process Graph"));
     }
     else if (result == 1)
     {
-      syslog::info(QString(QObject::tr("%2: Method 'apply' of macro '%1' stops processing.")).arg(macro->getName()).arg(vertex->graph()->name()));
+      syslog::info(QString(QObject::tr("%2: Method 'apply' of macro '%1' stops processing.")).arg(macro->getName()).arg(vertex->graph()->name()),QObject::tr("Process Graph"));
     }
     return result;
   }
@@ -98,11 +98,11 @@ namespace app
       QString msg = QString(QObject::tr("%2: Error returned in method 'init' of macro '%1'.")).arg(macro->getName()).arg(vertex->graph()->name());
       QString macroMsg = macro->getErrorMsg();
       if (!macroMsg.isEmpty()) msg += '\n' + macroMsg;
-      syslog::error(msg);
+      syslog::error(msg,QObject::tr("Process Graph"));
     }
     else if (result == 1)
     {
-      syslog::info(QString(QObject::tr("%2: Method 'init' of macro '%1' stops processing.")).arg(macro->getName()).arg(vertex->graph()->name()));
+      syslog::info(QString(QObject::tr("%2: Method 'init' of macro '%1' stops processing.")).arg(macro->getName()).arg(vertex->graph()->name()),QObject::tr("Process Graph"));
     }
     return result;
   }
@@ -116,11 +116,11 @@ namespace app
       QString msg = QString(QObject::tr("%2: Error returned in method 'exit' of macro '%1'.")).arg(macro->getName()).arg(vertex->graph()->name());
       QString macroMsg = macro->getErrorMsg();
       if (!macroMsg.isEmpty()) msg += '\n' + macroMsg;
-      syslog::error(msg);
+      syslog::error(msg,QObject::tr("Process Graph"));
     }
     else if (result == 1)
     {
-      syslog::error(QString(QObject::tr("%2: Method 'exit' of macro '%1' stops processing.")).arg(macro->getName()).arg(vertex->graph()->name()));
+      syslog::error(QString(QObject::tr("%2: Method 'exit' of macro '%1' stops processing.")).arg(macro->getName()).arg(vertex->graph()->name()),QObject::tr("Process Graph"));
     }
     return result;
   }
@@ -186,7 +186,7 @@ namespace app
 
   void ProcessGraphCtrl::initProcessing()
   {
-    syslog::info(QString(tr("%1: Start processing.")).arg(processGraph.name()));
+    syslog::info(QString(tr("%1: Start processing.")).arg(processGraph.name()),QObject::tr("Process Graph"));
     const graph::GraphBase::ComponentMap componentVertices = processGraph.components();
     int compCount = componentVertices.uniqueKeys().size();
     int index = 0;
@@ -257,11 +257,11 @@ namespace app
     emit abortComputation();
     if (flagError)
     {
-      syslog::error(QString(tr("%1: Aborted processing.")).arg(processGraph.name()));
+      syslog::error(QString(tr("%1: Aborted processing.")).arg(processGraph.name()),QObject::tr("Process Graph"));
     }
     else
     {
-      syslog::info(QString(tr("%1: Stopped processing.")).arg(processGraph.name()));
+      syslog::info(QString(tr("%1: Stopped processing.")).arg(processGraph.name()),QObject::tr("Process Graph"));
     }
     // delete handler for graph components
     for(GraphComponentMap::iterator it = components.begin(); it != components.end(); ++it)

@@ -73,7 +73,7 @@ namespace db
         validator->setDefinition(definition);
         if (this->findItems(validator->getIdentifier()).count() > 0)
         {
-          syslog::error(QString(tr("%1: Duplicate identifier '%2' found. Skipped.").arg(validator->label()).arg(validator->getIdentifier())));
+          syslog::error(QString(tr("%1: Duplicate identifier '%2' found. Skipped.").arg(validator->label()).arg(validator->getIdentifier())),tr("Configuration"));
         }
         else if (validator->validate() > 0)
         {
@@ -84,7 +84,7 @@ namespace db
         }
         else
         {
-          syslog::error(validator->getErrorMsg());
+          syslog::error(validator->getErrorMsg(),tr("Configuration"));
         }
       }
     }
@@ -464,7 +464,7 @@ namespace db
     //{
     //  QString dump;
     //  filterTree->dump(dump);
-    //  syslog::info(QString("Filter '%1': %2").arg(identifier).arg(dump));
+    //  syslog::info(QString("Filter '%1': %2").arg(identifier).arg(dump),tr("Configuration"));
     //}
     if (filterTree) {
       filterTree->incRef();

@@ -318,20 +318,20 @@ namespace db
     {
     case Resource::SETTINGS_DB_VIEWFORMATS:
       cbView->blockSignals(true);
-      syslog::info(tr("Database View: Loading views..."));
+      syslog::info(tr("Loading views..."),tr("Database View"));
       modelViews.load(Resource::path(Resource::SETTINGS_DB_VIEWFORMATS),false);
       cbView->setCurrentIndex(modelViews.getActive().row());
       cbView->setModelColumn(1);
-      syslog::info(QString(tr("Database View: Loaded %1 views.")).arg(cbView->count()));
+      syslog::info(QString(tr("Loaded %1 views.")).arg(cbView->count()),tr("Database View"));
       cbView->blockSignals(false);
       break;
     case Resource::SETTINGS_DB_VIEWFILTERS:
       cbFilter->blockSignals(true);
-      syslog::info(tr("Database Filter: Loading filters..."));
+      syslog::info(tr("Loading filters..."),tr("Database Filter"));
       modelFilters.load(Resource::path(Resource::SETTINGS_DB_VIEWFILTERS),true);
       cbFilter->setCurrentIndex(modelFilters.getActive().row());
       cbFilter->setModelColumn(1);
-      syslog::info(QString(tr("Database Filter: Loaded %1 filters.")).arg(cbFilter->count()));
+      syslog::info(QString(tr("Loaded %1 filters.")).arg(cbFilter->count()),tr("Database Filter"));
       cbFilter->blockSignals(false);
       break;
     case Resource::SETTINGS_DB_SHOWVIEWERS:

@@ -117,10 +117,10 @@ namespace app
         switch(cntMacros + cntViewers)
         {
         case 0:
-          syslog::warning(QString(QObject::tr("Libraries: Loaded 1 library but no elements registered.")));
+          syslog::warning(QString(QObject::tr("Loaded 1 library but no elements registered.")),QObject::tr("Libraries"));
           break;
         default:
-          syslog::info(QString(QObject::tr("Libraries: Loaded 1 library. Registered macros: %1. Registered viewers: %2")).arg(cntMacros).arg(cntViewers));
+          syslog::info(QString(QObject::tr("Loaded 1 library. Registered macros: %1. Registered viewers: %2")).arg(cntMacros).arg(cntViewers),QObject::tr("Libraries"));
           break;
         }
       }
@@ -129,17 +129,17 @@ namespace app
         switch(cntMacros + cntViewers)
         {
         case 0:
-          syslog::warning(QString(QObject::tr("Libraries: Loaded %1 libraries but no elements registered.")).arg(libList.size()));
+          syslog::warning(QString(QObject::tr("Loaded %1 libraries but no elements registered.")).arg(libList.size()),QObject::tr("Libraries"));
           break;
         default:
-          syslog::info(QString(QObject::tr("Libraries: Loaded %1 libraries. Registered macros: %2. Registered viewers: %3")).arg(libList.size()).arg(cntMacros).arg(cntViewers));
+          syslog::info(QString(QObject::tr("Loaded %1 libraries. Registered macros: %2. Registered viewers: %3")).arg(libList.size()).arg(cntMacros).arg(cntViewers),QObject::tr("Libraries"));
           break;
         }
       }
     }
     else
     {
-      syslog::warning(QObject::tr("Libraries: No libraries loaded. Please check the search paths in settings."));
+      syslog::warning(QObject::tr("No libraries loaded. Please check the search paths in settings."),QObject::tr("Libraries"));
     }
 
     emit loadPrototypesFinished();

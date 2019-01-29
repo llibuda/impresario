@@ -116,7 +116,7 @@ namespace app
     libHandler.setFileName(path);
     if (!libHandler.load())
     {
-      syslog::error(QString(QObject::tr("Libraries: Operating system cannot load '%1'. Maybe dependencies are missing?")).arg(QDir::toNativeSeparators(path)));
+      syslog::error(QString(QObject::tr("Operating system cannot load '%1'. Maybe dependencies are missing?")).arg(QDir::toNativeSeparators(path)),QObject::tr("Libraries"));
       return false;
     }
     // load symbols from library
@@ -127,7 +127,7 @@ namespace app
         // symbol not found -> invalid library
         functions.clear();
         libHandler.unload();
-        syslog::error(QString(QObject::tr("Libraries: Missing symbol '%1' in library '%2'. Library not loaded.")).arg(InterfaceFunctionNames[index]).arg(QDir::toNativeSeparators(path)));
+        syslog::error(QString(QObject::tr("Missing symbol '%1' in library '%2'. Library not loaded.")).arg(InterfaceFunctionNames[index]).arg(QDir::toNativeSeparators(path)),QObject::tr("Libraries"));
         return false;
       }
       else {
@@ -143,10 +143,10 @@ namespace app
       functions.clear();
       libHandler.unload();
       if (!init) {
-        syslog::error(QString(QObject::tr("Libraries: '%1' could not be initialized. Library not loaded.")).arg(QDir::toNativeSeparators(path)));
+        syslog::error(QString(QObject::tr("'%1' could not be initialized. Library not loaded.")).arg(QDir::toNativeSeparators(path)),QObject::tr("Libraries"));
       }
       else {
-        syslog::warning(QString(QObject::tr("Libraries: '%1' does not contain any macros. Library not loaded.")).arg(QDir::toNativeSeparators(path)));
+        syslog::warning(QString(QObject::tr("'%1' does not contain any macros. Library not loaded.")).arg(QDir::toNativeSeparators(path)),QObject::tr("Libraries"));
       }
       return false;
     }
@@ -197,7 +197,7 @@ namespace app
           {
             if (!manager.registerVertexDataType(macro))
             {
-              syslog::warning(QString(QObject::tr("Libraries: Macro '%1' from library '%2' is already contained in database.")).arg(static_cast<app::Macro*>(macro.data())->getName()).arg(QDir::toNativeSeparators(path)));
+              syslog::warning(QString(QObject::tr("Macro '%1' from library '%2' is already contained in database.")).arg(static_cast<app::Macro*>(macro.data())->getName()).arg(QDir::toNativeSeparators(path)),QObject::tr("Libraries"));
               macro = graph::VertexData::Ptr();
             }
             else
@@ -207,7 +207,7 @@ namespace app
           }
           else
           {
-            syslog::error(QString(QObject::tr("Libraries: Failed to allocate memory for a macro in '%1'.")).arg(QDir::toNativeSeparators(path)));
+            syslog::error(QString(QObject::tr("Failed to allocate memory for a macro in '%1'.")).arg(QDir::toNativeSeparators(path)),QObject::tr("Libraries"));
           }
           break;
         }
@@ -220,7 +220,7 @@ namespace app
             {
               if (!manager.registerVertexDataType(macro))
               {
-                syslog::warning(QString(QObject::tr("Libraries: Macro '%1' from library '%2' is already contained in database.")).arg(static_cast<app::Macro*>(macro.data())->getName()).arg(QDir::toNativeSeparators(path)));
+                syslog::warning(QString(QObject::tr("Macro '%1' from library '%2' is already contained in database.")).arg(static_cast<app::Macro*>(macro.data())->getName()).arg(QDir::toNativeSeparators(path)),QObject::tr("Libraries"));
                 macro = graph::VertexData::Ptr();
               }
               else
@@ -231,7 +231,7 @@ namespace app
           }
           else
           {
-            syslog::error(QString(QObject::tr("Libraries: Failed to allocate memory for a macro in '%1'.")).arg(QDir::toNativeSeparators(path)));
+            syslog::error(QString(QObject::tr("Failed to allocate memory for a macro in '%1'.")).arg(QDir::toNativeSeparators(path)),QObject::tr("Libraries"));
           }
           break;
         }
@@ -244,7 +244,7 @@ namespace app
             {
               if (!manager.registerMacroViewer(viewer))
               {
-                syslog::warning(QString(QObject::tr("Libraries: Viewer '%1' from library '%2' could not be registered.")).arg(static_cast<app::Macro*>(viewer.data())->getName()).arg(QDir::toNativeSeparators(path)));
+                syslog::warning(QString(QObject::tr("Viewer '%1' from library '%2' could not be registered.")).arg(static_cast<app::Macro*>(viewer.data())->getName()).arg(QDir::toNativeSeparators(path)),QObject::tr("Libraries"));
                 viewer = app::MacroViewer::Ptr();
               }
               else
@@ -255,21 +255,21 @@ namespace app
           }
           else
           {
-            syslog::error(QString(QObject::tr("Libraries: Failed to allocate memory for a viewer in '%1'.")).arg(QDir::toNativeSeparators(path)));
+            syslog::error(QString(QObject::tr("Failed to allocate memory for a viewer in '%1'.")).arg(QDir::toNativeSeparators(path)),QObject::tr("Libraries"));
           }
           break;
         }
         default:
-          syslog::warning(QString(QObject::tr("Libraries: '%1' contains macros of invalid type. Skipping.")).arg(QDir::toNativeSeparators(path)));
+          syslog::warning(QString(QObject::tr("'%1' contains macros of invalid type. Skipping.")).arg(QDir::toNativeSeparators(path)),QObject::tr("Libraries"));
           break;
       }
     }
     if (libCntMacros + libCntViewers == 0)
     {
-      syslog::warning(QString(QObject::tr("Libraries: '%1' skipped. Neither macros nor viewers loaded.")).arg(QDir::toNativeSeparators(path)));
+      syslog::warning(QString(QObject::tr("'%1' skipped. Neither macros nor viewers loaded.")).arg(QDir::toNativeSeparators(path)),QObject::tr("Libraries"));
       return false;
     }
-    syslog::info(QString(QObject::tr("Libraries: '%1' loaded. Registered macros: %2. Registered viewers: %3.")).arg(QDir::toNativeSeparators(path)).arg(libCntMacros).arg(libCntViewers));
+    syslog::info(QString(QObject::tr("'%1' loaded. Registered macros: %2. Registered viewers: %3.")).arg(QDir::toNativeSeparators(path)).arg(libCntMacros).arg(libCntViewers),QObject::tr("Libraries"));
     return true;
   }
 
@@ -279,7 +279,7 @@ namespace app
     unsigned int libraryCompiler = libCompilerVersion;
     if (impresarioCompiler / 1000000 != libraryCompiler / 1000000)
     {
-      syslog::error(QString(QObject::tr("Libraries: %3 '%1' from library '%2' uses run time libraries incompatible to Impresario. %3 is skipped.")).arg(macro.getName()).arg(QDir::toNativeSeparators(macro.getLibrary().getPath())).arg(macro.getClass()));
+      syslog::error(QString(QObject::tr("%3 '%1' from library '%2' uses run time libraries incompatible to Impresario. %3 is skipped.")).arg(macro.getName()).arg(QDir::toNativeSeparators(macro.getLibrary().getPath())).arg(macro.getClass()),QObject::tr("Libraries"));
       return false;
     }
     //unsigned int libQtPatch = libQtVersion & 0xFF;
@@ -290,17 +290,17 @@ namespace app
     unsigned int impresarioQtMajor = (QT_VERSION & 0xFF0000) >> 16;
     if (libQtMajor != impresarioQtMajor)
     {
-      syslog::error(QString(QObject::tr("Libraries: %3 '%1' from library '%2' uses Qt version incompatible to Impresario. %3 is skipped.")).arg(macro.getName()).arg(QDir::toNativeSeparators(macro.getLibrary().getPath())).arg(macro.getClass()));
+      syslog::error(QString(QObject::tr("%3 '%1' from library '%2' uses Qt version incompatible to Impresario. %3 is skipped.")).arg(macro.getName()).arg(QDir::toNativeSeparators(macro.getLibrary().getPath())).arg(macro.getClass()),QObject::tr("Libraries"));
       return false;
     }
     if (app::BuildInfo::instance().isDebugVersion() != isDebugVersion())
     {
-      syslog::error(QString(QObject::tr("Libraries: %3 '%1' from library '%2' has incompatible build type to Impresario. %3 is skipped.")).arg(macro.getName()).arg(QDir::toNativeSeparators(macro.getLibrary().getPath())).arg(macro.getClass()));
+      syslog::error(QString(QObject::tr("%3 '%1' from library '%2' has incompatible build type to Impresario. %3 is skipped.")).arg(macro.getName()).arg(QDir::toNativeSeparators(macro.getLibrary().getPath())).arg(macro.getClass()),QObject::tr("Libraries"));
       return false;
     }
     if (impresarioCompiler / 10000 != libraryCompiler / 10000)
     {
-      syslog::warning(QString(QObject::tr("Libraries: %3 '%1' from library '%2' uses different compiler compared to Impresario.\nMaybe incompatible run time libraries will leed to unexpected faults. You have been warned!")).arg(macro.getName()).arg(QDir::toNativeSeparators(macro.getLibrary().getPath())).arg(macro.getClass()));
+      syslog::warning(QString(QObject::tr("%3 '%1' from library '%2' uses different compiler compared to Impresario.\nMaybe incompatible run time libraries will leed to unexpected faults. You have been warned!")).arg(macro.getName()).arg(QDir::toNativeSeparators(macro.getLibrary().getPath())).arg(macro.getClass()),QObject::tr("Libraries"));
     }
     return true;
   }

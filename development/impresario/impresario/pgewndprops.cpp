@@ -273,7 +273,7 @@ namespace pge
     {
       foreach(QQmlError error, errors)
       {
-        syslog::error(QString(tr("QML: Error while displaying properties:\n%1")).arg(error.toString()));
+        syslog::error(QString(tr("QML Error while displaying properties:\n%1")).arg(error.toString()),tr("Impresario"));
       }
     }
   }

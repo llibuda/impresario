@@ -102,15 +102,15 @@ namespace pge
       {
         case QtWarningMsg:
           syslog::warning(QString(tr("%1: In '%2' at line %3, column %4:\n%5"))
-                          .arg(fileName).arg(sourceLocation.uri().toString()).arg(sourceLocation.line()).arg(sourceLocation.column()).arg(result));
+                          .arg(fileName).arg(sourceLocation.uri().toString()).arg(sourceLocation.line()).arg(sourceLocation.column()).arg(result),tr("Process Graph"));
           break;
         case QtFatalMsg:
           syslog::error(QString(tr("%1: In '%2' at line %3, column %4:\n%5"))
-                          .arg(fileName).arg(sourceLocation.uri().toString()).arg(sourceLocation.line()).arg(sourceLocation.column()).arg(result));
+                          .arg(fileName).arg(sourceLocation.uri().toString()).arg(sourceLocation.line()).arg(sourceLocation.column()).arg(result),tr("Process Graph"));
           break;
         default:
           syslog::info(QString(tr("%1: In '%2' at line %3, column %4:\n%5"))
-                          .arg(fileName).arg(sourceLocation.uri().toString()).arg(sourceLocation.line()).arg(sourceLocation.column()).arg(result));
+                          .arg(fileName).arg(sourceLocation.uri().toString()).arg(sourceLocation.line()).arg(sourceLocation.column()).arg(result),tr("Process Graph"));
           break;
       }
     }
@@ -139,7 +139,7 @@ namespace pge
     QFile schemaFile(schemaPath);
     if (!schemaFile.exists())
     {
-      syslog::error(QString(tr("%1: Used XML schema file '%2' does not exist. Cannot validate process graph files.")).arg(pgFileName).arg(QDir::toNativeSeparators(schemaPath)));
+      syslog::error(QString(tr("%1: Used XML schema file '%2' does not exist. Cannot validate process graph files.")).arg(pgFileName).arg(QDir::toNativeSeparators(schemaPath)),tr("Configuration"));
       return false;
     }
     // validate source file
@@ -151,7 +151,7 @@ namespace pge
     schemaFile.close();
     if (!schema.isValid())
     {
-      syslog::error(QString(tr("%1: Used XML schema in file '%2' is invalid. Cannot validate process graph files.")).arg(pgFileName).arg(QDir::toNativeSeparators(schemaPath)));
+      syslog::error(QString(tr("%1: Used XML schema in file '%2' is invalid. Cannot validate process graph files.")).arg(pgFileName).arg(QDir::toNativeSeparators(schemaPath)),tr("Configuration"));
       return false;
     }
     QXmlSchemaValidator validator(schema);
@@ -160,27 +160,27 @@ namespace pge
     if (!validator.validate(&xmlFile, QUrl::fromLocalFile(xmlFile.fileName())))
     {
       xmlFile.close();
-      syslog::error(QString(tr("%1: File '%2' does not contain a valid process graph.")).arg(pgFileName).arg(QDir::toNativeSeparators(fileName)));
+      syslog::error(QString(tr("%1: File '%2' does not contain a valid process graph.")).arg(pgFileName).arg(QDir::toNativeSeparators(fileName)),tr("Process Graph"));
       return false;
     }
     // now load data from file
-    syslog::info(QString(tr("%1: Reading process graph from '%2'...")).arg(pgFileName).arg(QDir::toNativeSeparators(fileName)));
+    syslog::info(QString(tr("%1: Reading process graph from '%2'...")).arg(pgFileName).arg(QDir::toNativeSeparators(fileName)),tr("Process Graph"));
     xmlFile.seek(0);
     QXmlStreamReader stream(&xmlFile);
     if (!graph::SceneEditor::load(stream))
     {
       xmlFile.close();
-      syslog::error(pgFileName + ": " + stream.errorString());
-      syslog::error(QString(tr("%1: File '%2' not loaded.")).arg(pgFileName).arg(QDir::toNativeSeparators(fileName)));
+      syslog::error(pgFileName + ": " + stream.errorString(),tr("Process Graph"));
+      syslog::error(QString(tr("%1: File '%2' not loaded.")).arg(pgFileName).arg(QDir::toNativeSeparators(fileName)),tr("Process Graph"));
       return false;
     }
     if (stream.hasError())
     {
-      syslog::warning(pgFileName + ": " + stream.errorString());
+      syslog::warning(pgFileName + ": " + stream.errorString(),tr("Process Graph"));
     }
     xmlFile.close();
     setFileName(fileName);
-    syslog::info(QString(tr("%1: Opened process graph.")).arg(processGraph.name()));
+    syslog::info(QString(tr("%1: Opened process graph.")).arg(processGraph.name()),tr("Process Graph"));
     return true;
   }
 
@@ -295,7 +295,7 @@ namespace pge
     }
     else
     {
-      syslog::error(QString(tr("%1: Nothing to copy. Links cannot be copied without connected macros.")).arg(processGraph.name()));
+      syslog::error(QString(tr("%1: Nothing to copy. Links cannot be copied without connected macros.")).arg(processGraph.name()),tr("Process Graph"));
     }
   }
 
@@ -310,7 +310,7 @@ namespace pge
     }
     else
     {
-      syslog::error(QString(tr("%1: Nothing to cut. Links cannot be cut without connected macros.")).arg(processGraph.name()));
+      syslog::error(QString(tr("%1: Nothing to cut. Links cannot be cut without connected macros.")).arg(processGraph.name()),tr("Process Graph"));
     }
   }
 
@@ -323,7 +323,7 @@ namespace pge
     }
     else
     {
-      syslog::error(QString(tr("%1: Nothing to paste.")).arg(processGraph.name()));
+      syslog::error(QString(tr("%1: Nothing to paste.")).arg(processGraph.name()),tr("Process Graph"));
     }
   }
 
@@ -384,7 +384,7 @@ namespace pge
     pgUnlockId = processGraph.lockEditing();
     if (pgUnlockId.isNull())
     {
-      syslog::error(QString(tr("%1: Failed to lock graph execution.")).arg(processGraph.name()));
+      syslog::error(QString(tr("%1: Failed to lock graph execution.")).arg(processGraph.name()),tr("Process Graph"));
       return;
     }
     pgThread.start();
@@ -464,7 +464,7 @@ namespace pge
   {
     if (!processGraph.unlockEditing(pgUnlockId))
     {
-      syslog::error(QString(tr("%1: Failed to unlock graph for editing.")).arg(processGraph.name()));
+      syslog::error(QString(tr("%1: Failed to unlock graph for editing.")).arg(processGraph.name()),tr("Process Graph"));
     }
     undoStack()->setActive(true);
     pgRunning = false;
@@ -690,7 +690,7 @@ namespace pge
     QSaveFile file(fileName);
     if (!file.open(QFile::WriteOnly | QFile::Text))
     {
-      syslog::error(QString(tr("%1: Failed to save graph to file '%2'. %3")).arg(processGraph.name()).arg(fileName).arg(file.errorString()));
+      syslog::error(QString(tr("%1: Failed to save graph to file '%2'. %3")).arg(processGraph.name()).arg(fileName).arg(file.errorString()),tr("Process Graph"));
       return false;
     }
     setFileName(fileName);
@@ -698,7 +698,7 @@ namespace pge
     graph::SceneEditor::save(stream);
     if (stream.hasError())
     {
-      syslog::error(QString(tr("%1: Failed to save graph to file '%2'. %3")).arg(processGraph.name()).arg(fileName).arg(file.errorString()));
+      syslog::error(QString(tr("%1: Failed to save graph to file '%2'. %3")).arg(processGraph.name()).arg(fileName).arg(file.errorString()),tr("Process Graph"));
       return false;
     }
     bool isSaved = file.commit();
@@ -707,11 +707,11 @@ namespace pge
       //undoStack()->setClean();
       undoStack()->clear();
       clearElements();
-      syslog::info(QString(tr("%1: Saved graph to file '%2'.")).arg(processGraph.name()).arg(fileName));
+      syslog::info(QString(tr("%1: Saved graph to file '%2'.")).arg(processGraph.name()).arg(fileName),tr("Process Graph"));
     }
     else
     {
-      syslog::error(QString(tr("%1: Failed to save graph to file '%2'. %3")).arg(processGraph.name()).arg(fileName).arg(file.errorString()));
+      syslog::error(QString(tr("%1: Failed to save graph to file '%2'. %3")).arg(processGraph.name()).arg(fileName).arg(file.errorString()),tr("Process Graph"));
     }
     return isSaved;
   }
@@ -817,30 +817,30 @@ namespace pge
     }
     else
     {
-      syslog::error(QString(tr("%1: No valid data reference provided to viewer!")).arg(processGraphName));
+      syslog::error(QString(tr("%1: No valid data reference provided to viewer!")).arg(processGraphName),tr("Process Graph"));
       return false;
     }
     app::MacroManager& manager = app::MacroManager::instance();
     if (!manager.hasMacroViewer(macroOutput->getType()))
     {
-      syslog::error(QString(tr("%1: No viewer registered for data type '%2'.")).arg(processGraphName).arg(macroOutput->getType()));
+      syslog::error(QString(tr("%1: No viewer registered for data type '%2'.")).arg(processGraphName).arg(macroOutput->getType()),tr("Process Graph"));
       return false;
     }
     viewerMacro = manager.createMacroViewerInstance(macroOutput->getType());
     if (viewerMacro.isNull())
     {
-      syslog::error(QString(tr("%1: Failed to create viewer for data type '%2'.")).arg(processGraphName).arg(macroOutput->getType()));
+      syslog::error(QString(tr("%1: Failed to create viewer for data type '%2'.")).arg(processGraphName).arg(macroOutput->getType()),tr("Process Graph"));
       return false;
     }
     if (!viewerMacro->setData(macroOutput))
     {
-      syslog::error(QString(tr("%1: Failed to set input data for viewer of pin '%2'.")).arg(processGraphName).arg(pinId));
+      syslog::error(QString(tr("%1: Failed to set input data for viewer of pin '%2'.")).arg(processGraphName).arg(pinId),tr("Process Graph"));
       return false;
     }
     QWidget* viewPort = viewerMacro->createWidget();
     if (viewPort == 0)
     {
-      syslog::error(QString(tr("%1: Failed to create widget for viewer of pin '%2'.")).arg(processGraphName).arg(pinId));
+      syslog::error(QString(tr("%1: Failed to create widget for viewer of pin '%2'.")).arg(processGraphName).arg(pinId),tr("Process Graph"));
       viewerMacro = app::MacroViewer::Ptr();
       return false;
     }
@@ -858,7 +858,7 @@ namespace pge
       QString msg = QString(tr("%1: Error returned in method 'init' of viewer for pin '%2'.")).arg(processGraphName).arg(pinId);
       QString viewerMsg = viewerMacro->getErrorMsg();
       if (!viewerMsg.isEmpty()) msg += '\n' + viewerMsg;
-      syslog::error(msg);
+      syslog::error(msg,tr("Process Graph"));
       viewerMacro->destroyWidget();
       viewerMacro = app::MacroViewer::Ptr();
       return false;
@@ -896,7 +896,7 @@ namespace pge
           QString msg = QString(tr("%1: Error returned in method 'exit' of viewer '%2'.")).arg(processGraphName).arg(this->windowTitle());
           QString viewerMsg = viewerMacro->getErrorMsg();
           if (!viewerMsg.isEmpty()) msg += '\n' + viewerMsg;
-          syslog::error(msg);
+          syslog::error(msg,tr("Process Graph"));
         }
         disconnect(&(outputPin->vertex()),SIGNAL(statusUpdated(graph::BaseElement&,int)),this,SLOT(vertexStateChanged(graph::BaseElement&,int)));
         disconnect(&app::MacroManager::instance(),SIGNAL(vertexToBeDeleted(graph::Vertex::Ptr)),this,SLOT(vertexToBeDeleted(graph::Vertex::Ptr)));

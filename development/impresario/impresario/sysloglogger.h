@@ -29,9 +29,9 @@
 namespace syslog
 {
 
-  void info(const QString& msg);
-  void warning(const QString& msg);
-  void error(const QString& msg);
+  void info(const QString& msg, const QString& category = QString());
+  void warning(const QString& msg, const QString& category = QString());
+  void error(const QString& msg, const QString& category = QString());
 
   class Logger : public QStandardItemModel
   {
@@ -44,7 +44,7 @@ namespace syslog
       Error = 'E'
     };
 
-    void write(MsgType type, const QString& msg);
+    void write(MsgType type, const QString& msg, const QString& category = QString());
 
     int getMessageCount(MsgType type)
     {
@@ -55,14 +55,14 @@ namespace syslog
 
   signals:
     void changedMsgCount(Logger::MsgType type, int countType, int countTotal);
-    void newLogEntry(Logger::MsgType type, QString msg);
+    void newLogEntry(Logger::MsgType type, QString msg, QString category);
 
   public slots:
     void clear();
     void save();
 
   private slots:
-    void createNewLogEntry(Logger::MsgType type, const QString msg);
+    void createNewLogEntry(Logger::MsgType type, const QString msg, const QString category);
 
   private:
     Logger(QObject *parent = 0);
@@ -70,8 +70,6 @@ namespace syslog
     virtual ~Logger() {}
 
     static int idMsgType;
-    static int idVectorInt;
-
     static const int SaveTimeStampRole = Qt::UserRole + 3;
 
     typedef QMap<MsgType,int> MsgStats;
