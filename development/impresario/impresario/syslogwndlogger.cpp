@@ -82,7 +82,7 @@ namespace syslog
         widthUsed = qMax(widthUsed, line.naturalTextWidth());
       }
       textLayout.endLayout();
-      return QSize(widthUsed,height);
+      return QSize(int(widthUsed),int(height));
       /*
       QSize baseSize(sectionSizes[index.column()],10000);
       QRect outRect = option.fontMetrics.boundingRect(QRect(QPoint(0, 0), baseSize), option.displayAlignment | Qt::TextWordWrap, index.data().toString());
