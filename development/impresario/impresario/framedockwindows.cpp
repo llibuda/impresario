@@ -70,7 +70,7 @@ namespace frame
   //-----------------------------------------------------------------------
   DockWndSysLog::DockWndSysLog(QWidget *parent) : DockWndBase("DockSystemLog",tr("System Messages"),parent)
   {
-    syslog::WndLogger* logWnd = new syslog::WndLogger(this);
+    syslog::WndLogger* logWnd = new syslog::WndLogger(&syslog::Logger::instance(),this);
     this->setWidget(logWnd);
     toggleViewAction()->setStatusTip(tr("Toggle visibility of System messages window"));
   }

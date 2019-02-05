@@ -22,14 +22,42 @@
 #define SYSLOGWNDLOGGER_H
 
 #include "sysloglogger.h"
+#include <QAbstractItemModel>
+#include <QIcon>
 #include <QWidget>
-#include <QToolBar>
 #include <QTreeView>
 #include <QMenu>
 #include <QStyledItemDelegate>
 
 namespace syslog
 {
+  class LoggerModel : public QAbstractItemModel
+  {
+    Q_OBJECT
+  public:
+    LoggerModel(Logger* loggerInstance = 0, QObject* parent = 0);
+    virtual ~LoggerModel();
+
+    void attachLogger(Logger* loggerInstance);
+
+    virtual QVariant data(const QModelIndex &index, int role) const;
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+    virtual QModelIndex parent(const QModelIndex &index) const;
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+
+  private slots:
+    void update(Logger::MsgType type, int typeCount, int totalCount);
+
+  private:
+    Logger* logger;
+    int     countRows;
+    QIcon   icoError;
+    QIcon   icoWarning;
+    QIcon   icoInfo;
+  };
 
   class LoggerItemDelegate : public QStyledItemDelegate
   {
@@ -54,7 +82,7 @@ namespace syslog
   {
     Q_OBJECT
   public:
-    explicit WndLogger(QWidget *parent = 0);
+    explicit WndLogger(Logger* loggerInstance, QWidget *parent = 0);
     virtual ~WndLogger();
 
   protected:
@@ -65,12 +93,12 @@ namespace syslog
     void toggleFilterError(bool checked);
     void toggleFilterWarning(bool checked);
     void toggleFilterMessage(bool checked);
+    void saveLog();
+    void clearLog();
 
   private:
-    QToolBar*   tbFilter;
-    QToolBar*   tbActions;
-    QTreeView*  logView;
-    QMenu*      menu;
+    QTreeView* logView;
+    QMenu*     menu;
   };
 
 }

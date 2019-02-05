@@ -49,7 +49,7 @@ namespace app
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(groupText);
-    mainLayout->addWidget(new syslog::WndLogger(),1);
+    mainLayout->addWidget(new syslog::WndLogger(&syslog::Logger::instance(),this),1);
     mainLayout->addSpacing(5);
     mainLayout->addWidget(buttonBox);
     setLayout(mainLayout);

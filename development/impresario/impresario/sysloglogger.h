@@ -21,10 +21,11 @@
 #ifndef SYSLOGLOGGER_H
 #define SYSLOGLOGGER_H
 
-#include <QStandardItemModel>
+#include <QObject>
+#include <QDateTime>
 #include <QMap>
-#include <QIcon>
-#include <QFile>
+#include <QSet>
+#include <QVector>
 
 namespace syslog
 {
@@ -33,7 +34,7 @@ namespace syslog
   void warning(const QString& msg, const QString& category = QString());
   void error(const QString& msg, const QString& category = QString());
 
-  class Logger : public QStandardItemModel
+  class Logger : public QObject
   {
     Q_OBJECT
   public:
@@ -44,11 +45,30 @@ namespace syslog
       Error = 'E'
     };
 
+    struct LogEntry
+    {
+      QDateTime timeStamp;
+      MsgType   msgType;
+      QString   message;
+      QString   category;
+    };
+
     void write(MsgType type, const QString& msg, const QString& category = QString());
 
-    int getMessageCount(MsgType type)
+    int getMessageCount(MsgType type) const
     {
-      return stat[type];
+      return stats[type];
+    }
+
+    int getMessageCount() const
+    {
+      return messages.count();
+    }
+
+    const LogEntry& getMessage(int pos) const
+    {
+      Q_ASSERT(pos >= 0 && pos < messages.count());
+      return messages[pos];
     }
 
     static Logger& instance();
@@ -59,25 +79,26 @@ namespace syslog
 
   public slots:
     void clear();
-    void save();
+    void save(const QString& fileName);
 
   private slots:
     void createNewLogEntry(Logger::MsgType type, const QString msg, const QString category);
 
   private:
+    Q_DISABLE_COPY(Logger)
+
     Logger(QObject *parent = 0);
-    Logger& operator=(const Logger&) { return *this; }
-    virtual ~Logger() {}
 
     static int idMsgType;
-    static const int SaveTimeStampRole = Qt::UserRole + 3;
 
+    typedef QVector<LogEntry> MsgList;
     typedef QMap<MsgType,int> MsgStats;
+    typedef QSet<QString>     MsgCategories;
 
-    MsgStats stat;
-    QIcon    icoError;
-    QIcon    icoWarning;
-    QIcon    icoInfo;
+    MsgList       messages;
+    MsgCategories categories;
+    MsgStats      stats;
+    int           maxCategoryLength;
   };
 
 }

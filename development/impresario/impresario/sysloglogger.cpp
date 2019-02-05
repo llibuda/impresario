@@ -21,17 +21,9 @@
 
 #include "sysloglogger.h"
 #include "appimpresario.h"
-#include <QDateTime>
-#include <QStandardItem>
-#include <QFileDialog>
-#include <QDate>
-#include <QDateTime>
-#include <QMessageBox>
-#include <QPushButton>
 #include <QTextStream>
+#include <QFile>
 #include <QStringList>
-#include <QVector>
-#include <QMutexLocker>
 
 namespace syslog
 {
@@ -61,16 +53,8 @@ namespace syslog
     return log;
   }
 
-  Logger::Logger(QObject *parent) :  QStandardItemModel(0,4,parent),
-    icoError(":/icons/resources/error.png"),
-    icoWarning(":/icons/resources/warning.png"),
-    icoInfo(":/icons/resources/information.png")
+  Logger::Logger(QObject *parent) :  QObject(parent), messages(), categories(), stats(), maxCategoryLength(0)
   {
-    setHeaderData(0, Qt::Horizontal, QObject::tr("Time"));
-    setHeaderData(1, Qt::Horizontal, QObject::tr("Type"));
-    setHeaderData(2, Qt::Horizontal, QObject::tr("Category"));
-    setHeaderData(3, Qt::Horizontal, QObject::tr("Message"));
-
     QObject::connect(this,SIGNAL(newLogEntry(Logger::MsgType,QString,QString)),this,SLOT(createNewLogEntry(Logger::MsgType,QString,QString)),Qt::QueuedConnection);
   }
 
@@ -81,56 +65,32 @@ namespace syslog
 
   void Logger::createNewLogEntry(Logger::MsgType type, const QString msg, const QString category)
   {
-    QStandardItem* itemTime = new QStandardItem();
-    switch(type)
-    {
-      case Information:
-        itemTime->setIcon(icoInfo);
-        break;
-      case Warning:
-        itemTime->setIcon(icoWarning);
-        break;
-      case Error:
-        itemTime->setIcon(icoError);
-        break;
-    }
-    QDateTime timeStamp = QDateTime::currentDateTime();
-    itemTime->setData(timeStamp.toString("hh:mm:ss.zzz"),Qt::DisplayRole);
-    itemTime->setData(timeStamp.toString("yyyy-MM-dd hh:mm:ss.zzz"),SaveTimeStampRole);
-    QStandardItem* itemType = new QStandardItem();
-    itemType->setData(QChar(type),Qt::DisplayRole);
-    QStandardItem* itemCategory = new QStandardItem();
-    itemCategory->setData(category,Qt::DisplayRole);
-    QStandardItem* itemMsg = new QStandardItem();
-    itemMsg->setData(msg,Qt::DisplayRole);
-    QList<QStandardItem*> item;
-    item.append(itemTime);
-    item.append(itemType);
-    item.append(itemCategory);
-    item.append(itemMsg);
-    appendRow(item);
-    stat[type]++;
-    emit changedMsgCount(type,stat[type],stat[Information] + stat[Warning] + stat[Error]);
+    if (msg.length() == 0 && category.length() == 0) return;
+    LogEntry logEntry;
+    logEntry.timeStamp = QDateTime::currentDateTime();
+    logEntry.msgType = type;
+    logEntry.message = msg;
+    logEntry.category = category;
+    messages.append(logEntry);
+    stats[type]++;
+    categories.insert(category);
+    if (category.length() > maxCategoryLength) maxCategoryLength = category.length();
+    emit changedMsgCount(type,stats[type],messages.count());
   }
 
   void Logger::clear()
   {
-    removeRows(0,rowCount());
+    messages.clear();
+    categories.clear();
+    stats.clear();
+    maxCategoryLength = 0;
     emit changedMsgCount(Error,0,0);
-    stat.clear();
   }
 
-  void Logger::save()
+  void Logger::save(const QString& fileName)
   {
-    QString filters = tr("Log files (*.log);;All files (*.*)");
-    QString defFileName = QCoreApplication::applicationName() + QDate::currentDate().toString("_yyyy-MM-dd") + ".log";
-    QString filename = QFileDialog::getSaveFileName(0, tr("Save log file"),defFileName,filters,0,QFileDialog::DontConfirmOverwrite);
-    if (filename.length() == 0)
-    {
-      return;
-    }
     // check whether file exists
-    QFile file(filename);
+    QFile file(fileName);
     QFile::OpenMode mode = QFile::Text | QFile::WriteOnly;
     mode |= (file.exists()) ? QFile::Append : QFile::Truncate;
 
@@ -145,19 +105,26 @@ namespace syslog
 
       const int timeFieldWidth = 24;
       const int typeFieldWidth = 2;
-      for(int i = 0; i < rowCount(); ++i)
+      int categoryFieldWidth = 0;
+      if (maxCategoryLength > 0) categoryFieldWidth = maxCategoryLength + 1;
+      for(int i = 0; i < messages.count(); ++i)
       {
         out.setFieldWidth(timeFieldWidth);
-        out << data(index(i,0),SaveTimeStampRole).toString();
+        out << messages[i].timeStamp.toString("yyyy-MM-dd hh:mm:ss.zzz");
         out.setFieldWidth(typeFieldWidth);
-        out << data(index(i,1)).toChar();
+        out << QChar(messages[i].msgType);
+        if (categoryFieldWidth > 0)
+        {
+          out.setFieldWidth(categoryFieldWidth);
+          out << messages[i].category;
+        }
         out.setFieldWidth(0);
-        QStringList textLines = data(index(i,3)).toString().split('\n');
+        QStringList textLines = messages[i].message.split('\n');
         for(int index = 0; index < textLines.count(); ++index)
         {
           if (index > 0)
           {
-            out << QString(timeFieldWidth + typeFieldWidth,' ');
+            out << QString(timeFieldWidth + typeFieldWidth + categoryFieldWidth,' ');
           }
           out << textLines.at(index) << endl;
         }

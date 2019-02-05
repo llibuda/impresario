@@ -22,6 +22,7 @@
 #include "syslogwndlogger.h"
 #include "resources.h"
 #include <QApplication>
+#include <QToolBar>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSortFilterProxyModel>
@@ -35,6 +36,123 @@
 
 namespace syslog
 {
+  //-----------------------------------------------------------------------
+  // Class LoggerModel
+  //-----------------------------------------------------------------------
+  LoggerModel::LoggerModel(Logger* loggerInstance, QObject* parent) : QAbstractItemModel (parent), logger(0), countRows(0),
+    icoError(":/icons/resources/error.png"),
+    icoWarning(":/icons/resources/warning.png"),
+    icoInfo(":/icons/resources/information.png")
+  {
+    attachLogger(loggerInstance);
+  }
+
+  LoggerModel::~LoggerModel()
+  {
+  }
+
+  void LoggerModel::attachLogger(Logger* loggerInstance)
+  {
+    beginResetModel();
+    if (logger != 0)
+    {
+      disconnect(logger,&Logger::changedMsgCount,this,&LoggerModel::update);
+      logger = 0;
+      countRows = 0;
+    }
+    logger = loggerInstance;
+    if (logger != 0)
+    {
+      countRows = logger->getMessageCount();
+      connect(logger,&Logger::changedMsgCount,this,&LoggerModel::update);
+    }
+    endResetModel();
+  }
+
+  QVariant LoggerModel::data(const QModelIndex &index, int role) const
+  {
+    Q_ASSERT(logger != 0);
+    if (role == Qt::DisplayRole)
+    {
+      const Logger::LogEntry& entry = logger->getMessage(index.row());
+      switch(index.column())
+      {
+        case 0: return entry.timeStamp.toString("hh:mm:ss.zzz");
+        case 1: return QChar(entry.msgType);
+        case 2: return entry.category;
+        case 3: return entry.message;
+      }
+    }
+    else if (role == Qt::DecorationRole && index.column() == 0)
+    {
+      const Logger::LogEntry& entry = logger->getMessage(index.row());
+      switch(entry.msgType)
+      {
+        case Logger::Information: return icoInfo;
+        case Logger::Warning: return icoWarning;
+        case Logger::Error: return icoError;
+      }
+    }
+    return QVariant();
+  }
+
+  Qt::ItemFlags LoggerModel::flags(const QModelIndex & /*index*/) const
+  {
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+  }
+
+  QVariant LoggerModel::headerData(int section, Qt::Orientation /*orientation*/, int role) const
+  {
+    if (role == Qt::DisplayRole)
+    {
+      switch(section)
+      {
+        case 0: return QObject::tr("Time");
+        case 1: return QObject::tr("Type");
+        case 2: return QObject::tr("Category");
+        case 3: return QObject::tr("Message");
+      }
+    }
+    return QVariant();
+  }
+
+  QModelIndex LoggerModel::index(int row, int column, const QModelIndex &parent) const
+  {
+    if (!hasIndex(row,column,parent)) return QModelIndex();
+    return createIndex(row,column);
+  }
+
+  QModelIndex LoggerModel::parent(const QModelIndex & /*index*/) const
+  {
+    return QModelIndex();
+  }
+
+  int LoggerModel::rowCount(const QModelIndex & /*parent*/) const
+  {
+    return countRows;
+  }
+
+  int LoggerModel::columnCount(const QModelIndex & /*parent*/) const
+  {
+    return 4;
+  }
+
+  void LoggerModel::update(Logger::MsgType /*type*/, int /*typeCount*/, int totalCount)
+  {
+    if (totalCount == 0 && countRows > 0)
+    {
+      beginResetModel();
+      countRows = 0;
+      endResetModel();
+    }
+    else
+    {
+      beginInsertRows(QModelIndex(),countRows,totalCount - 1);
+      countRows = totalCount;
+      endInsertRows();
+    }
+  }
+
   //-----------------------------------------------------------------------
   // Class LoggerItemDelegate
   //-----------------------------------------------------------------------
@@ -119,24 +237,28 @@ namespace syslog
   // Class WndLogger
   //-----------------------------------------------------------------------
 
-  WndLogger::WndLogger(QWidget *parent) : QWidget(parent), tbFilter(0), tbActions(0), logView(0), menu(0)
+  WndLogger::WndLogger(Logger* loggerInstance, QWidget *parent) : QWidget(parent), logView(0), menu(0)
   {
-    tbFilter = new QToolBar(this);
+    Q_ASSERT(loggerInstance != 0);
+    QToolBar* tbFilter = new QToolBar(this);
     tbFilter->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
     tbFilter->addAction(Resource::action(Resource::SYSLOG_FILTERERRORS));
     tbFilter->addAction(Resource::action(Resource::SYSLOG_FILTERWARNINGS));
     tbFilter->addAction(Resource::action(Resource::SYSLOG_FILTERMESSAGES));
-    tbActions = new QToolBar(this);
+    QToolBar* tbActions = new QToolBar(this);
     tbActions->addAction(Resource::action(Resource::SYSLOG_SAVE));
     tbActions->addAction(Resource::action(Resource::SYSLOG_CLEAR));
+
+    // set up model for logger
+    LoggerModel* loggerModel = new LoggerModel(loggerInstance,this);
 
     // set up actual widget for log message visualization
     QSortFilterProxyModel* model = new QSortFilterProxyModel(this);
     model->setFilterRegExp("[IEW]");
     model->setFilterKeyColumn(1);
     model->setDynamicSortFilter(true);
-    model->setSourceModel(&Logger::instance());
+    model->setSourceModel(loggerModel);
 
     logView = new QTreeView(this);
     logView->setRootIsDecorated(false);
@@ -171,22 +293,21 @@ namespace syslog
     menu->addSeparator();
     menu->addAction(Resource::action(Resource::SYSLOG_SAVE));
     menu->addAction(Resource::action(Resource::SYSLOG_CLEAR));
+    connect(this,&WndLogger::destroyed,menu,&QMenu::deleteLater);
 
     // connect actions
-    connect(Resource::action(Resource::SYSLOG_SAVE),SIGNAL(triggered()),&Logger::instance(),SLOT(save()));
-    connect(Resource::action(Resource::SYSLOG_CLEAR),SIGNAL(triggered()),&Logger::instance(),SLOT(clear()));
-    connect(Resource::action(Resource::SYSLOG_FILTERERRORS),SIGNAL(toggled(bool)),this,SLOT(toggleFilterError(bool)));
-    connect(Resource::action(Resource::SYSLOG_FILTERWARNINGS),SIGNAL(toggled(bool)),this,SLOT(toggleFilterWarning(bool)));
-    connect(Resource::action(Resource::SYSLOG_FILTERMESSAGES),SIGNAL(toggled(bool)),this,SLOT(toggleFilterMessage(bool)));
-    connect(&Logger::instance(),SIGNAL(changedMsgCount(Logger::MsgType,int,int)),this,SLOT(updateUI(Logger::MsgType,int,int)));
+    connect(Resource::action(Resource::SYSLOG_SAVE),&QAction::triggered,this,&WndLogger::saveLog);
+    connect(Resource::action(Resource::SYSLOG_CLEAR),&QAction::triggered,this,&WndLogger::clearLog);
+    connect(Resource::action(Resource::SYSLOG_FILTERERRORS),&QAction::toggled,this,&WndLogger::toggleFilterError);
+    connect(Resource::action(Resource::SYSLOG_FILTERWARNINGS),&QAction::toggled,this,&WndLogger::toggleFilterWarning);
+    connect(Resource::action(Resource::SYSLOG_FILTERMESSAGES),&QAction::toggled,this,&WndLogger::toggleFilterMessage);
+    connect(&Logger::instance(),&Logger::changedMsgCount,this,&WndLogger::updateUI);
 
     updateUI(Logger::Error,0,0);
   }
 
   WndLogger::~WndLogger()
   {
-    delete menu;
-    menu = 0;
   }
 
   void WndLogger::contextMenuEvent(QContextMenuEvent* event)
@@ -201,11 +322,11 @@ namespace syslog
     Resource::action(Resource::SYSLOG_SAVE)->setEnabled(totalCount>0);
     if (totalCount == 0 && typeCount == 0)
     {
-      text = QString(tr("%1 Messages")).arg(Logger::instance().getMessageCount(Logger::Information));
+      text = QString(tr("%1 Messages")).arg(0);
       Resource::action(Resource::SYSLOG_FILTERMESSAGES)->setIconText(text);
-      text = QString(tr("%1 Warnings")).arg(Logger::instance().getMessageCount(Logger::Warning));
+      text = QString(tr("%1 Warnings")).arg(0);
       Resource::action(Resource::SYSLOG_FILTERWARNINGS)->setIconText(text);
-      text = QString(tr("%1 Errors")).arg(Logger::instance().getMessageCount(Logger::Error));
+      text = QString(tr("%1 Errors")).arg(0);
       Resource::action(Resource::SYSLOG_FILTERERRORS)->setIconText(text);
       return;
     }
@@ -303,5 +424,22 @@ namespace syslog
       filter.remove(id);
     }
     model->setFilterRegExp(filter);
+  }
+
+  void WndLogger::saveLog()
+  {
+    QString filters = tr("Log files (*.log);;All files (*.*)");
+    QString defFileName = QCoreApplication::applicationName() + QDate::currentDate().toString("_yyyy-MM-dd") + ".log";
+    QString filename = QFileDialog::getSaveFileName(0, tr("Save log file"),defFileName,filters,0,QFileDialog::DontConfirmOverwrite);
+    if (filename.length() == 0)
+    {
+      return;
+    }
+    Logger::instance().save(filename);
+  }
+
+  void WndLogger::clearLog()
+  {
+    Logger::instance().clear();
   }
 }
