@@ -20,7 +20,6 @@
 ******************************************************************************************/
 
 #include "syslogwndlogger.h"
-#include "resources.h"
 #include <QApplication>
 #include <QToolBar>
 #include <QVBoxLayout>
@@ -39,10 +38,10 @@ namespace syslog
   //-----------------------------------------------------------------------
   // Class LoggerModel
   //-----------------------------------------------------------------------
-  LoggerModel::LoggerModel(Logger* loggerInstance, QObject* parent) : QAbstractItemModel (parent), logger(0), countRows(0),
-    icoError(":/icons/resources/error.png"),
-    icoWarning(":/icons/resources/warning.png"),
-    icoInfo(":/icons/resources/information.png")
+  LoggerModel::LoggerModel(Logger* loggerInstance, QObject* parent) : QAbstractItemModel (parent), logger(nullptr), countRows(0),
+    icoError(qApp->style()->standardIcon(QStyle::SP_MessageBoxCritical)),
+    icoWarning(qApp->style()->standardIcon(QStyle::SP_MessageBoxWarning)),
+    icoInfo(qApp->style()->standardIcon(QStyle::SP_MessageBoxInformation))
   {
     attachLogger(loggerInstance);
   }
@@ -54,14 +53,14 @@ namespace syslog
   void LoggerModel::attachLogger(Logger* loggerInstance)
   {
     beginResetModel();
-    if (logger != 0)
+    if (logger != nullptr)
     {
       disconnect(logger,&Logger::changedMsgCount,this,&LoggerModel::update);
-      logger = 0;
+      logger = nullptr;
       countRows = 0;
     }
     logger = loggerInstance;
-    if (logger != 0)
+    if (logger != nullptr)
     {
       countRows = logger->getMessageCount();
       connect(logger,&Logger::changedMsgCount,this,&LoggerModel::update);
@@ -71,7 +70,7 @@ namespace syslog
 
   QVariant LoggerModel::data(const QModelIndex &index, int role) const
   {
-    Q_ASSERT(logger != 0);
+    Q_ASSERT(logger != nullptr);
     if (role == Qt::DisplayRole)
     {
       const Logger::LogEntry& entry = logger->getMessage(index.row());
@@ -127,9 +126,9 @@ namespace syslog
     return QModelIndex();
   }
 
-  int LoggerModel::rowCount(const QModelIndex & /*parent*/) const
+  int LoggerModel::rowCount(const QModelIndex & parent) const
   {
-    return countRows;
+    return (parent.isValid()) ? 0 : countRows;
   }
 
   int LoggerModel::columnCount(const QModelIndex & /*parent*/) const
@@ -151,6 +150,13 @@ namespace syslog
       countRows = totalCount;
       endInsertRows();
     }
+  }
+
+  void LoggerModel::setIcons(QIcon& info, QIcon& warning, QIcon& error)
+  {
+    icoInfo = info;
+    icoWarning = warning;
+    icoError = error;
   }
 
   //-----------------------------------------------------------------------
@@ -236,22 +242,64 @@ namespace syslog
   //-----------------------------------------------------------------------
   // Class WndLogger
   //-----------------------------------------------------------------------
+  WndLogger::IconMap WndLogger::icons;
 
-  WndLogger::WndLogger(Logger* loggerInstance, QWidget *parent) : QWidget(parent), logView(0), menu(0)
+  void WndLogger::setIcon(IconID id,QIcon icon)
   {
-    Q_ASSERT(loggerInstance != 0);
+    icons[id] = icon;
+  }
+
+  WndLogger::WndLogger(QWidget *parent, Logger* loggerInstance) : QWidget(parent), logView(nullptr), menu(nullptr),
+    actFilterError(nullptr), actFilterWarning(nullptr), actFilterInfo(nullptr), actSave(nullptr), actClear(nullptr)
+  {
+    if (loggerInstance == nullptr) loggerInstance = &Logger::instance();
+
+    if (icons.empty())
+    {
+      icons[ICO_INFO]    = qApp->style()->standardIcon(QStyle::SP_MessageBoxInformation);
+      icons[ICO_WARNING] = qApp->style()->standardIcon(QStyle::SP_MessageBoxWarning);
+      icons[ICO_ERROR]   = qApp->style()->standardIcon(QStyle::SP_MessageBoxCritical);
+      icons[ICO_SAVE]    = qApp->style()->standardIcon(QStyle::SP_DialogSaveButton);
+      icons[ICO_CLEAR]   = qApp->style()->standardIcon(QStyle::SP_DialogDiscardButton);
+    }
+
+    actFilterError = new QAction(icons[ICO_ERROR], QObject::tr("&Errors"), this);
+    actFilterError->setCheckable(true);
+    actFilterError->setChecked(true);
+    actFilterError->setIconText(QObject::tr("0 Errors"));
+    actFilterError->setStatusTip(QObject::tr("Toggle error message filter"));
+
+    actFilterWarning = new QAction(icons[ICO_WARNING], QObject::tr("&Warnings"), this);
+    actFilterWarning->setCheckable(true);
+    actFilterWarning->setChecked(true);
+    actFilterWarning->setIconText(QObject::tr("0 Warnings"));
+    actFilterWarning->setStatusTip(QObject::tr("Toggle warning message filter"));
+
+    actFilterInfo = new QAction(icons[ICO_INFO], QObject::tr("&Messages"), this);
+    actFilterInfo->setCheckable(true);
+    actFilterInfo->setChecked(true);
+    actFilterInfo->setIconText(QObject::tr("0 Messages"));
+    actFilterInfo->setStatusTip(QObject::tr("Toggle information message filter"));
+
+    actSave = new QAction(icons[ICO_SAVE], QObject::tr("&Save..."), this);
+    actSave->setStatusTip(QObject::tr("Save system messages to file"));
+
+    actClear = new QAction(icons[ICO_CLEAR], QObject::tr("&Clear"), this);
+    actClear->setStatusTip(QObject::tr("Clear system messages"));
+
     QToolBar* tbFilter = new QToolBar(this);
     tbFilter->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
-    tbFilter->addAction(Resource::action(Resource::SYSLOG_FILTERERRORS));
-    tbFilter->addAction(Resource::action(Resource::SYSLOG_FILTERWARNINGS));
-    tbFilter->addAction(Resource::action(Resource::SYSLOG_FILTERMESSAGES));
+    tbFilter->addAction(actFilterError);
+    tbFilter->addAction(actFilterWarning);
+    tbFilter->addAction(actFilterInfo);
     QToolBar* tbActions = new QToolBar(this);
-    tbActions->addAction(Resource::action(Resource::SYSLOG_SAVE));
-    tbActions->addAction(Resource::action(Resource::SYSLOG_CLEAR));
+    tbActions->addAction(actSave);
+    tbActions->addAction(actClear);
 
     // set up model for logger
     LoggerModel* loggerModel = new LoggerModel(loggerInstance,this);
+    loggerModel->setIcons(icons[ICO_INFO],icons[ICO_WARNING],icons[ICO_ERROR]);
 
     // set up actual widget for log message visualization
     QSortFilterProxyModel* model = new QSortFilterProxyModel(this);
@@ -287,20 +335,20 @@ namespace syslog
 
     // create context menu
     menu = new QMenu(this);
-    menu->addAction(Resource::action(Resource::SYSLOG_FILTERERRORS));
-    menu->addAction(Resource::action(Resource::SYSLOG_FILTERWARNINGS));
-    menu->addAction(Resource::action(Resource::SYSLOG_FILTERMESSAGES));
+    menu->addAction(actFilterError);
+    menu->addAction(actFilterWarning);
+    menu->addAction(actFilterInfo);
     menu->addSeparator();
-    menu->addAction(Resource::action(Resource::SYSLOG_SAVE));
-    menu->addAction(Resource::action(Resource::SYSLOG_CLEAR));
+    menu->addAction(actSave);
+    menu->addAction(actClear);
     connect(this,&WndLogger::destroyed,menu,&QMenu::deleteLater);
 
     // connect actions
-    connect(Resource::action(Resource::SYSLOG_SAVE),&QAction::triggered,this,&WndLogger::saveLog);
-    connect(Resource::action(Resource::SYSLOG_CLEAR),&QAction::triggered,this,&WndLogger::clearLog);
-    connect(Resource::action(Resource::SYSLOG_FILTERERRORS),&QAction::toggled,this,&WndLogger::toggleFilterError);
-    connect(Resource::action(Resource::SYSLOG_FILTERWARNINGS),&QAction::toggled,this,&WndLogger::toggleFilterWarning);
-    connect(Resource::action(Resource::SYSLOG_FILTERMESSAGES),&QAction::toggled,this,&WndLogger::toggleFilterMessage);
+    connect(actSave,&QAction::triggered,this,&WndLogger::saveLog);
+    connect(actClear,&QAction::triggered,this,&WndLogger::clearLog);
+    connect(actFilterError,&QAction::toggled,this,&WndLogger::toggleFilterError);
+    connect(actFilterWarning,&QAction::toggled,this,&WndLogger::toggleFilterWarning);
+    connect(actFilterInfo,&QAction::toggled,this,&WndLogger::toggleFilterMessage);
     connect(&Logger::instance(),&Logger::changedMsgCount,this,&WndLogger::updateUI);
 
     updateUI(Logger::Error,0,0);
@@ -318,16 +366,16 @@ namespace syslog
   void WndLogger::updateUI(Logger::MsgType type, int typeCount, int totalCount)
   {
     QString text;
-    Resource::action(Resource::SYSLOG_CLEAR)->setEnabled(totalCount>0);
-    Resource::action(Resource::SYSLOG_SAVE)->setEnabled(totalCount>0);
+    actClear->setEnabled(totalCount>0);
+    actSave->setEnabled(totalCount>0);
     if (totalCount == 0 && typeCount == 0)
     {
       text = QString(tr("%1 Messages")).arg(0);
-      Resource::action(Resource::SYSLOG_FILTERMESSAGES)->setIconText(text);
+      actFilterInfo->setIconText(text);
       text = QString(tr("%1 Warnings")).arg(0);
-      Resource::action(Resource::SYSLOG_FILTERWARNINGS)->setIconText(text);
+      actFilterWarning->setIconText(text);
       text = QString(tr("%1 Errors")).arg(0);
-      Resource::action(Resource::SYSLOG_FILTERERRORS)->setIconText(text);
+      actFilterError->setIconText(text);
       return;
     }
     switch(type)
@@ -335,34 +383,34 @@ namespace syslog
     case Logger::Information:
       if (typeCount == 1)
       {
-        Resource::action(Resource::SYSLOG_FILTERMESSAGES)->setIconText(tr("1 Message"));
+        actFilterInfo->setIconText(tr("1 Message"));
       }
       else
       {
         text = QString(tr("%1 Messages")).arg(typeCount);
-        Resource::action(Resource::SYSLOG_FILTERMESSAGES)->setIconText(text);
+        actFilterInfo->setIconText(text);
       }
       break;
     case Logger::Warning:
       if (typeCount == 1)
       {
-        Resource::action(Resource::SYSLOG_FILTERWARNINGS)->setIconText(tr("1 Warning"));
+        actFilterWarning->setIconText(tr("1 Warning"));
       }
       else
       {
         text = QString(tr("%1 Warnings")).arg(typeCount);
-        Resource::action(Resource::SYSLOG_FILTERWARNINGS)->setIconText(text);
+        actFilterWarning->setIconText(text);
       }
       break;
     case Logger::Error:
       if (typeCount == 1)
       {
-        Resource::action(Resource::SYSLOG_FILTERERRORS)->setIconText(tr("1 Error"));
+        actFilterError->setIconText(tr("1 Error"));
       }
       else
       {
         text = QString(tr("%1 Errors")).arg(typeCount);
-        Resource::action(Resource::SYSLOG_FILTERERRORS)->setIconText(text);
+        actFilterError->setIconText(text);
       }
       break;
     }
@@ -430,7 +478,7 @@ namespace syslog
   {
     QString filters = tr("Log files (*.log);;All files (*.*)");
     QString defFileName = QCoreApplication::applicationName() + QDate::currentDate().toString("_yyyy-MM-dd") + ".log";
-    QString filename = QFileDialog::getSaveFileName(0, tr("Save log file"),defFileName,filters,0,QFileDialog::DontConfirmOverwrite);
+    QString filename = QFileDialog::getSaveFileName(nullptr, tr("Save log file"),defFileName,filters,nullptr,QFileDialog::DontConfirmOverwrite);
     if (filename.length() == 0)
     {
       return;

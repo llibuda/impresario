@@ -47,9 +47,14 @@ namespace app
     buttonBox->addButton(btnAbout,QDialogButtonBox::HelpRole);
     buttonBox->addButton(btnTerminate,QDialogButtonBox::RejectRole);
 
+    syslog::WndLogger::setIcon(syslog::WndLogger::ICO_INFO, QIcon(":/icons/resources/information.png"));
+    syslog::WndLogger::setIcon(syslog::WndLogger::ICO_WARNING, QIcon(":/icons/resources/warning.png"));
+    syslog::WndLogger::setIcon(syslog::WndLogger::ICO_ERROR, QIcon(":/icons/resources/error.png"));
+    syslog::WndLogger::setIcon(syslog::WndLogger::ICO_SAVE, QIcon(":/icons/resources/save.png"));
+    syslog::WndLogger::setIcon(syslog::WndLogger::ICO_CLEAR, QIcon(":/icons/resources/delete.png"));
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(groupText);
-    mainLayout->addWidget(new syslog::WndLogger(&syslog::Logger::instance(),this),1);
+    mainLayout->addWidget(new syslog::WndLogger(this),1);
     mainLayout->addSpacing(5);
     mainLayout->addWidget(buttonBox);
     setLayout(mainLayout);

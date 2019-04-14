@@ -20,7 +20,7 @@
 ******************************************************************************************/
 
 #include "sysloglogger.h"
-#include "appimpresario.h"
+#include <QCoreApplication>
 #include <QTextStream>
 #include <QFile>
 #include <QStringList>
@@ -99,7 +99,7 @@ namespace syslog
     {
       QTextStream out(&file);
       out.setFieldAlignment(QTextStream::AlignLeft);
-      out << "------- " << app::Impresario::instance().applicationName();
+      out << "------- " << QCoreApplication::applicationName();
       out << " log written " << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
       out << " -------" << endl;
 

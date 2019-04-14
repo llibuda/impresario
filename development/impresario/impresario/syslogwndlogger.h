@@ -28,6 +28,8 @@
 #include <QTreeView>
 #include <QMenu>
 #include <QStyledItemDelegate>
+#include <QAction>
+#include <QMap>
 
 namespace syslog
 {
@@ -35,7 +37,7 @@ namespace syslog
   {
     Q_OBJECT
   public:
-    LoggerModel(Logger* loggerInstance = 0, QObject* parent = 0);
+    LoggerModel(Logger* loggerInstance = nullptr, QObject* parent = nullptr);
     virtual ~LoggerModel();
 
     void attachLogger(Logger* loggerInstance);
@@ -47,6 +49,8 @@ namespace syslog
     virtual QModelIndex parent(const QModelIndex &index) const;
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+
+    void setIcons(QIcon& info, QIcon& warning, QIcon& error);
 
   private slots:
     void update(Logger::MsgType type, int typeCount, int totalCount);
@@ -82,8 +86,19 @@ namespace syslog
   {
     Q_OBJECT
   public:
-    explicit WndLogger(Logger* loggerInstance, QWidget *parent = 0);
+    explicit WndLogger(QWidget *parent = nullptr, Logger* loggerInstance = nullptr);
     virtual ~WndLogger();
+
+    enum IconID
+    {
+      ICO_INFO,
+      ICO_WARNING,
+      ICO_ERROR,
+      ICO_SAVE,
+      ICO_CLEAR
+    };
+
+    static void setIcon(IconID id,QIcon icon);
 
   protected:
     void contextMenuEvent(QContextMenuEvent* event);
@@ -97,8 +112,16 @@ namespace syslog
     void clearLog();
 
   private:
+    typedef QMap<IconID, QIcon> IconMap;
+    static IconMap icons;
+
     QTreeView* logView;
     QMenu*     menu;
+    QAction*   actFilterError;
+    QAction*   actFilterWarning;
+    QAction*   actFilterInfo;
+    QAction*   actSave;
+    QAction*   actClear;
   };
 
 }

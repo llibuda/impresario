@@ -50,7 +50,7 @@ namespace help
     ptrHelpEngine = new QHelpEngine(helpCollectionFilePath,this);
     if (!ptrHelpEngine)
     {
-      syslog::error(QString(tr("Online help is not available. Could not allocate memory.")),tr("HelpSystem"));
+      syslog::error(QString(tr("Online help is not available. Could not allocate memory.")),tr("Help System"));
       return;
     }
 
@@ -61,7 +61,7 @@ namespace help
     QString errorMsg = ptrHelpEngine->error();
     if (errorMsg.count() > 0)
     {
-      syslog::error(QString(tr("Online help is not available. %1")).arg(errorMsg),tr("HelpSystem"));
+      syslog::error(QString(tr("Online help is not available. %1")).arg(errorMsg),tr("Help System"));
       destroyHelpEngine();
       return;
     }
@@ -84,12 +84,12 @@ namespace help
       {
         if (ptrHelpEngine->unregisterDocumentation(nameSpace))
         {
-          syslog::warning(QString(tr("Removed reference to help file '%1'. File does not exist.")).arg(QDir::toNativeSeparators(helpFile)),tr("HelpSystem"));
+          syslog::warning(QString(tr("Removed reference to help file '%1'. File does not exist.")).arg(QDir::toNativeSeparators(helpFile)),tr("Help System"));
           updateRequired = true;
         }
         else
         {
-          syslog::error(QString(tr("Failed to unregister non-existing help file '%1'. %2")).arg(QDir::toNativeSeparators(helpFile)).arg(ptrHelpEngine->error()),tr("HelpSystem"));
+          syslog::error(QString(tr("Failed to unregister non-existing help file '%1'. %2")).arg(QDir::toNativeSeparators(helpFile)).arg(ptrHelpEngine->error()),tr("Help System"));
         }
       }
       else
@@ -103,12 +103,12 @@ namespace help
     {
       if (ptrHelpEngine->registerDocumentation(helpFile))
       {
-        syslog::info(QString(tr("Registered help file '%1'.")).arg(QDir::toNativeSeparators(helpFile)),tr("HelpSystem"));
+        syslog::info(QString(tr("Registered help file '%1'.")).arg(QDir::toNativeSeparators(helpFile)),tr("Help System"));
         updateRequired = true;
       }
       else
       {
-        syslog::error(QString(tr("Failed to register help file '%1'. %2")).arg(QDir::toNativeSeparators(helpFile)).arg(ptrHelpEngine->error()),tr("HelpSystem"));
+        syslog::error(QString(tr("Failed to register help file '%1'. %2")).arg(QDir::toNativeSeparators(helpFile)).arg(ptrHelpEngine->error()),tr("Help System"));
       }
     }
     // connect signals and slots
@@ -129,7 +129,7 @@ namespace help
     QStringList registeredHelpFiles = ptrHelpEngine->registeredDocumentations();
     if (registeredHelpFiles.count() == 0)
     {
-      syslog::error(QString(tr("Online help is not available. No help files registered in path '%1'. %2")).arg(QDir::toNativeSeparators(helpDir.absolutePath())).arg(ptrHelpEngine->error()),tr("HelpSystem"));
+      syslog::error(QString(tr("Online help is not available. No help files registered in path '%1'. %2")).arg(QDir::toNativeSeparators(helpDir.absolutePath())).arg(ptrHelpEngine->error()),tr("Help System"));
       destroyHelpEngine();
       return;
     }
@@ -138,13 +138,13 @@ namespace help
     QMap<QString,QUrl> mapHits = ptrHelpEngine->linksForIdentifier(mainPageID);
     if (mapHits.count() == 0)
     {
-      syslog::warning(QString(tr("Main help for application is not available due to missing help file.")),tr("HelpSystem"));
+      syslog::warning(QString(tr("Main help for application is not available due to missing help file.")),tr("Help System"));
     }
     else
     {
       urlMainPage = mapHits.first();
     }
-    syslog::info(QString(tr("Online help initialized. Number of referenced help files: %1")).arg(registeredHelpFiles.count()),tr("HelpSystem"));
+    syslog::info(QString(tr("Online help initialized. Number of referenced help files: %1")).arg(registeredHelpFiles.count()),tr("Help System"));
     helpInitialized = true;
   }
 
@@ -190,27 +190,27 @@ namespace help
 
   void System::helpSetupStarted()
   {
-    // syslog::info(QString(tr("Setup started.")),tr("HelpSystem"));
+    // syslog::info(QString(tr("Setup started.")),tr("Help System"));
   }
 
   void System::helpSetupFinished()
   {
-    syslog::info(QString(tr("Setup finished.")),tr("HelpSystem"));
+    syslog::info(QString(tr("Setup finished.")),tr("Help System"));
   }
 
   void System::helpIndexingStarted()
   {
-    syslog::info(QString(tr("Indexing started.")),tr("HelpSystem"));
+    syslog::info(QString(tr("Indexing started.")),tr("Help System"));
   }
 
   void System::helpIndexingFinished()
   {
-    syslog::info(QString(tr("Indexing finished.")),tr("HelpSystem"));
+    syslog::info(QString(tr("Indexing finished.")),tr("Help System"));
   }
 
   void System::helpWarning(const QString& msg)
   {
-    syslog::warning(msg,tr("HelpSystem"));
+    syslog::warning(msg,tr("Help System"));
   }
 
   void System::showHelpMainWindow(const QUrl url)

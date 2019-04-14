@@ -87,7 +87,7 @@ namespace syslog
   private:
     Q_DISABLE_COPY(Logger)
 
-    Logger(QObject *parent = 0);
+    Logger(QObject *parent = nullptr);
 
     static int idMsgType;
 
