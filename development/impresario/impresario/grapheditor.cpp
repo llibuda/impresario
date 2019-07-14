@@ -1,6 +1,6 @@
 /******************************************************************************************
 **   Impresario - Image Processing Engineering System applying Reusable Interactive Objects
-**   Copyright (C) 2015-2018  Lars Libuda
+**   Copyright (C) 2015-2019  Lars Libuda
 **
 **   This file is part of Impresario.
 **
