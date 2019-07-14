@@ -2,7 +2,7 @@ Impresario legal information:
 
 IMPRESARIO LICENSE:
 
-Copyright (C) 2015-2018  Lars Libuda
+Copyright (C) 2015-2019  Lars Libuda
 
 Impresario is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
