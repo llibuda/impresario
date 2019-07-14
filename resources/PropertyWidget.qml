@@ -99,7 +99,7 @@ Item {
                         var errorCaught = false;
                         var props;
                         try {
-                            props = eval(itemProperties.props[styleData.row].properties);
+                            props = JSON.parse(itemProperties.props[styleData.row].properties);
                         }
                         catch(error) {
                             errorCaught = true;
