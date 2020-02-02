@@ -69,8 +69,8 @@ Makefile*
 
 # directories to be ignored
 /bin*
-/lib*
-/processgraphs
+/lib/*
+/processgraphs/*
 /development/impresario/build
 /doc
 !/doc/*.txt

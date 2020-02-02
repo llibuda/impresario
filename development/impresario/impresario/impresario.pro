@@ -157,6 +157,8 @@ OTHER_FILES += \
     ../../../resources/RealSpinBox.qml \
     ../../../resources/StringFileSelector.qml \
 
+DISTFILES +=
+
 
 
 
