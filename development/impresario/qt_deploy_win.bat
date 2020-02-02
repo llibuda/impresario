@@ -38,8 +38,8 @@ REM create standard directories for process graphs and macro libraries
 If not exist "%TARGETDIR%..\lib" (
   mkdir %TARGETDIR%..\lib
 )
-If not exist "%TARGETDIR%..\processgraph" (
-  mkdir %TARGETDIR%..\processgraph
+If not exist "%TARGETDIR%..\processgraphs" (
+  mkdir %TARGETDIR%..\processgraphs
 )
 
 REM call windeployqt to get required Qt components
