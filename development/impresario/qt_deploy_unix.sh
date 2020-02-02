@@ -92,4 +92,14 @@ cp "$scriptDirectory/misc/impresario.sh" "$targetDirectory"
 cp "$scriptDirectory/misc/impresario.svg" "$targetDirectory"
 cp "$scriptDirectory/misc/Impresario.xml" "$targetDirectory"
 
+# create standard paths for macro libraries and process graphs
+if [ ! -d "$targetDirectory/../lib" ]; then
+  echo "Creating standard directory for macro libraries..."
+  mkdir "$targetDirectory/../lib"
+fi
+if [ ! -d "$targetDirectory/../processgraphs" ]; then
+  echo "Creating standard directory for process graphs..."
+  mkdir "$targetDirectory/../processgraphs"
+fi
+
 
