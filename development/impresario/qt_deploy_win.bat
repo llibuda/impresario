@@ -34,8 +34,17 @@ For %%A in ("%TARGETFILE%") do (
 REM @echo Folder is: %TARGETDIR%
 REM @echo Name is: %TARGETNAME%
 
+REM create standard directories for process graphs and macro libraries
+If not exist "%TARGETDIR%..\lib" (
+  mkdir %TARGETDIR%..\lib
+)
+If not exist "%TARGETDIR%..\processgraph" (
+  mkdir %TARGETDIR%..\processgraph
+)
+
 REM call windeployqt to get required Qt components
 "%WINDEPLOYTOOL%" "%TARGETFILE%" --plugindir="%TARGETDIR%qtplugins" --no-quick-import
+
 REM clean up and reorder some files and directories
 If exist "%TARGETDIR%qtweb" (
   rmdir %TARGETDIR%qtweb /S /Q
