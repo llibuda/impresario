@@ -68,12 +68,12 @@ Makefile*
 *.qmlproject.user.*
 
 # directories to be ignored
-/bin*
-/lib/*
-/processgraphs/*
-/development/impresario/build
-/development/impresario-build
-/doc
+/bin*/
+/lib/
+/processgraphs/
+/development/impresario/*build*/
+/development/*build*/
+/doc/
 !/doc/*.txt
 
 # special files to be ignored
