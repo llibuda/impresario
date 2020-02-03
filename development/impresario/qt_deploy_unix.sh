@@ -67,6 +67,7 @@ cp -r "$QTDIR/plugins" "$targetDirectory/qtplugins"
 # copy Qt libraries for some plugins, especially for X11 support
 cp "$QTDIR/lib/libQt5DBus.so.5" "$targetDirectory/qtlib"
 cp "$QTDIR/lib/libQt5XcbQpa.so.5" "$targetDirectory/qtlib"
+cp "$QTDIR/lib/libQt5Svg.so.5" "$targetDirectory/qtlib"
 
 # deploy Qt Webengine
 if [ -d "$targetDirectory/qtweb" ]; then
