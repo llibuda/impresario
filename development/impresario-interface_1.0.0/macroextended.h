@@ -2,7 +2,7 @@
 **   Impresario Interface - Image Processing Engineering System applying Reusable Interactive Objects
 **   This file is part of the Impresario Interface.
 **
-**   Copyright (C) 2015  Lars Libuda
+**   Copyright (C) 2015, 2020  Lars Libuda
 **   All rights reserved.
 **
 **   Redistribution and use in source and binary forms, with or without
@@ -32,59 +32,67 @@
 #define MACROEXTENDED_H_
 
 #include "macrobase.h"
+#include <memory>
 
 class MacroExtBase : public MacroBase {
 public:
+  MacroExtBase(const MacroExtBase&) = delete;
+  MacroExtBase& operator=(const MacroExtBase&) = delete;
+  MacroExtBase(MacroExtBase&&) = delete;
+  MacroExtBase& operator=(MacroExtBase&&) = delete;
+
   // standard constructor
-  MacroExtBase(void) : MacroBase() {
+  MacroExtBase() : MacroBase{} {
   }
 
   // standard destructor
-  virtual ~MacroExtBase(void) {
-  }
+  ~MacroExtBase() override = default;
 
   // methods to access private attributes, neccessary for the main application
-  virtual MacroType getType() const { return ExtendedMacro; }
+  MacroType getType() const override { return ExtendedMacro; }
 
   // methods to create and destroy custom widget
   virtual void* createWidget() = 0;
   virtual void destroyWidget() = 0;
 };
 
-template <class T>
+template <typename T>
 class ViewerBase : public MacroExtBase {
 public:
+  ViewerBase(const ViewerBase&) = delete;
+  ViewerBase& operator=(const ViewerBase&) = delete;
+  ViewerBase(ViewerBase&&) = delete;
+  ViewerBase& operator=(ViewerBase&&) = delete;
+
   // standard constructor
-  ViewerBase(void) : MacroExtBase(), widgetPtr(0) {
+    ViewerBase() : MacroExtBase{} {
   }
 
   // standard destructor
-  virtual ~ViewerBase(void) {
-  }
+  ~ViewerBase() override = default;
 
   // methods to create and destroy custom widget
-  virtual void* createWidget() {
-    if (widgetPtr == 0) {
-      widgetPtr = new T();
+  void* createWidget() override {
+    if (widgetPtr == nullptr) {
+      widgetPtr = std::unique_ptr<T>{new T()};
     }
-    return reinterpret_cast<void*>(widgetPtr);
+    return reinterpret_cast<void*>(widgetPtr.get());
   }
 
-  void destroyWidget() {
-    delete widgetPtr;
-    widgetPtr = 0;
+  void destroyWidget() override {
+    widgetPtr = nullptr;
   }
 
   // methods to access private attributes, neccessary for the main application
-  virtual MacroType getType() const { return Viewer; }
+  MacroType getType() const override { return Viewer; }
 
 protected:
   T* accessWidget() const {
-    return widgetPtr;
+    return widgetPtr.get();
   }
 
 private:
-  T* widgetPtr;
+  std::unique_ptr<T> widgetPtr;
 };
 
 

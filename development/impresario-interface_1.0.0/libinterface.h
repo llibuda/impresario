@@ -2,7 +2,7 @@
 **   Impresario Interface - Image Processing Engineering System applying Reusable Interactive Objects
 **   This file is part of the Impresario Interface.
 **
-**   Copyright (C) 2015  Lars Libuda
+**   Copyright (C) 2015, 2020  Lars Libuda
 **   All rights reserved.
 **
 **   Redistribution and use in source and binary forms, with or without
@@ -43,8 +43,9 @@
   #define MACRO_API
 #endif
 
+// definition of Impresario C interface
 #ifdef __cplusplus
-  extern "C" {
+extern "C" {
 #endif
 
   typedef void* MacroHandle;
@@ -101,126 +102,14 @@
   MACRO_API void            macroDestroyWidget(MacroHandle handle);
 
 #ifdef __cplusplus
-  }
+} /* extern C */
 #endif
+// end of definition of Impresario interface
 
-#define MACRO_REGISTRATION_BEGIN bool libInitialize(MacroHandle** list, unsigned int* count, PFN_CONSOLE_REDIRECT cbStdCout, \
-                                                    PFN_CONSOLE_REDIRECT cbStdCerr, PFN_MACROPARAM_CHANGED cbMacroParamChanged) { \
-                                      if (g_Macros.size() > 0) {                   \
-                                        return false;                              \
-                                      }                                            \
-                                      g_cbMacroParamChanged = cbMacroParamChanged; \
-                                      initConsoleRedirect(cbStdCout,cbStdCerr);
-
-#define MACRO_ADD(class_name) g_Macros.push_back(new class_name);
-
-#define MACRO_REGISTRATION_END   *count = (unsigned int)g_Macros.size(); \
-                                 *list = g_Macros.data();                \
-                                 return true;                            \
-                               }
-
-void notifyParameterChanged(MacroHandle handle, unsigned int parameter, void* dataPtr);
-
-#include <streambuf>
-
-namespace std
-{
-  template <class E, class T = std::char_traits<E>, int BUF_SIZE = 512 >
-  class basic_editstreambuf : public std::basic_streambuf< E, T >
-  {
-  public:
-    basic_editstreambuf(PFN_CONSOLE_REDIRECT callback) : std::basic_streambuf<E,T>(), cbStream(callback)
-    {
-      psz = new typename T::char_type[ BUF_SIZE ];
-      this->pubsetbuf( psz, BUF_SIZE );
-      // leave place for single char + 0 terminator
-      this->setp( psz, psz + BUF_SIZE - 2 );
-    }
-
-    basic_editstreambuf() : std::basic_streambuf<E,T>(), cbStream(0)
-    {
-      psz = new typename T::char_type[ BUF_SIZE ];
-      this->pubsetbuf( psz, BUF_SIZE );
-      // leave place for single char + 0 terminator
-      this->setp( psz, psz + BUF_SIZE - 2 );
-    }
-
-    virtual ~basic_editstreambuf()
-    {
-      delete psz;
-      psz = 0;
-    }
-
-  protected:
-    virtual typename T::int_type overflow(typename T::int_type c = T::eof())
-    {
-      // maybe mutex lock required here?
-      typename T::char_type* plast = std::basic_streambuf<E,T>::pptr();
-      if (c != T::eof())
-      {
-        // add c to buffer
-        *plast++ = c;
-      }
-      *plast = typename T::char_type();
-
-      // Pass text to the edit control
-      if (cbStream != 0)
-      {
-        cbStream(std::basic_streambuf<E,T>::pbase());
-      }
-      this->setp(std::basic_streambuf<E,T>::pbase(),std::basic_streambuf<E,T>::epptr());
-
-      // mutex lock to be released here
-      return c != T::eof() ? T::not_eof( c ) : T::eof();
-    }
-
-    virtual int sync()
-    {
-      overflow();
-      return 0;
-    }
-
-    virtual std::streamsize xsputn(const typename T::char_type* pch, std::streamsize n)
-    {
-      std::streamsize nMax, nPut;
-      // maybe mutex lock required here?
-      for(nPut = 0; 0 < n;)
-      {
-        if (std::basic_streambuf<E,T>::pptr() != 0 && 0 < (nMax = static_cast<std::streamsize>(std::basic_streambuf<E,T>::epptr() - std::basic_streambuf<E,T>::pptr())))
-        {
-          if(n < nMax)
-          {
-            nMax = n;
-          }
-          T::copy(std::basic_streambuf<E,T>::pptr(), pch, (size_t)nMax);
-
-          // Sync if string contains LF
-          bool bSync = T::find( pch, (size_t)nMax, T::to_char_type( '\n' ) ) != NULL;
-          pch += nMax, nPut += nMax, n -= nMax, std::basic_streambuf<E,T>::pbump((int)nMax);
-          if (bSync)
-          {
-            sync();
-          }
-        }
-        else if (T::eq_int_type(T::eof(),overflow(T::to_int_type(*pch))))
-        {
-          break;
-        }
-        else
-        {
-          ++pch, ++nPut, --n;
-        }
-      }
-      // mutex lock to be released here
-      return nPut;
-    }
-
-  private:
-    typename T::char_type* psz;
-    PFN_CONSOLE_REDIRECT   cbStream;
-  };
-
-  typedef basic_editstreambuf<char>    editstreambuf;
-}
+// definitions for internal use
+#define MACRO_REGISTRATION_BEGIN
+#define MACRO_ADD(class_name)
+#define MACRO_REGISTRATION_END
+void notifyParameterChanged(MacroHandle handle, unsigned int parameter);
 
 #endif /* LIBINTERFACE_H_ */

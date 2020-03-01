@@ -2,7 +2,7 @@
 **   Impresario Interface - Image Processing Engineering System applying Reusable Interactive Objects
 **   This file is part of the Impresario Interface.
 **
-**   Copyright (C) 2015  Lars Libuda
+**   Copyright (C) 2015, 2020  Lars Libuda
 **   All rights reserved.
 **
 **   Redistribution and use in source and binary forms, with or without
@@ -28,89 +28,287 @@
 **   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **
 *****************************************************************************************************/
-#if defined(_MSC_VER) && (_MSC_VER >= 1400)
-  #define _CRT_SECURE_NO_DEPRECATE
-#endif
 
 #include "libinterface.h"
 #include "macrobase.h"
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 #include <vector>
+#include <map>
 #include <iostream>
 #include <climits>
+#include <streambuf>
+#include <string>
+#include <algorithm>
+#include <cassert>
 
-wchar_t                     g_szCompiler[256];
-wchar_t                     g_szDate[16];
-std::vector<MacroHandle>    g_Macros;
-std::editstreambuf*         g_coutStream = 0;
-std::editstreambuf*         g_cerrStream = 0;
-std::basic_streambuf<char>* g_pCoutOld = 0;
-std::basic_streambuf<char>* g_pCerrOld = 0;
-PFN_MACROPARAM_CHANGED      g_cbMacroParamChanged;
+//----------------------------------------------------------------------------------------------
+//--------------------- class for redirection of std::cout and std::cerr -----------------------
+//----------------------------------------------------------------------------------------------
+namespace std
+{
+  template <class E, class T = std::char_traits<E>, int BUF_SIZE = 512 >
+  class basic_editstreambuf : public std::basic_streambuf< E, T >
+  {
+  public:
+      basic_editstreambuf(PFN_CONSOLE_REDIRECT callback) : std::basic_streambuf<E,T>{}, cbStream{callback}
+    {
+      psz = new typename T::char_type[ BUF_SIZE ];
+      this->pubsetbuf( psz, BUF_SIZE );
+      // leave place for single char + 0 terminator
+      this->setp( psz, psz + BUF_SIZE - 2 );
+    }
 
-void initConsoleRedirect(PFN_CONSOLE_REDIRECT cbStdCout, PFN_CONSOLE_REDIRECT cbStdCerr) {
-  if (cbStdCout != 0) {
-    g_coutStream = new std::editstreambuf(cbStdCout);
-    g_pCoutOld = std::cout.rdbuf(g_coutStream);
+      basic_editstreambuf() : std::basic_streambuf<E,T>{}
+    {
+      psz = new typename T::char_type[ BUF_SIZE ];
+      this->pubsetbuf( psz, BUF_SIZE );
+      // leave place for single char + 0 terminator
+      this->setp( psz, psz + BUF_SIZE - 2 );
+    }
+
+    ~basic_editstreambuf() override
+    {
+      delete psz;
+      psz = nullptr;
+    }
+
+  protected:
+    typename T::int_type overflow(typename T::int_type c = T::eof()) override
+    {
+      // maybe mutex lock required here?
+      typename T::char_type* plast = std::basic_streambuf<E,T>::pptr();
+      if (c != T::eof())
+      {
+        // add c to buffer
+        *plast++ = static_cast<typename T::char_type>(c);
+      }
+      *plast = typename T::char_type();
+
+      // Pass text to the edit control
+      if (cbStream != nullptr)
+      {
+        cbStream(std::basic_streambuf<E,T>::pbase());
+      }
+      this->setp(std::basic_streambuf<E,T>::pbase(),std::basic_streambuf<E,T>::epptr());
+
+      // mutex lock to be released here
+      return c != T::eof() ? T::not_eof( c ) : T::eof();
+    }
+
+    int sync() override
+    {
+      overflow();
+      return 0;
+    }
+
+    std::streamsize xsputn(const typename T::char_type* pch, std::streamsize n) override
+    {
+      std::streamsize nMax, nPut;
+      // maybe mutex lock required here?
+      for(nPut = 0; 0 < n;)
+      {
+        if (std::basic_streambuf<E,T>::pptr() != nullptr && 0 < (nMax = static_cast<std::streamsize>(std::basic_streambuf<E,T>::epptr() - std::basic_streambuf<E,T>::pptr())))
+        {
+          if(n < nMax)
+          {
+            nMax = n;
+          }
+          T::copy(std::basic_streambuf<E,T>::pptr(), pch, static_cast<size_t>(nMax));
+
+          // Sync if string contains LF
+          bool bSync = T::find( pch, size_t(nMax), T::to_char_type( '\n' ) ) != nullptr;
+          pch += nMax, nPut += nMax, n -= nMax, std::basic_streambuf<E,T>::pbump(static_cast<int>(nMax));
+          if (bSync)
+          {
+            sync();
+          }
+        }
+        else if (T::eq_int_type(T::eof(),overflow(T::to_int_type(*pch))))
+        {
+          break;
+        }
+        else
+        {
+          ++pch, ++nPut, --n;
+        }
+      }
+      // mutex lock to be released here
+      return nPut;
+    }
+
+  private:
+    typename T::char_type* psz;
+    PFN_CONSOLE_REDIRECT   cbStream;
+  };
+
+  using editstreambuf = basic_editstreambuf<char>;
+}
+
+//----------------------------------------------------------------------------------------------
+//------------- global variables and functions for this module in anonymous namespace ----------
+//----------------------------------------------------------------------------------------------
+
+namespace {
+
+  wchar_t                     g_szCompiler[256];
+  wchar_t                     g_szBuildDate[16];
+  std::vector<MacroHandle>    g_Macros;
+  std::editstreambuf*         g_coutStream = nullptr;
+  std::editstreambuf*         g_cerrStream = nullptr;
+  std::basic_streambuf<char>* g_pCoutOld = nullptr;
+  std::basic_streambuf<char>* g_pCerrOld = nullptr;
+  std::map<MacroHandle,void*> g_MacroBackReference;
+  PFN_MACROPARAM_CHANGED      g_cbMacroParamChanged;
+
+  void initCompiler()
+  {
+    wchar_t szArch[6];
+    if (sizeof (void *) * CHAR_BIT == 64) {
+    #ifdef _MSC_VER
+      wcsncpy_s(szArch, 6, L"64bit\0", 6);
+    #else
+      wcsncpy(szArch,L"64bit\0",6);
+    #endif
+    }
+    else {
+    #ifdef _MSC_VER
+      wcsncpy_s(szArch, 6, L"64bit\0", 6);
+    #else
+      wcsncpy(szArch,L"64bit\0",6);
+    #endif
+    }
+  #if defined(__GNUC__)
+    // GCC
+    #ifdef __STDC_LIB_EXT1__
+      swprintf_s(g_szCompiler,sizeof(g_szCompiler) / sizeof(wchar_t),L"GCC %i.%i.%i (%ls)",__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__,szArch);
+    #else
+      swprintf(g_szCompiler,256,L"GCC %i.%i.%i (%ls)",__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__,szArch);
+    #endif
+  #elif defined(_MSC_VER)
+    // Microsoft
+    swprintf_s(g_szCompiler,sizeof(g_szCompiler) / sizeof(wchar_t),L"Microsoft C/C++ Compiler %i.%i %ls",_MSC_VER / 100,_MSC_VER % 100,szArch);
+  #if _MSC_VER == 1400
+    wcsncat_s(g_szCompiler,sizeof(g_szCompiler) / sizeof(wchar_t),L" (Visual Studio 2005)",21);
+  #elif _MSC_VER == 1500
+    wcsncat_s(g_szCompiler,sizeof(g_szCompiler) / sizeof(wchar_t),L" (Visual Studio 2008)",21);
+  #elif _MSC_VER == 1600
+    wcsncat_s(g_szCompiler,sizeof(g_szCompiler) / sizeof(wchar_t),L" (Visual Studio 2010)",21);
+  #elif _MSC_VER == 1700
+    wcsncat_s(g_szCompiler,sizeof(g_szCompiler) / sizeof(wchar_t),L" (Visual Studio 2012)",21);
+  #elif _MSC_VER == 1800
+    wcsncat_s(g_szCompiler,sizeof(g_szCompiler) / sizeof(wchar_t),L" (Visual Studio 2013)",21);
+  #elif _MSC_VER == 1900
+    wcsncat_s(g_szCompiler,sizeof(g_szCompiler) / sizeof(wchar_t),L" (Visual Studio 2015)",21);
+  #elif _MSC_VER >= 1910 && _MSC_VER < 1920
+    wcsncat_s(g_szCompiler,sizeof(g_szCompiler) / sizeof(wchar_t),L" (Visual Studio 2017)",21);
+  #elif _MSC_VER >= 1920
+    wcsncat_s(g_szCompiler,sizeof(g_szCompiler) / sizeof(wchar_t),L" (Visual Studio 2019)",21);
+  #endif
+  #else
+    // no supported compiler
+    wcsncpy_s(g_szCompiler,sizeof(g_szCompiler) / sizeof(wchar_t),L"Not recognized",14);
+  #endif
   }
-  if (cbStdCerr != 0) {
-    g_cerrStream = new std::editstreambuf(cbStdCerr);
-    g_pCerrOld = std::cerr.rdbuf(g_cerrStream);
+
+  void initBuildDate()
+  {
+  #ifdef _MSC_VER
+    const char* buildDate{ __DATE__ };
+    size_t      inSize { sizeof(buildDate) };
+    size_t      outSize;
+    mbstate_t   conversionState;
+    memset(&conversionState,0,sizeof(conversionState));
+    mbsrtowcs_s(&outSize, g_szBuildDate, 16, &buildDate, inSize, &conversionState);
+  #else
+    mbstowcs(g_szBuildDate,__DATE__,16);
+  #endif
+  }
+
+  void initConsoleRedirect(PFN_CONSOLE_REDIRECT cbStdCout, PFN_CONSOLE_REDIRECT cbStdCerr) {
+    if (cbStdCout != nullptr) {
+      try {
+        g_coutStream = new std::editstreambuf(cbStdCout);
+        g_pCoutOld = std::cout.rdbuf(g_coutStream);
+      }
+      catch(...) {
+        g_coutStream = nullptr;
+      }
+    }
+    if (cbStdCerr != nullptr) {
+      try {
+        g_cerrStream = new std::editstreambuf(cbStdCerr);
+        g_pCerrOld = std::cerr.rdbuf(g_cerrStream);
+      }
+      catch(...) {
+        g_cerrStream = nullptr;
+      }
+    }
+  }
+
+  void undoConsoleRedirect() {
+    // reset standard stream redirection if necessary
+    if (g_coutStream != nullptr && g_pCoutOld != nullptr) {
+      std::cout.rdbuf(g_pCoutOld);
+      delete g_coutStream;
+      g_coutStream = nullptr;
+      g_pCoutOld = nullptr;
+    }
+    if (g_cerrStream != nullptr && g_pCerrOld != nullptr) {
+      std::cerr.rdbuf(g_pCerrOld);
+      delete g_cerrStream;
+      g_cerrStream = nullptr;
+      g_pCerrOld = nullptr;
+    }
   }
 }
+
+//----------------------------------------------------------------------------------------------
+//--------------------- include library configuration from libconfig.h -------------------------
+//----------------------------------------------------------------------------------------------
+// NOTE: The function
+// libInitialize(MacroHandle** list, unsigned int* count, PFN_CONSOLE_REDIRECT cbStdCout, PFN_CONSOLE_REDIRECT cbStdCerr, PFN_MACROPARAM_CHANGED cbMacroParamChanged);
+// is defined via preprocessor expansion in libconfig.h with the following macros
+#undef MACRO_REGISTRATION_BEGIN
+#define MACRO_REGISTRATION_BEGIN bool libInitialize(MacroHandle** list, unsigned int* count, PFN_CONSOLE_REDIRECT cbStdCout, \
+                                                    PFN_CONSOLE_REDIRECT cbStdCerr, PFN_MACROPARAM_CHANGED cbMacroParamChanged) { \
+                                      initCompiler();                              \
+                                      initBuildDate();                             \
+                                      if (g_Macros.size() > 0) {                   \
+                                        return false;                              \
+                                      }                                            \
+                                      g_cbMacroParamChanged = cbMacroParamChanged; \
+                                      initConsoleRedirect(cbStdCout,cbStdCerr);    \
+                                      try {
+
+#undef MACRO_ADD
+#define MACRO_ADD(class_name) g_Macros.push_back(new class_name);
+
+#undef MACRO_REGISTRATION_END
+#define MACRO_REGISTRATION_END   }                                       \
+                                 catch(...) {                            \
+                                   libTerminate();                       \
+                                   *count = 0;                           \
+                                   *list = nullptr;                      \
+                                   return false;                         \
+                                 }                                       \
+                                 *count = (unsigned int)g_Macros.size(); \
+                                 *list = g_Macros.data();                \
+                                 return true;                            \
+                               }
 
 // It is important to have the following include exactly at this place!
 #include "libconfig.h"
-// NOTE: The function
-// bool libInitialize(MacroHandle** list, unsigned int* count)
-// is defined via preprocessor macro expansion in libconfig.h
 
+//----------------------------------------------------------------------------------------------
+//--------------------- implementation of interface functions ----------------------------------
+//----------------------------------------------------------------------------------------------
 const wchar_t* libGetBuildDate() {
-  mbstowcs(g_szDate,__DATE__,16);
-  return g_szDate;
+  return g_szBuildDate;
 }
 
 const wchar_t* libGetCompiler() {
-  wchar_t szArch[6];
-  if (sizeof (void *) * CHAR_BIT == 64) {
-    wcsncpy(szArch,L"64bit\0",6);
-  }
-  else {
-    wcsncpy(szArch,L"32bit\0",6);
-  }
-#if defined(__GNUC__)
-  // GCC
-  swprintf(g_szCompiler,256,L"GCC %i.%i.%i (%ls)",__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__,szArch);
   return g_szCompiler;
-#elif defined(_MSC_VER)
-  // Microsoft
-  _snwprintf(g_szCompiler,sizeof(g_szCompiler),L"Microsoft C/C++ Compiler %i.%i %ls",_MSC_VER / 100,_MSC_VER % 100,szArch);
-#if _MSC_VER == 1300 
-  wcsncat(g_szCompiler,L" (Visual C++ 2002)",sizeof(g_szCompiler));
-#elif _MSC_VER == 1310 
-  wcsncat(g_szCompiler,L" (Visual C++ 2003)",sizeof(g_szCompiler));
-#elif _MSC_VER == 1400 
-  wcsncat(g_szCompiler,L" (Visual C++ 2005)",sizeof(g_szCompiler));
-#elif _MSC_VER == 1500
-  wcsncat(g_szCompiler,L" (Visual C++ 2008)",sizeof(g_szCompiler));
-#elif _MSC_VER == 1600
-  wcsncat(g_szCompiler,L" (Visual C++ 2010)",sizeof(g_szCompiler));
-#elif _MSC_VER == 1700
-  wcsncat(g_szCompiler,L" (Visual C++ 2012)",sizeof(g_szCompiler));
-#elif _MSC_VER == 1800
-  wcsncat(g_szCompiler,L" (Visual C++ 2013)",sizeof(g_szCompiler));
-#elif _MSC_VER == 1900
-  wcsncat(g_szCompiler,L" (Visual C++ 2015)",sizeof(g_szCompiler));
-#elif _MSC_VER == 1914
-  wcsncat(g_szCompiler,L" (Visual C++ 2017)",sizeof(g_szCompiler));
-#endif
-  return g_szCompiler;
-#else
-  // no supported compiler
-  wcsncpy(g_szCompiler,L"Not recognized",sizeof(g_szCompiler));
-  return g_szCompiler;
-#endif
 }
 
 unsigned int libGetCompilerId() {
@@ -128,7 +326,7 @@ unsigned int libGetCompilerId() {
 
 unsigned int libGetQtVersion() {
 #if defined(QT_VERSION)
-  return (unsigned int)QT_VERSION;
+  return static_cast<unsigned int>(QT_VERSION);
 #else
   return 0;
 #endif
@@ -163,164 +361,162 @@ const wchar_t* libGetDescription() {
 }
 
 void libTerminate() {
-  // reset standard stream redirection if necessary
-  if (g_coutStream != 0 && g_pCoutOld != 0) {
-    std::cout.rdbuf(g_pCoutOld);
-    delete g_coutStream;
-    g_coutStream = 0;
-    g_pCoutOld = 0;
-  }
-  if (g_cerrStream != 0 && g_pCerrOld != 0) {
-    std::cerr.rdbuf(g_pCerrOld);
-    delete g_cerrStream;
-    g_cerrStream = 0;
-    g_pCerrOld = 0;
-  }
+  undoConsoleRedirect();
   // delete macro list
-  for(std::size_t i = 0; i < g_Macros.size(); ++i) {
-    MacroBase* macro = (MacroBase*)g_Macros[i];
+  for(MacroHandle gMacroHandle : g_Macros) {
+    auto macro = static_cast<MacroBase*>(gMacroHandle);
     delete macro;
   }
   g_Macros.clear();
 }
 
 MacroHandle macroClone(MacroHandle handle) {
-  MacroBase* macro = (MacroBase*)handle;
-  MacroBase* clone = macro->clone();
-  return (MacroHandle)clone;
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
+  try {
+    auto clone = macro->clone();
+    return static_cast<MacroHandle>(clone);
+  }
+  catch(...) {
+    return nullptr;
+  }
 }
 
 void macroSetImpresarioDataPtr(MacroHandle handle, void *dataPtr) {
-  MacroBase* macro = (MacroBase*)handle;
-  macro->setImpresarioDataPtr(dataPtr);
+  if (handle != nullptr) {
+    g_MacroBackReference[handle] = dataPtr;
+  }
 }
 
 void* macroGetImpresarioDataPtr(MacroHandle handle) {
-  MacroBase* macro = (MacroBase*)handle;
-  return macro->getImpresarioDataPtr();
+  if (handle != nullptr) {
+    return g_MacroBackReference[handle];
+  }
+  else {
+    return nullptr;
+  }
 }
 
 bool macroDelete(MacroHandle handle) {
-  for(std::size_t i = 0; i < g_Macros.size(); ++i) {
-    if (g_Macros[i] == handle) {
-      return false;
-    }
+  if (handle == nullptr || std::find(g_Macros.cbegin(),g_Macros.cend(),handle) != g_Macros.cend()) {
+    return false;
   }
-  MacroBase* macro = (MacroBase*)handle;
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
   delete macro;
   return true;
 }
 
 unsigned int macroGetType(MacroHandle handle) {
-  MacroBase* macro = (MacroBase*)handle;
-  return (unsigned int)macro->getType();
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
+  return static_cast<unsigned int>(macro->getType());
 }
 
 const wchar_t* macroGetName(MacroHandle handle) {
-  MacroBase* macro = (MacroBase*)handle;
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
   const std::wstring& str = macro->getName();
   return str.c_str();
 }
 
 const wchar_t* macroGetCreator(MacroHandle handle) {
-  MacroBase* macro = (MacroBase*)handle;
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
   const std::wstring& str = macro->getCreator();
   return str.c_str();
 }
 
 const wchar_t* macroGetGroup(MacroHandle handle) {
-  MacroBase* macro = (MacroBase*)handle;
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
   const std::wstring& str = macro->getGroup();
   return str.c_str();
 }
 
 const wchar_t* macroGetDescription(MacroHandle handle) {
-  MacroBase* macro = (MacroBase*)handle;
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
   const std::wstring& str = macro->getDescription();
   return str.c_str();
 }
 
 const wchar_t* macroGetErrorMsg(MacroHandle handle) {
-  MacroBase* macro = (MacroBase*)handle;
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
   const std::wstring& str = macro->getErrorMsg();
   return str.c_str();
 }
 
 const wchar_t* macroGetPropertyWidgetComponent(MacroHandle handle) {
-  MacroBase* macro = (MacroBase*)handle;
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
   const std::wstring& str = macro->getPropertyWidgetComponent();
   return str.c_str();
 }
 
 DataDescriptor* macroGetInputs(MacroHandle handle, unsigned int* count) {
-  MacroBase* macro = (MacroBase*)handle;
-  const MacroBase::ValueVector& inputs = macro->getInputs();
-  *count = static_cast<unsigned int>(inputs.size());
-  if (inputs.size() > 0) {
-    return inputs[0]->getDescriptorPtr();
-  }
-  else {
-    return 0;
-  }
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
+  auto inputsPair = macro->getInputsCInterface();
+  *count = inputsPair.second;
+  return inputsPair.first;
 }
 
 DataDescriptor* macroGetOutputs(MacroHandle handle, unsigned int* count) {
-  MacroBase* macro = (MacroBase*)handle;
-  const MacroBase::ValueVector& outputs = macro->getOutputs();
-  *count = static_cast<unsigned int>(outputs.size());
-  if (outputs.size() > 0) {
-    return outputs[0]->getDescriptorPtr();
-  }
-  else {
-    return 0;
-  }
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
+  auto outputsPair = macro->getOutputsCInterface();
+  *count = outputsPair.second;
+  return outputsPair.first;
 }
 
 DataDescriptor* macroGetParameters(MacroHandle handle, unsigned int* count) {
-  MacroBase* macro = (MacroBase*)handle;
-  const MacroBase::ValueVector& params = macro->getParameters();
-  *count = static_cast<unsigned int>(params.size());
-  if (params.size() > 0) {
-    return params[0]->getDescriptorPtr();
-  }
-  else {
-    return 0;
-  }
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
+  auto paramsPair = macro->getParametersCInterface();
+  *count = paramsPair.second;
+  return paramsPair.first;
 }
 
 int macroStart(MacroHandle handle) {
-  MacroBase* macro = (MacroBase*)handle;
-  return (int)(macro->init());
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
+  return static_cast<int>(macro->init());
 }
 
 int macroApply(MacroHandle handle) {
-  MacroBase* macro = (MacroBase*)handle;
-  return (int)(macro->apply());
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
+  return static_cast<int>(macro->apply());
 }
 
 int macroStop(MacroHandle handle) {
-  MacroBase* macro = (MacroBase*)handle;
-  return (int)(macro->exit());
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
+  return static_cast<int>(macro->exit());
 }
 
 void macroSetParameterValue(MacroHandle handle, unsigned int parameter, const wchar_t* strValue) {
-  MacroBase* macro = (MacroBase*)handle;
-  const MacroBase::ValueVector& params = macro->getParameters();
-  if (parameter < params.size()) {
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
+  auto paramsPair = macro->getParametersCInterface();
+  if (parameter < paramsPair.second) {
     std::wstring value(strValue);
     macro->setParameterValueAsString(parameter,value);
   }
 }
 
 const wchar_t* macroGetParameterValue(MacroHandle handle, unsigned int parameter) {
-  MacroBase* macro = (MacroBase*)handle;
-  const MacroBase::ValueVector& params = macro->getParameters();
-  if (parameter < params.size()) {
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
+  auto paramsPair = macro->getParametersCInterface();
+  if (parameter < paramsPair.second) {
     return macro->getParameterValueAsString(parameter).c_str();
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 
@@ -328,25 +524,29 @@ const wchar_t* macroGetParameterValue(MacroHandle handle, unsigned int parameter
 #include "macroextended.h"
 
 void* macroCreateWidget(MacroHandle handle) {
-  MacroBase* macro = (MacroBase*)handle;
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
   if (macro->getType() != Macro) {
-    MacroExtBase* macroExt = static_cast<MacroExtBase*>(macro);
+    auto macroExt = dynamic_cast<MacroExtBase*>(macro);
+    assert(macroExt != nullptr);
     return reinterpret_cast<void*>(macroExt->createWidget());
   }
-  return 0;
+  return nullptr;
 }
 
 void macroDestroyWidget(MacroHandle handle) {
-  MacroBase* macro = (MacroBase*)handle;
+  auto macro = static_cast<MacroBase*>(handle);
+  assert(macro != nullptr);
   if (macro->getType() != Macro) {
-    MacroExtBase* macroExt = static_cast<MacroExtBase*>(macro);
+    auto macroExt = dynamic_cast<MacroExtBase*>(macro);
+    assert(macroExt != nullptr);
     macroExt->destroyWidget();
   }
 }
 
 #else
 void* macroCreateWidget(MacroHandle /*handle*/) {
-  return 0;
+  return nullptr;
 }
 
 void macroDestroyWidget(MacroHandle /*handle*/) {
@@ -354,9 +554,9 @@ void macroDestroyWidget(MacroHandle /*handle*/) {
 
 #endif
 
-void notifyParameterChanged(MacroHandle handle, unsigned int parameter, void* dataPtr) {
+void notifyParameterChanged(MacroHandle handle, unsigned int parameter) {
   if (g_cbMacroParamChanged) {
-    g_cbMacroParamChanged(handle,parameter,dataPtr);
+    g_cbMacroParamChanged(handle,parameter,g_MacroBackReference[handle]);
   }
 }
 

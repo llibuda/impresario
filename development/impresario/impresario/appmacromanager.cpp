@@ -1,6 +1,6 @@
 /******************************************************************************************
 **   Impresario - Image Processing Engineering System applying Reusable Interactive Objects
-**   Copyright (C) 2015-2019  Lars Libuda
+**   Copyright (C) 2015-2020  Lars Libuda
 **
 **   This file is part of Impresario.
 **
@@ -212,8 +212,8 @@ namespace app
     if (vertexDataTypes.contains(signature)) return signature;
     // no exact match found, search for best matching alternative
     QChar buildTypeChar = signature[signature.length()-1];
-    QString regMacroLibrary = signature.left(signature.lastIndexOf('_'));
-    QString regStrMatchFullLibrary = QString("%1_\\d\\d+%2$").arg(QRegularExpression::escape(regMacroLibrary)).arg(buildTypeChar);
+    QString regMacroLibrary = signature.left(signature.lastIndexOf('.'));
+    QString regStrMatchFullLibrary = QString("%1\\.\\d+_\\d+%2$").arg(QRegularExpression::escape(regMacroLibrary)).arg(buildTypeChar);
     QRegularExpression regExpMatchFullLibrary(regStrMatchFullLibrary);
     for(VertexDataTypeMap::const_iterator it = vertexDataTypes.begin(); it != vertexDataTypes.end(); ++it)
     {
