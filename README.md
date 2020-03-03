@@ -26,5 +26,7 @@ may be licensed under any license the library developers choose, even closed sou
 The following repositories are related to Impresario:
 * [impresario-macros](https://github.com/llibuda/impresario-macros) provides code examples for Impresario macro libraries. 
   They can be used as starting point for own libraries.
+* [impresario-doc](https://github.com/llibuda/impresario-doc) contains the source code for Impresario's online help and 
+  its GitHub pages.
   
   
