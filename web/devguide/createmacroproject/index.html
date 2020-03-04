@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario 2.1">
+		<link rel="icon" href="https://llibuda.github.io/impresario/web/impresario.png">
+		<title>Creating a macro project - Impresario 2.1</title>
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootie-docs.css">
+	</head>
+	
+<style>
+.navbar-custom {
+    color: #00AA00;
+    background-color: #CC3333;
+}
+</style>	
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="https://llibuda.github.io/impresario/web">Impresario 2.1</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="https://llibuda.github.io/impresario/web">Home</a></li>
+				
+				
+           
+					  <li ><a  href="/impresario/web/download/">Download</a></li>
+          
+				
+          
+            <li  class="dropdown">
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">User&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/userguide/introduction/">Introduction</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/install/">Installing Impresario</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/guioverview/">Introducing Impresario&#39;s GUI</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/createprocessgraph/">Editing process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/runprocessgraph/">Running process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/macrodb/">Reference: Macro database window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/propwnd/">Reference: Property window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/settings/">Reference: Settings</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/menu/">Reference: Commands</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/auxdocks/">Reference: Auxiliary windows</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/history/">Release History</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+          
+            <li  class="dropdown active" >
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Developer&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/buildimpresario/">Build Impresario from source</a></li>
+						  
+							  <li  class="active"><a href="/impresario/web/devguide/createmacroproject/">Creating a macro project</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial1/">Creating a macro</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial2/">- Setting up macro information</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial3/">- Setting up macro input and output ports</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial4/">- Setting up macro parameters</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial5/">- Processing data</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/advancedparameter/">Advanced parameter presentation</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/apireference/">Macro API Reference</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+        
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">Creating a macro project</h1>
+				
+				<section>
+					<p>A macro project is a C++ development project which is setup to produce a
+<a href="/impresario/web/userguide/introduction/#macro-libraries">macro library file</a> based on
+Impresario&rsquo;s API.</p>
+<p>Therefore the development project has to be configured to build a dynamic link library (.dll) on
+Windows platforms and a shared object file (.so) on Linux platforms.
+Also Run-Time-Type-Information (RTTI) must be enabled.</p>
+<p>In addition some preprocesser defines have to be declared on global level in the compiler settings:</p>
+<ul>
+<li><code>_IMPRESARIO_WIN</code> needs to be defined for Windows builds</li>
+<li><code>_IMPRESARIO_LINUX</code> needs to be defined for builds targeting Linux platforms</li>
+<li><code>_IMPRESARIO_DEBUG</code> needs to be set for debug builds independent of the target platform</li>
+</ul>
+<h1 id="including-impresario-api">Including Impresario API</h1>
+<p>The following files need to included into your new project:</p>
+<ul>
+<li><code class="path">libconfig.h</code>: Header file for configuring the library, needs to be edited</li>
+<li><code class="path">libinterface.h</code>: Main header file of the API, no need to change it</li>
+<li><code class="path">libinterface.cpp</code>: Main implementation file of the API, no need to change it</li>
+<li><code class="path">macrobase.h</code>: Header file of the macro base class, no need to change it</li>
+<li><code class="path">macroextended.h</code>: Header file for an extended macro class, no need to change it</li>
+</ul>
+<p>The files can usually be found in Impresario&rsquo;s installation directory in the
+<code class="path">development/impresario-interface_X.Y.Z</code> subfolder.</p>
+<h1 id="library-configuration">Library configuration</h1>
+<p>As stated above, the file <code class="path">libconfig.h</code> needs to be edited to configure the macro library file
+appropriately. The following code snippet shows the file as provided by the API:</p>
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020">#</span><span style="color:#007020">ifndef LIBCONFIG_H_</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">define LIBCONFIG_H_</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;libinterface.h&#34;</span><span style="color:#007020">
+</span><span style="color:#007020"></span>
+<span style="color:#007020">#</span><span style="color:#007020">define LIB_CREATOR        L&#34;&lt;NAME OF CREATOR&gt;&#34;</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">define LIB_NAME           L&#34;&lt;NAME OF LIBRARY&gt;&#34;</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">define LIB_VERSION_MAJOR  1</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">define LIB_VERSION_MINOR  0</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">define LIB_VERSION_PATCH  0</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">define LIB_DESCRIPTION    L&#34;&lt;html&gt;&lt;body&gt;&lt;p&gt;YOUR DESCRIPTION&#34; \</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">                           L&#34;&lt;</span><span style="color:#007020">/</span><span style="color:#007020">p&gt;&lt;</span><span style="color:#007020">/</span><span style="color:#007020">body&gt;&lt;</span><span style="color:#007020">/</span><span style="color:#007020">html&gt;&#34;</span><span style="color:#007020">
+</span><span style="color:#007020"></span>
+<span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;&lt;YOUR MACRO HEADER FILE 1&gt;&#34;</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;&lt;YOUR MACRO HEADER FILE 2&gt;&#34;</span><span style="color:#007020">
+</span><span style="color:#007020"></span>
+MACRO_REGISTRATION_BEGIN
+  MACRO_ADD(<span style="color:#666">&lt;</span>YOUR MACRO CLASS <span style="color:#40a070">1</span><span style="color:#666">&gt;</span>)
+  MACRO_ADD(<span style="color:#666">&lt;</span>YOUR MACRO CLASS <span style="color:#40a070">2</span><span style="color:#666">&gt;</span>)
+MACRO_REGISTRATION_END
+
+<span style="color:#007020">#</span><span style="color:#007020">endif </span><span style="color:#60a0b0;font-style:italic">// LIBCONFIG_H_
+</span></code></pre></div>
+<p>You need to fill in the following <code>#defines</code> with your own values:</p>
+<ul>
+<li><code>LIB_CREATOR</code>: The name of the programmer who developed this macro library file.
+It can be displayed in the Impresario&rsquo;s <a href="/impresario/web/userguide/macrodb/">macro database</a>.</li>
+<li><code>LIB_NAME</code>: The name of the library this macro library file is part of. This can also be displayed in
+Impresario&rsquo;s <a href="/impresario/web/userguide/macrodb/">macro database</a>. <strong>Please note</strong>: The name is case
+sensitive and several macro library files may share the same name. In this case Impresario groups all macros
+from these files into one library as displayed in the macro database.</li>
+<li><code>LIB_VERSION_MAJOR</code>: Major version of the library. Within a major version downward compatibility must be
+guaranteed. In case the major version is increased, downward compatibility can be broken.</li>
+<li><code>LIB_VERSION_MINOR</code>: Minor version of the library. New features can be introduced with a new minor version.</li>
+<li><code>LIB_VERSION_PATCH</code>: Patch level of the library. When the library is patched or improved without adding new features
+the patch level has to be increased.</li>
+<li><code>LIB_VERSION_DESCRIPTION</code>: Brief description of the library file which will be displayed in
+Impresario&rsquo;s <a href="/impresario/web/userguide/macrodb/#description-tab">description tab</a>. You can use plain or rich
+text for your description.</li>
+</ul>
+<p>After this block you have to include all header files containing your macros and you need to add each macro wihtin the block
+marked with <code>MACRO_REGISTRATION_BEGIN</code> and <code>MACRO_REGISTRATION_END</code> by using the preprocesser macro <code>MACRO_ADD</code>.</p>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">Creating a macro project</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#including-impresario-api">Including Impresario API</a></li>
+    <li><a href="#library-configuration">Library configuration</a></li>
+  </ul>
+</nav>
+		</div>
+	</div>
+  
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	<p>Copyright 2015-2020 Lars Libuda</p>
+</footer>
+
+
+
+<script src="https://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
+
+<script src="https://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>

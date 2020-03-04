@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 
 
+
+
+
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario 2.1">
-		<link rel="icon" href="http://llibuda.github.io/impresario/web/impresario.png">
+		<link rel="icon" href="https://llibuda.github.io/impresario/web/impresario.png">
 		<title>Reference: Macro database window - Impresario 2.1</title>
-		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/highlight.js.min.css">
-		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap.min.css">
-		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
-		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/theme.css">
-		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootie-docs.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootie-docs.css">
 	</head>
 	
 <style>
@@ -34,11 +36,11 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="http://llibuda.github.io/impresario/web">Impresario 2.1</a>
+				<a class="navbar-brand" href="https://llibuda.github.io/impresario/web">Impresario 2.1</a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li ><a href="http://llibuda.github.io/impresario/web">Home</a></li>
+					<li ><a href="https://llibuda.github.io/impresario/web">Home</a></li>
 				
 				
            
@@ -83,6 +85,24 @@
 						  
 							  <li ><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
 						  
+							  <li ><a href="/impresario/web/devguide/buildimpresario/">Build Impresario from source</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/createmacroproject/">Creating a macro project</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial1/">Creating a macro</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial2/">- Setting up macro information</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial3/">- Setting up macro input and output ports</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial4/">- Setting up macro parameters</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial5/">- Processing data</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/advancedparameter/">Advanced parameter presentation</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/apireference/">Macro API Reference</a></li>
+						  
 						  </ul>
 					  </li>
           
@@ -104,11 +124,9 @@
 				<h1 class="doc-entry-title">Reference: Macro database window</h1>
 				
 				<section>
-					
-
-<figure class="float">
-    <a href="http://llibuda.github.io/impresario/web/images/macrodb_overview.png">
-        <img src="http://llibuda.github.io/impresario/web/images/macrodb_overview.png" alt="Macro Database window overview" />
+					<figure class="float">
+    <a href="https://llibuda.github.io/impresario/web/resources/images/macrodb_overview.png">
+        <img src="https://llibuda.github.io/impresario/web/resources/images/macrodb_overview.png" alt="Macro Database window overview" />
     </a>
     
     <figcaption>
@@ -117,92 +135,71 @@
     </figcaption>
     
 </figure>
-
 <p>The Macro database docking window contains all available macros. It is the most important docking window for creating
 and modifying <a href="/impresario/web/userguide/introduction/#impresario-process-graphs">process graphs</a>. Therefore it can be customized to
 better suit your needs.</p>
-
-<p>The window consists of two parts. The upper bigger part is the so called &ldquo;<a href="#macro-area">Macro area</a>&rdquo;,
-the lower part is the &ldquo;<a href="#information-area">Information area</a>&rdquo;.</p>
-
+<p>The window consists of two parts. The upper bigger part is the so called &ldquo;<a href="#macro-area">Macro area</a>&quot;,
+the lower part is the &ldquo;<a href="#information-area">Information area</a>&quot;.</p>
 <h1 id="macro-area">Macro area</h1>
-
 <p>The macro area is dominated by a tree view which visualizes all macros available for creating process graphs. Macros can be
 displayed in a tree structure or in a simple list including additional properties for structuring and sorting them. Sorting the
 database is possible by clicking a column&rsquo;s header.
 The following item types with their corresponding icons can be displayed:</p>
-
-<p><img src="http://llibuda.github.io/impresario/web/images/macro.png"/>&nbsp;<i>Macro</i>
+<p><img src="https://llibuda.github.io/impresario/web/resources/images/macro.png"/>&nbsp;<i>Macro</i>
  is the macro itself identified by its name. It is the only mandatory item type to be displayed.</p>
-
-<p><img src="http://llibuda.github.io/impresario/web/images/macrodb.png"/>&nbsp;<i>Macro library</i>
+<p><img src="https://llibuda.github.io/impresario/web/resources/images/macrodb.png"/>&nbsp;<i>Macro library</i>
  denotes the library a macro belongs to. A macro library consists of one or more macro library files.</p>
-
-<p><img src="http://llibuda.github.io/impresario/web/images/macrolib.png"/>&nbsp;<i>Macro library file</i>
+<p><img src="https://llibuda.github.io/impresario/web/resources/images/macrolib.png"/>&nbsp;<i>Macro library file</i>
  is the physical file (.dll or .so) a macro is loaded from.</p>
-
-<p><img src="http://llibuda.github.io/impresario/web/images/macrogroup.png"/>&nbsp;<i>Macro group</i>
+<p><img src="https://llibuda.github.io/impresario/web/resources/images/macrogroup.png"/>&nbsp;<i>Macro group</i>
  shows each macro&rsquo;s group. Macro developers can sort macros into groups for sorting
 and structuring the database.</p>
-
-<p><img src="http://llibuda.github.io/impresario/web/images/macrobuild.png"/>&nbsp;<i>Macro build</i>
+<p><img src="https://llibuda.github.io/impresario/web/resources/images/macrobuild.png"/>&nbsp;<i>Macro build</i>
  gives build information about each macro. The build information contains the
 compiler name, compiler version, and the type of build (&ldquo;Release&rdquo; or &ldquo;Debug&rdquo;).</p>
-
-<p><img src="http://llibuda.github.io/impresario/web/images/macrocreator.png"/>&nbsp;<i>Macro creator</i>
+<p><img src="https://llibuda.github.io/impresario/web/resources/images/macrocreator.png"/>&nbsp;<i>Macro creator</i>
  displays the name of a macro&rsquo;s developer.</p>
-
-<p><img src="http://llibuda.github.io/impresario/web/images/macrotype.png"/>&nbsp;<i>Macro type</i>
+<p><img src="https://llibuda.github.io/impresario/web/resources/images/macrotype.png"/>&nbsp;<i>Macro type</i>
  denotes each macro&rsquo;s type. Currently the macro type has one of the following
 values: &ldquo;Macro&rdquo; or &ldquo;Viewer&rdquo;. While the value &ldquo;Macro&rdquo; denotes a regular macro, &ldquo;Viewer&rdquo; is assigned to macros which visualize
 data types exchanged between regular macros. These macros are handled differently and are called <em>viewers</em>.</p>
-
-<p><img src="http://llibuda.github.io/impresario/web/images/eye.png"/>&nbsp;<i>Viewer</i>
+<p><img src="https://llibuda.github.io/impresario/web/resources/images/eye.png"/>&nbsp;<i>Viewer</i>
  is a special type of macro for visualizing data types exchanged by the regular macros. Viewers
 are always shown in light gray color to indicate that they are listed for information purposes only.
 In the <a href="/impresario/web/userguide/settings/#macro-database">settings dialog</a> it is possible to disable the listing
 of viewers in the database to avoid confusion.</p>
-
 <p>At the top of the macro area three controls are located which allow to layout and narrow down the number of macros displayed
 in the tree view.</p>
-
 <h2 id="view">View</h2>
-
 <p>The View combo box contains a list of available views which change the structure and type of information displayed in the tree
 view containing the macros. Pressing the 
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/dbview.png"/>&nbsp;View</code>
- button brings up the <a href="/impresario/web/userguide/settings/#view">view settings page</a> which allows you to create and modify your own views.</p>
-
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/dbview.png"/>&nbsp;View</code>
+ button brings up the [view settings page]
+(/impresario/web/userguide/settings/#view) which allows you to create and modify your own views.</p>
 <h2 id="filter">Filter</h2>
-
 <p>Filters can be used to only display macros which fulfil the criteria defined by the active filter. The filter combo box offers
 all filters defined. It also contains the special filter &ldquo;None&rdquo; which actually switches off filtering. The list of filters can
 be modified. The 
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/dbfilter.png"/>&nbsp;Filter</code>
- button is a direct shortcut to the <a href="/impresario/web/userguide/settings/#filter">filter settings page</a>.</p>
-
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/dbfilter.png"/>&nbsp;Filter</code>
+ button is a direct shortcut to the [filter settings page]
+(/impresario/web/userguide/settings/#filter).</p>
 <h2 id="search">Search</h2>
-
 <p>Text entered into the search input box narrows down the number of macros in the tree view directly. The entered text is matched
 against each macro&rsquo;s name, starting from its beginning. The match is case insensitive. Only matching macros are shown in
 the tree view and the first matching macro is highlighted. Pressing the &ldquo;Enter&rdquo; key in this situation adds one instance of the
 highlighted macro to the top left corner of the current active process graph. The 
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/reset.png"/>&nbsp;Reset</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/reset.png"/>&nbsp;Reset</code>
  button
 clears the search input box. The <a href="/impresario/web/userguide/settings/#macro-database">settings related to the macro database</a> offer an
 option to automatically reset the search input box after pressing the &ldquo;Enter&rdquo; key.</p>
-
 <h1 id="information-area">Information area</h1>
-
 <p>The information area displays more detailed information for each item type when selected in the tree view. Depending on the
 selected item type one to three different tabs with information are available. The <a href="/impresario/web/userguide/settings/#macro-database">settings dialog</a>
 allows to configure the default tab for each item type.</p>
-
 <h2 id="general-information-tab">General information tab</h2>
-
 <figure class="float">
-    <a href="http://llibuda.github.io/impresario/web/images/macrodb_general.png">
-        <img src="http://llibuda.github.io/impresario/web/images/macrodb_general.png" alt="Tab for general item information" />
+    <a href="https://llibuda.github.io/impresario/web/resources/images/macrodb_general.png">
+        <img src="https://llibuda.github.io/impresario/web/resources/images/macrodb_general.png" alt="Tab for general item information" />
     </a>
     
     <figcaption>
@@ -211,19 +208,16 @@ allows to configure the default tab for each item type.</p>
     </figcaption>
     
 </figure>
+<p>General information are displayed for every item type but the most detailed information are available for <img src="https://llibuda.github.io/impresario/web/resources/images/macro.png"/>&nbsp;<i>Macros</i>
 
-<p>General information are displayed for every item type but the most detailed information are available for <img src="http://llibuda.github.io/impresario/web/images/macro.png"/>&nbsp;<i>Macros</i>
-
-(see screenshot for an example), <img src="http://llibuda.github.io/impresario/web/images/macrolib.png"/>&nbsp;<i>Macro library files</i>
-, and <img src="http://llibuda.github.io/impresario/web/images/eye.png"/>&nbsp;<i>Viewers</i>
+(see screenshot for an example), <img src="https://llibuda.github.io/impresario/web/resources/images/macrolib.png"/>&nbsp;<i>Macro library files</i>
+, and <img src="https://llibuda.github.io/impresario/web/resources/images/eye.png"/>&nbsp;<i>Viewers</i>
 . For the remaining types only
 the item type and name are displayed.</p>
-
 <h2 id="description-tab">Description tab</h2>
-
 <figure class="float">
-    <a href="http://llibuda.github.io/impresario/web/images/macrodb_description.png">
-        <img src="http://llibuda.github.io/impresario/web/images/macrodb_description.png" alt="Tab displaying item descriptions" />
+    <a href="https://llibuda.github.io/impresario/web/resources/images/macrodb_description.png">
+        <img src="https://llibuda.github.io/impresario/web/resources/images/macrodb_description.png" alt="Tab displaying item descriptions" />
     </a>
     
     <figcaption>
@@ -232,19 +226,16 @@ the item type and name are displayed.</p>
     </figcaption>
     
 </figure>
+<p>Descriptions are only available for item types <img src="https://llibuda.github.io/impresario/web/resources/images/macro.png"/>&nbsp;<i>Macros</i>
 
-<p>Descriptions are only available for item types <img src="http://llibuda.github.io/impresario/web/images/macro.png"/>&nbsp;<i>Macros</i>
-
-(see screenshot for an example), <img src="http://llibuda.github.io/impresario/web/images/macrolib.png"/>&nbsp;<i>Macro library files</i>
-, and <img src="http://llibuda.github.io/impresario/web/images/eye.png"/>&nbsp;<i>Viewers</i>
+(see screenshot for an example), <img src="https://llibuda.github.io/impresario/web/resources/images/macrolib.png"/>&nbsp;<i>Macro library files</i>
+, and <img src="https://llibuda.github.io/impresario/web/resources/images/eye.png"/>&nbsp;<i>Viewers</i>
 .
 However, the developer must have provided this information otherwise the tab will be empty.</p>
-
 <h2 id="instances-tab">Instances tab</h2>
-
 <figure class="float">
-    <a href="http://llibuda.github.io/impresario/web/images/macrodb_instances.png">
-        <img src="http://llibuda.github.io/impresario/web/images/macrodb_instances.png" alt="Tab showing macro instances" />
+    <a href="https://llibuda.github.io/impresario/web/resources/images/macrodb_instances.png">
+        <img src="https://llibuda.github.io/impresario/web/resources/images/macrodb_instances.png" alt="Tab showing macro instances" />
     </a>
     
     <figcaption>
@@ -253,23 +244,19 @@ However, the developer must have provided this information otherwise the tab wil
     </figcaption>
     
 </figure>
-
-<p>The instances tab is only shown in case a <img src="http://llibuda.github.io/impresario/web/images/macro.png"/>&nbsp;<i>Macro</i>
+<p>The instances tab is only shown in case a <img src="https://llibuda.github.io/impresario/web/resources/images/macro.png"/>&nbsp;<i>Macro</i>
  is selected. In this case this tab lists all currently
 created instances of the selected macro. The list has two columns.</p>
-
 <p>The column denoted &ldquo;Instance UUID&rdquo; contains the Universal Unique Identifier of an instance Impresario uses to identify the macro
 instances within the application.</p>
-
 <p>The column with header &ldquo;Location&rdquo; shows the process graph&rsquo;s name the macro instance is located in. The process graph name may be set to
 &ldquo;(Untitled)&rdquo; in case the graph has just been created and never been saved to disk. Left to the location&rsquo;s name an icon depicts a more
-detailed status of each instance. The unbroken chain icon <img src="http://llibuda.github.io/impresario/web/images/macrolinked.png"/> means that the macro instance is an active part of the
-process graph, the broken chain icon <img src="http://llibuda.github.io/impresario/web/images/macrounlinked.png"/> denotes a macro instance which was removed from the process graph but is still
+detailed status of each instance. The unbroken chain icon <img src="https://llibuda.github.io/impresario/web/resources/images/macrolinked.png"/> means that the macro instance is an active part of the
+process graph, the broken chain icon <img src="https://llibuda.github.io/impresario/web/resources/images/macrounlinked.png"/> denotes a macro instance which was removed from the process graph but is still
 available for an 
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/undo.png"/>&nbsp;Undo</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/undo.png"/>&nbsp;Undo</code>
  command.
 All macro instances removed from a process graph will be irrevocably deleted as soon as the process graph is saved.</p>
-
 <p>A right click on any row in the tab brings up a popup menu which allows you to navigate directly to the selected macro instance (for active instances)
 or at least to its process graph (for already removed instances).</p>
 
@@ -287,20 +274,22 @@ or at least to its process graph (for already removed instances).</p>
 				<li><strong><a href="#title">Reference: Macro database window</a></strong></li>
 			</ul>
 			<nav id="TableOfContents">
-<ul>
-<li><a href="#macro-area">Macro area</a>
-<ul>
-<li><a href="#view">View</a></li>
-<li><a href="#filter">Filter</a></li>
-<li><a href="#search">Search</a></li>
-</ul></li>
-<li><a href="#information-area">Information area</a>
-<ul>
-<li><a href="#general-information-tab">General information tab</a></li>
-<li><a href="#description-tab">Description tab</a></li>
-<li><a href="#instances-tab">Instances tab</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#macro-area">Macro area</a>
+      <ul>
+        <li><a href="#view">View</a></li>
+        <li><a href="#filter">Filter</a></li>
+        <li><a href="#search">Search</a></li>
+      </ul>
+    </li>
+    <li><a href="#information-area">Information area</a>
+      <ul>
+        <li><a href="#general-information-tab">General information tab</a></li>
+        <li><a href="#description-tab">Description tab</a></li>
+        <li><a href="#instances-tab">Instances tab</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
 		</div>
 	</div>
@@ -321,17 +310,17 @@ or at least to its process graph (for already removed instances).</p>
 </div> 
 
 <footer class="doc-footer">
-	<p>Copyright 2015-2017 Lars Libuda</p>
+	<p>Copyright 2015-2020 Lars Libuda</p>
 </footer>
 
 
 
-<script src="http://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
-<script src="http://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
 
-<script src="http://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
-<script src="http://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
 
 </body>
 </html>

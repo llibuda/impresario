@@ -197,4 +197,48 @@ img.menu_command {
   vertical-align: middle;
 }
 
+/*
+ * path shortcode
+ */
+
+code.path {
+  color: orangered;
+  font-style: italic;
+  background-color: transparent;
+  padding: 0;
+}
+
+/*
+ * Tables for API Reference
+ */
+table.apidescription {
+  table-layout: auto;
+  width: auto;
+}
+
+table.apidescription td{
+  vertical-align: top;
+}
+
+table.apidescription dt {
+  font-weight: bold;
+}
+
+table.apidescription dd table {
+  table-layout: auto;
+}
+
+table.apidescription dd table td {
+  vertical-align: top;
+}
+
+table.apideclaration {
+  table-layout: auto;
+  width: auto;
+}
+
+table.apideclaration td{
+  white-space:nowrap;
+  vertical-align: top;
+}
 

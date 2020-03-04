@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario 2.1">
+		<link rel="icon" href="https://llibuda.github.io/impresario/web/impresario.png">
+		<title>Setting up macro parameters - Impresario 2.1</title>
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootie-docs.css">
+	</head>
+	
+<style>
+.navbar-custom {
+    color: #00AA00;
+    background-color: #CC3333;
+}
+</style>	
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="https://llibuda.github.io/impresario/web">Impresario 2.1</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="https://llibuda.github.io/impresario/web">Home</a></li>
+				
+				
+           
+					  <li ><a  href="/impresario/web/download/">Download</a></li>
+          
+				
+          
+            <li  class="dropdown">
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">User&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/userguide/introduction/">Introduction</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/install/">Installing Impresario</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/guioverview/">Introducing Impresario&#39;s GUI</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/createprocessgraph/">Editing process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/runprocessgraph/">Running process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/macrodb/">Reference: Macro database window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/propwnd/">Reference: Property window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/settings/">Reference: Settings</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/menu/">Reference: Commands</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/auxdocks/">Reference: Auxiliary windows</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/history/">Release History</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+          
+            <li  class="dropdown active" >
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Developer&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/buildimpresario/">Build Impresario from source</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/createmacroproject/">Creating a macro project</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial1/">Creating a macro</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial2/">- Setting up macro information</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial3/">- Setting up macro input and output ports</a></li>
+						  
+							  <li  class="active"><a href="/impresario/web/devguide/macrotutorial4/">- Setting up macro parameters</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial5/">- Processing data</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/advancedparameter/">Advanced parameter presentation</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/apireference/">Macro API Reference</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+        
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">Setting up macro parameters</h1>
+				
+				<section>
+					<p>The behaviour of macros can be changed by parameters of different types. Impresario allows its users
+to change parameters in the <a href="/impresario/web/userguide/propwnd/">property window</a>.
+Before this feature can be used a macro has to define these parameters. For better understanding what
+is possible here, the following subsections give more indepth knowledge about how Impresario presents
+parameters.</p>
+<h1 id="default-parameter-presentation">Default parameter presentation</h1>
+<p>To give macro developers more freedom on how to present parameters to the user, the
+<a href="/impresario/web/userguide/propwnd/#settings-area">settings area</a> of the property window
+is not implemented in C++ but scripted in Qt&rsquo;s <a href="https://doc.qt.io/qt-5/qml-tutorial.html">QML</a> language. All
+scripts making up the parameter presentation are located in Impresario&rsquo;s
+<a href="/impresario/web/userguide/settings/#resources">resource directory</a> which is <code class="path">resources</code> by default.</p>
+<figure class="float">
+    <a href="https://llibuda.github.io/impresario/web/resources/images/propwnd_annotated.png">
+        <img src="https://llibuda.github.io/impresario/web/resources/images/propwnd_annotated.png" alt="QML components of settings area" />
+    </a>
+    
+    <figcaption>
+        <h4>QML components of settings area (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure>
+<p>The figure to the right shows how the settings area is composed by default. The red rectangle marks
+the main component which is a list view implemented in file <code class="path">PropertyWidget.qml</code>.</p>
+<p>Each parameter is presented in a separate row. The green rectangle highlights the inplace editor component for one
+parameter. There are different types of inplace editor components for different data types and purposes.
+Inplace editor components are implemented in separate QML files and loaded dynamically by the main list view.
+The highlighted inplace editor component in the figure is a file selector and implemented in file <code class="path">StringFileSelector.qml</code>.</p>
+<p>Each inplace editor component may have properties which restrict the input a user can make. The following list shows
+available inplace editors with their properties:</p>
+<dl>
+<dt><code class="path">StringLineEdit</code></dt>
+<dd>Simple line editor for string datatypes.</dd>
+<dd><em>Properties (Default value)</em>:
+<ul>
+<li><code>maxLength (255)</code>: Maximum length of input</li>
+</ul>
+</dd>
+<dt><code class="path">StringFileSelector</code></dt>
+<dd>Line editor for file name input. A button opens a separate file selection dialog. The file name is contained in a string.</dd>
+<dd><em>Properties (Default value)</em>:
+<ul>
+<li><code>maxLength (512)</code>: Maximum length of input</li>
+<li><code>mustExists (true)</code> : File with given name must exist</li>
+<li><code>title (&quot;Select file&quot;)</code>: Title for file selection dialog</li>
+<li><code>filters ([&quot;All files (*.*)&quot;])</code>: Filter list for file selection dialog</li>
+</ul>
+</dd>
+<dt><code class="path">StringDirSelector</code></dt>
+<dd>Line editor for directory name input. A button opens a separate directory selection dialog. The directory name is contained in a string.</dd>
+<dd><em>Properties (Default value)</em>:
+<ul>
+<li><code>maxLength (512)</code>: Maximum length of input</li>
+</ul>
+</dd>
+<dt><code class="path">BoolComboBox</code></dt>
+<dd>Read only combo box allowing to select <code>true</code> or <code>false</code> for boolean data types.</dd>
+<dd><em>No Properties</em></dd>
+<dt><code class="path">IntSpinBox</code></dt>
+<dd>Spin box editor for integer data types.</dd>
+<dd><em>Properties (Default value)</em>:
+<ul>
+<li><code>minValue (0)</code>: Minimum allowed value</li>
+<li><code>maxValue (0)</code>: Maximum allowed value</li>
+<li><code>step (1)</code>: Increment / decrement step when using spin box controls</li>
+</ul>
+</dd>
+<dt><code class="path">RealSpinBox</code></dt>
+<dd>Spin box editor for floating point data types.</dd>
+<dd><em>Properties (Default value)</em>:
+<ul>
+<li><code>minValue (0.0)</code>: Minimum allowed value</li>
+<li><code>maxValue (0.0)</code>: Maximum allowed value</li>
+<li><code>step (0.1)</code>: Increment / decrement step when using spin box controls</li>
+<li><code>decimals (1)</code>: Number of displayed decimals</li>
+</ul>
+</dd>
+<dt><code class="path">IntComboBox</code></dt>
+<dd>Read only combo box returning the index of the selected item.</dd>
+<dd><em>Properties (Default value)</em>:
+<ul>
+<li><code>items ([&quot;Empty&quot;])</code>: List of items to be displayed</li>
+</ul>
+</dd>
+</dl>
+<p><strong>Note</strong>: This list may not be complete as developers may implement further components. In this case it is the easiest
+way to just have a look a their source code directly in Impresario&rsquo;s resource directory.</p>
+<h1 id="data-exchange-with-qml">Data exchange with QML</h1>
+<p>Parameter values are exchanged between the QML components and the macro libraries by means of strings, i.e.
+each parameter value of a macro is converted to a string and handed over to the QML component. In reverse direction
+changed parameter values are received by macros as strings and must be converted back into their original data type.
+For this purpose a helper class called <code>ParameterValueConverter</code> exists:
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">template</span> <span style="color:#666">&lt;</span><span style="color:#007020;font-weight:bold">typename</span> T<span style="color:#666">&gt;</span>
+<span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">ParameterValueConverter</span> {
+<span style="color:#007020;font-weight:bold">public</span><span style="color:#666">:</span>
+  <span style="color:#007020;font-weight:bold">virtual</span> T fromString(<span style="color:#007020;font-weight:bold">const</span> std<span style="color:#666">:</span><span style="color:#666">:</span>wstring<span style="color:#666">&amp;</span> strValue) <span style="color:#007020;font-weight:bold">const</span>;
+  <span style="color:#007020;font-weight:bold">virtual</span> std<span style="color:#666">:</span><span style="color:#666">:</span>wstring toString(T value) <span style="color:#007020;font-weight:bold">const</span>;
+};
+</code></pre></div></p>
+<p>This class has two methods for doing the conversion described above and an implementation which handles all simple
+data types including <code>std::string</code> and <code>std::wstring</code>.</p>
+<p>If you have more complex data types you have to provide your own parameter value conversion which can be realized
+in two ways:</p>
+<ul>
+<li>Specialize <code>ParameterValueConverter</code> OR</li>
+<li>Derive your own class from <code>ParameterValueConverter</code> and override the two methods.</li>
+</ul>
+<h1 id="defining-parameters-with-default-view">Defining parameters with default view</h1>
+<p>For defining parameters in your own macro class using the default parameter presentation as pointed out in
+<a href="#default-parameter-presentation">Default parameter presentation</a>
+the base class <code>MacroBase</code> provides the following method which
+has to be called in the macro&rsquo;s constructor for each parameter to be defined:</p>
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">template</span><span style="color:#666">&lt;</span><span style="color:#007020;font-weight:bold">typename</span> T<span style="color:#666">&gt;</span>
+<span style="color:#902000">bool</span> addParameter(<span style="color:#007020;font-weight:bold">const</span> std<span style="color:#666">:</span><span style="color:#666">:</span>wstring<span style="color:#666">&amp;</span> name,
+                  <span style="color:#007020;font-weight:bold">const</span> std<span style="color:#666">:</span><span style="color:#666">:</span>wstring<span style="color:#666">&amp;</span> description,
+                  <span style="color:#007020;font-weight:bold">const</span> T<span style="color:#666">&amp;</span> tDefaultValue,
+                  <span style="color:#007020;font-weight:bold">const</span> std<span style="color:#666">:</span><span style="color:#666">:</span>wstring<span style="color:#666">&amp;</span> qmlUIComponent <span style="color:#666">=</span> <span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">&#34;</span>,
+                  <span style="color:#007020;font-weight:bold">const</span> std<span style="color:#666">:</span><span style="color:#666">:</span>wstring<span style="color:#666">&amp;</span> qmlUIProperties <span style="color:#666">=</span> <span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">&#34;</span>,
+                  <span style="color:#007020;font-weight:bold">const</span> ParameterValueConverter<span style="color:#666">&lt;</span>T<span style="color:#666">&gt;</span><span style="color:#666">&amp;</span> converter <span style="color:#666">=</span> 
+				        ParameterValueConverter<span style="color:#666">&lt;</span>T<span style="color:#666">&gt;</span>());
+</code></pre></div>
+<p>Like for <code>addInput</code>and <code>addOutput</code> the template argument defines the type of the
+parameter you like to create. This can be any type.</p>
+<p>The first argument <code>name</code> is the parameter&rsquo;s name. This name is displayed in the
+<a href="/impresario/web/userguide/propwnd/#settings-area">settings area</a> of Impresario&rsquo;s property window
+as soon as the macro is selected in the process graph editor.</p>
+<p>The second argument <code>description</code> is a short description of the parameter which is displayed in the
+<a href="/impresario/web/userguide/propwnd/#information-area">information area</a> of the property window as soon
+as the parameter is highlighted in the settings area (see also figure above for an example).</p>
+<p><code>tDefaultValue</code> is the parameter&rsquo;s default value. The default value is used as initial value in case no value
+was restored from a saved process graph.</p>
+<p><code>qmlUIComponent</code> is the name of the inplace editor component to be used for changing the parameter without
+extension <code class="path">.qml</code>. The name should be considered case sensitive in case your macro is intended to run on
+different platforms.</p>
+<p>In <code>qmlUIProperties</code> you provide the optional properties for the selected inplace editor component. These
+properties are coded in JSON notation and are case sensitive.</p>
+<p>Finally, <code>converter</code> is the helper class for converting the parameter value to a string and back as described
+in <a href="#data-exchange-with-qml">Data exchange with QML</a>. For simple data types the default value
+is usually sufficient. For special cases you can provide your own converter here.</p>
+<p>The method returns <code>true</code> in case the parameter was successfully added to the macro, <code>false</code>otherwise.</p>
+<p><strong>Note:</strong> Internally each parameter is appended to a vector so that they are indexed in the order of definition.
+This index starts counting from zero. This is important to remember when you have to access the parameters
+later on during processing.</p>
+<h1 id="example">Example</h1>
+<p>We now complete the constructor of our edge detection example by adding two parameters of type <code>int</code>. As UI component
+we use the <code>IntSpinBox</code> and set its minimum and maximum values.</p>
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;cannyedge.h&#34;</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;ltiChannel8.h&#34;</span><span style="color:#007020">
+</span><span style="color:#007020"></span>
+LtiCannyEdge<span style="color:#666">:</span><span style="color:#666">:</span>LtiCannyEdge() <span style="color:#666">:</span> MacroBase{} {
+  <span style="color:#60a0b0;font-style:italic">// set up macro description
+</span><span style="color:#60a0b0;font-style:italic"></span>  setName(<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">lti::cannyEdges</span><span style="color:#4070a0">&#34;</span>);
+  setCreator(<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">Lars Libuda</span><span style="color:#4070a0">&#34;</span>);
+  setGroup(<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">Image Processing</span><span style="color:#4070a0">&#34;</span>);
+  setDescription(<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">Detects edges in a lti::channel8</span><span style="color:#4070a0">&#34;</span>);
+  addInput<span style="color:#666">&lt;</span>lti<span style="color:#666">:</span><span style="color:#666">:</span>channel8<span style="color:#666">&gt;</span>(<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">Input image</span><span style="color:#4070a0">&#34;</span>,
+           <span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">8-bit grey scale image for edge detection</span><span style="color:#4070a0">&#34;</span>);
+  addOutput<span style="color:#666">&lt;</span>lti<span style="color:#666">:</span><span style="color:#666">:</span>channel8<span style="color:#666">&gt;</span>(<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">Output image</span><span style="color:#4070a0">&#34;</span>,
+            <span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">8-bit grey scale image with detected edges</span><span style="color:#4070a0">&#34;</span>);
+  addParameter<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span>(<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">Edge Treshold</span><span style="color:#4070a0">&#34;</span>,
+                    <span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">Value used to denote an edge pixel</span><span style="color:#4070a0">&#34;</span>,
+                    <span style="color:#40a070">255</span>,
+                    <span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">IntSpinBox</span><span style="color:#4070a0">&#34;</span>,
+                    <span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">{ </span><span style="color:#4070a0;font-weight:bold">\&#34;</span><span style="color:#4070a0">minValue</span><span style="color:#4070a0;font-weight:bold">\&#34;</span><span style="color:#4070a0">: 0, </span><span style="color:#4070a0;font-weight:bold">\&#34;</span><span style="color:#4070a0">maxValue</span><span style="color:#4070a0;font-weight:bold">\&#34;</span><span style="color:#4070a0">: 255 }</span><span style="color:#4070a0">&#34;</span>);
+  addParameter<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span>(<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">No Edge Treshold</span><span style="color:#4070a0">&#34;</span>,
+                    <span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">Value used to denote a no-edge pixel</span><span style="color:#4070a0">&#34;</span>,
+                    <span style="color:#40a070">0</span>,
+                    <span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">IntSpinBox</span><span style="color:#4070a0">&#34;</span>,
+					<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">{ </span><span style="color:#4070a0;font-weight:bold">\&#34;</span><span style="color:#4070a0">minValue</span><span style="color:#4070a0;font-weight:bold">\&#34;</span><span style="color:#4070a0">: 0, </span><span style="color:#4070a0;font-weight:bold">\&#34;</span><span style="color:#4070a0">maxValue</span><span style="color:#4070a0;font-weight:bold">\&#34;</span><span style="color:#4070a0">: 255 }</span><span style="color:#4070a0">&#34;</span>);
+}
+</code></pre></div>
+<p>Please continue with section <a href="/impresario/web/devguide/macrotutorial5/">Processing data</a>.</p>
+<p>However, if you are not happy with the default parameter presentation Impresario provides, you can jump
+to section <a href="/impresario/web/devguide/advancedparameter/">Advanced parameter presentation</a>. There you will
+get to know advanced methods for parameter presentation which give you more freedom for this task.</p>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">Setting up macro parameters</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#default-parameter-presentation">Default parameter presentation</a></li>
+    <li><a href="#data-exchange-with-qml">Data exchange with QML</a></li>
+    <li><a href="#defining-parameters-with-default-view">Defining parameters with default view</a></li>
+    <li><a href="#example">Example</a></li>
+  </ul>
+</nav>
+		</div>
+	</div>
+  
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	<p>Copyright 2015-2020 Lars Libuda</p>
+</footer>
+
+
+
+<script src="https://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
+
+<script src="https://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>

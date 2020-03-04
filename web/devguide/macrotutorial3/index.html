@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario 2.1">
+		<link rel="icon" href="https://llibuda.github.io/impresario/web/impresario.png">
+		<title>Setting up macro input and output ports - Impresario 2.1</title>
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootie-docs.css">
+	</head>
+	
+<style>
+.navbar-custom {
+    color: #00AA00;
+    background-color: #CC3333;
+}
+</style>	
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="https://llibuda.github.io/impresario/web">Impresario 2.1</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="https://llibuda.github.io/impresario/web">Home</a></li>
+				
+				
+           
+					  <li ><a  href="/impresario/web/download/">Download</a></li>
+          
+				
+          
+            <li  class="dropdown">
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">User&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/userguide/introduction/">Introduction</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/install/">Installing Impresario</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/guioverview/">Introducing Impresario&#39;s GUI</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/createprocessgraph/">Editing process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/runprocessgraph/">Running process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/macrodb/">Reference: Macro database window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/propwnd/">Reference: Property window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/settings/">Reference: Settings</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/menu/">Reference: Commands</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/auxdocks/">Reference: Auxiliary windows</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/history/">Release History</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+          
+            <li  class="dropdown active" >
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Developer&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/buildimpresario/">Build Impresario from source</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/createmacroproject/">Creating a macro project</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial1/">Creating a macro</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial2/">- Setting up macro information</a></li>
+						  
+							  <li  class="active"><a href="/impresario/web/devguide/macrotutorial3/">- Setting up macro input and output ports</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial4/">- Setting up macro parameters</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial5/">- Processing data</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/advancedparameter/">Advanced parameter presentation</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/apireference/">Macro API Reference</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+        
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">Setting up macro input and output ports</h1>
+				
+				<section>
+					<p>Before a macro can process any input data and produce output data, it has to declare the input and output ports so
+that Impresario knows which type of input data the macro expects and which output data it creates. Input and output ports
+are declared in the macro&rsquo;s constructor with the help of the following two methods which are implemented in the
+macro&rsquo;s base class <code>MacroBase</code>:</p>
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">template</span><span style="color:#666">&lt;</span><span style="color:#007020;font-weight:bold">typename</span> T<span style="color:#666">&gt;</span>
+<span style="color:#902000">bool</span> addInput(<span style="color:#007020;font-weight:bold">const</span> std<span style="color:#666">:</span><span style="color:#666">:</span>wstring<span style="color:#666">&amp;</span> name, 
+              <span style="color:#007020;font-weight:bold">const</span> std<span style="color:#666">:</span><span style="color:#666">:</span>wstring<span style="color:#666">&amp;</span> description);
+
+<span style="color:#007020;font-weight:bold">template</span><span style="color:#666">&lt;</span><span style="color:#007020;font-weight:bold">typename</span> T<span style="color:#666">&gt;</span>
+<span style="color:#902000">bool</span> addOutput(<span style="color:#007020;font-weight:bold">const</span> std<span style="color:#666">:</span><span style="color:#666">:</span>wstring<span style="color:#666">&amp;</span> name, 
+               <span style="color:#007020;font-weight:bold">const</span> std<span style="color:#666">:</span><span style="color:#666">:</span>wstring<span style="color:#666">&amp;</span> description);
+</code></pre></div>
+<p>Both methods have the same arguments. With the template argument of these methods you define the type of the
+input or output port to be created. This can be any type.</p>
+<p>The first argument <code>name</code> is the port&rsquo;s name. This name is displayed in Impresario
+as soon as the mouse cursor is hovered over the port in the process graph editor.</p>
+<p>The second argument <code>description</code> is a short description of the port.</p>
+<p>The methods return <code>true</code> in case the port was successfully added to the macro, <code>false</code>otherwise.</p>
+<p><strong>Note:</strong> Internally input and output ports are appended to separate vectors so that they are indexed
+in the order of definition. These indices start counting from zero. This is important to remember when you have to
+access the ports later on for processing.</p>
+<h1 id="example">Example</h1>
+<p>In the following code the example macro for edge detection is enhanced with one input and one output port of type
+<code>lti::channel8</code>. This type is part of the
+<a href="http://www.ie.tec.ac.cr/palvarado/ltilib-2/html/index.html">LTI Lib 2 image processing library</a> and
+defined in the library&rsquo;s appropriate include file.</p>
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;cannyedge.h&#34;</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;ltiChannel8.h&#34;</span><span style="color:#007020">
+</span><span style="color:#007020"></span>
+LtiCannyEdge<span style="color:#666">:</span><span style="color:#666">:</span>LtiCannyEdge() <span style="color:#666">:</span> MacroBase{} {
+  <span style="color:#60a0b0;font-style:italic">// set up macro description
+</span><span style="color:#60a0b0;font-style:italic"></span>  setName(<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">lti::cannyEdges</span><span style="color:#4070a0">&#34;</span>);
+  setCreator(<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">Lars Libuda</span><span style="color:#4070a0">&#34;</span>);
+  setGroup(<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">Image Processing</span><span style="color:#4070a0">&#34;</span>);
+  setDescription(<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">Detects edges in a lti::channel8</span><span style="color:#4070a0">&#34;</span>);
+  addInput<span style="color:#666">&lt;</span>lti<span style="color:#666">:</span><span style="color:#666">:</span>channel8<span style="color:#666">&gt;</span>(<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">Input image</span><span style="color:#4070a0">&#34;</span>,
+           <span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">8-bit grey scale image for edge detection</span><span style="color:#4070a0">&#34;</span>);
+  addOutput<span style="color:#666">&lt;</span>lti<span style="color:#666">:</span><span style="color:#666">:</span>channel8<span style="color:#666">&gt;</span>(<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">Output image</span><span style="color:#4070a0">&#34;</span>,
+            <span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">8-bit grey scale image with detected edges</span><span style="color:#4070a0">&#34;</span>);
+  <span style="color:#60a0b0;font-style:italic">// more code to come...
+</span><span style="color:#60a0b0;font-style:italic"></span>}
+</code></pre></div>
+<p>Please continue with section <a href="/impresario/web/devguide/macrotutorial4/">Setting up macro parameters</a>.</p>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">Setting up macro input and output ports</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#example">Example</a></li>
+  </ul>
+</nav>
+		</div>
+	</div>
+  
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	<p>Copyright 2015-2020 Lars Libuda</p>
+</footer>
+
+
+
+<script src="https://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
+
+<script src="https://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>

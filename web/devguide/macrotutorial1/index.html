@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario 2.1">
+		<link rel="icon" href="https://llibuda.github.io/impresario/web/impresario.png">
+		<title>Creating a macro - Impresario 2.1</title>
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootie-docs.css">
+	</head>
+	
+<style>
+.navbar-custom {
+    color: #00AA00;
+    background-color: #CC3333;
+}
+</style>	
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="https://llibuda.github.io/impresario/web">Impresario 2.1</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="https://llibuda.github.io/impresario/web">Home</a></li>
+				
+				
+           
+					  <li ><a  href="/impresario/web/download/">Download</a></li>
+          
+				
+          
+            <li  class="dropdown">
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">User&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/userguide/introduction/">Introduction</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/install/">Installing Impresario</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/guioverview/">Introducing Impresario&#39;s GUI</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/createprocessgraph/">Editing process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/runprocessgraph/">Running process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/macrodb/">Reference: Macro database window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/propwnd/">Reference: Property window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/settings/">Reference: Settings</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/menu/">Reference: Commands</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/auxdocks/">Reference: Auxiliary windows</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/history/">Release History</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+          
+            <li  class="dropdown active" >
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Developer&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/buildimpresario/">Build Impresario from source</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/createmacroproject/">Creating a macro project</a></li>
+						  
+							  <li  class="active"><a href="/impresario/web/devguide/macrotutorial1/">Creating a macro</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial2/">- Setting up macro information</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial3/">- Setting up macro input and output ports</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial4/">- Setting up macro parameters</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial5/">- Processing data</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/advancedparameter/">Advanced parameter presentation</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/apireference/">Macro API Reference</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+        
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">Creating a macro</h1>
+				
+				<section>
+					<p>Internally a macro is represented by a C++ class which is derived from the class <code>MacroBase</code>.
+<code>MacroBase</code> defines the common interface to Impresario. Therefore the header file <code class="path">macrobase.h</code>
+has to be included in every macro project.</p>
+<p>The follwing code shows an annotated header file for a new macro. You can use it as template and replace
+&ldquo;MyMacroClass&rdquo; by your class name.</p>
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020">#</span><span style="color:#007020">ifndef MYMACROCLASS_H_</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">define MYMACROCLASS_H_</span><span style="color:#007020">
+</span><span style="color:#007020"></span>
+<span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;macrobase.h&#34;</span><span style="color:#007020">
+</span><span style="color:#007020"></span>
+<span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">MyMacroClass</span> <span style="color:#666">:</span> <span style="color:#007020;font-weight:bold">public</span> MacroBase {
+<span style="color:#007020;font-weight:bold">public</span><span style="color:#666">:</span>
+  <span style="color:#60a0b0;font-style:italic">// Standard constructor: the macro&#39;s interface to Impresario
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// is defined here.
+</span><span style="color:#60a0b0;font-style:italic"></span>  MyMacroClass();
+  
+  <span style="color:#60a0b0;font-style:italic">// Standard destructor
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#666">~</span>MyMacroClass() <span style="color:#007020;font-weight:bold">override</span> <span style="color:#666">=</span> <span style="color:#007020;font-weight:bold">default</span>;
+
+  <span style="color:#60a0b0;font-style:italic">// Override clone method to provide correct class instance. 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// This method must be overridden in any case, otherwise 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// the macro cannot be used in Impresario. 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// The base class implementation just returns 0. The following
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// line shows the minimal implementation.
+</span><span style="color:#60a0b0;font-style:italic"></span>  MacroBase<span style="color:#666">*</span> <span style="color:#06287e">clone</span>() <span style="color:#007020;font-weight:bold">const</span> <span style="color:#007020;font-weight:bold">override</span> { 
+    <span style="color:#007020;font-weight:bold">return</span> <span style="color:#007020;font-weight:bold">new</span> MyMacroClass(); 
+  }
+
+<span style="color:#007020;font-weight:bold">protected</span><span style="color:#666">:</span>
+  <span style="color:#60a0b0;font-style:italic">// Override this method if you need special one time 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// preparation for processing in the onApply() method. 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// The base class implementation just returns Ok.
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// This method is called by Impresario as the first event 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// before processing starts. 
+</span><span style="color:#60a0b0;font-style:italic"></span>  Status onInit() <span style="color:#007020;font-weight:bold">override</span>;
+  
+  <span style="color:#60a0b0;font-style:italic">// Override this method with your processing code. It is 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// called by Impresario for every new set of input data during 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// processing. The base class implementation just returns Ok.
+</span><span style="color:#60a0b0;font-style:italic"></span>  Status <span style="color:#06287e">onApply</span>() <span style="color:#007020;font-weight:bold">override</span>;
+
+  <span style="color:#60a0b0;font-style:italic">// Override this method in case you need cleanup after 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// processing has been stopped by the user or it has been 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// terminated by Impresario due to errors reported by
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// macro instances.
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// The base class implementation just returns Ok.
+</span><span style="color:#60a0b0;font-style:italic"></span>  Status <span style="color:#06287e">onExit</span>() <span style="color:#007020;font-weight:bold">override</span>;
+  
+  <span style="color:#60a0b0;font-style:italic">// Override this method to be notified about every parameter 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// change. This method is called by Impresario before each 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// call to onInit(), onApply(), and onExit(). Before the call
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// to onInit() all parameters are reported as changed to allow 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// for proper initialization. In further calls only parameters 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// are reported which have been changed since the last time. 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// ParameterSet is an std::set&lt;unsigned int&gt; containing the 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// zero-based indices of all parameters which have been 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// changed since the last call. 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#60a0b0;font-style:italic">// The base class implementation does nothing. 
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#902000">void</span> <span style="color:#06287e">onParametersChanged</span>(ParameterSet<span style="color:#666">&amp;</span> parameters) <span style="color:#007020;font-weight:bold">override</span>;
+
+<span style="color:#007020;font-weight:bold">private</span><span style="color:#666">:</span>
+  <span style="color:#60a0b0;font-style:italic">// Put your attributes and further methods here
+</span><span style="color:#60a0b0;font-style:italic"></span>  
+};
+
+<span style="color:#007020">#</span><span style="color:#007020">endif </span><span style="color:#60a0b0;font-style:italic">// MYMACROCLASS_H_
+</span></code></pre></div>
+<p>The public method <code>clone()</code> must always be implemented. Otherwise the macro cannot be added to any
+<a href="/impresario/web/userguide/introduction/#impresario-process-graphs">process graph</a>.
+If this method is not implemented correctly, unpredictable behaviour of the whole system may occur.
+The simple implementation as shown in the example below is sufficient.</p>
+<p>Within the implementation of the macro&rsquo;s constructor it&rsquo;s creator, display name, description,
+and group are declared (for details see <a href="/impresario/web/devguide/macrotutorial2/">Setting up macro information</a>)
+along with the input ports and output ports (<a href="/impresario/web/devguide/macrotutorial3/">Setting up macro input and output ports</a>),
+as well as it&rsquo;s parameters (<a href="/impresario/web/devguide/macrotutorial4/">Setting up macro parameters</a>).</p>
+<p>The four protected virtual methods <code>onInit()</code>, <code>onApply()</code>, <code>onExit</code>(), and
+<code>onParametersChanged(ParameterSet&amp; parameters)</code> are called by Impresario during processing.
+At least the <code>onApply()</code> method has to be overridden in every macro class as this method is used to
+process the input data and to produce the output data. This is explained in detail in section
+(<a href="/impresario/web/devguide/macrotutorial5/">Processing data</a>).</p>
+<h1 id="example">Example</h1>
+<p>The code depicted below is one example for a macro declaration. Everything declared in the private
+section is macro specific data and will be used during implementation of the different methods. In this
+case the attributes refer to the Canny Edge algorithm implemted in the
+<a href="http://www.ie.tec.ac.cr/palvarado/ltilib-2/html/index.html">LTI Lib 2 image processing library</a>.</p>
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020">#</span><span style="color:#007020">ifndef CANNYEDGE_H_</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">define CANNYEDGE_H_</span><span style="color:#007020">
+</span><span style="color:#007020"></span>
+<span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;macrobase.h&#34;</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;ltiCannyEdges.h&#34;</span><span style="color:#007020">
+</span><span style="color:#007020"></span>
+<span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">LtiCannyEdge</span> <span style="color:#666">:</span> <span style="color:#007020;font-weight:bold">public</span> MacroBase {
+<span style="color:#007020;font-weight:bold">public</span><span style="color:#666">:</span>
+  <span style="color:#60a0b0;font-style:italic">// standard constructor
+</span><span style="color:#60a0b0;font-style:italic"></span>  LtiCannyEdge();
+  <span style="color:#60a0b0;font-style:italic">// standard destructor
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#666">~</span>LtiCannyEdge(<span style="color:#902000">void</span>) <span style="color:#007020;font-weight:bold">override</span> <span style="color:#666">=</span> <span style="color:#007020;font-weight:bold">default</span>;
+
+  <span style="color:#60a0b0;font-style:italic">// override clone method to provide correct class instance
+</span><span style="color:#60a0b0;font-style:italic"></span>  MacroBase<span style="color:#666">*</span> <span style="color:#06287e">clone</span>() <span style="color:#007020;font-weight:bold">const</span> <span style="color:#007020;font-weight:bold">override</span> { <span style="color:#007020;font-weight:bold">return</span> <span style="color:#007020;font-weight:bold">new</span> LtiCannyEdge(); }
+
+<span style="color:#007020;font-weight:bold">protected</span><span style="color:#666">:</span>
+  Status onInit() <span style="color:#007020;font-weight:bold">override</span>;
+  Status <span style="color:#06287e">onApply</span>() <span style="color:#007020;font-weight:bold">override</span>;
+  <span style="color:#902000">void</span> <span style="color:#06287e">onParametersChanged</span>(ParameterSet<span style="color:#666">&amp;</span> paramSet) <span style="color:#007020;font-weight:bold">override</span>;
+
+<span style="color:#007020;font-weight:bold">private</span><span style="color:#666">:</span>
+  <span style="color:#60a0b0;font-style:italic">// Canny Edge algorithm and parameters from LTI Lib 2
+</span><span style="color:#60a0b0;font-style:italic"></span>  lti<span style="color:#666">:</span><span style="color:#666">:</span>cannyEdges             cannyFunctor;
+  lti<span style="color:#666">:</span><span style="color:#666">:</span>cannyEdges<span style="color:#666">:</span><span style="color:#666">:</span>parameters params;
+};
+
+<span style="color:#007020">#</span><span style="color:#007020">endif </span><span style="color:#60a0b0;font-style:italic">/* CANNYEDGE_H_ */</span><span style="color:#007020">
+</span></code></pre></div>
+<p>The implementation of this macro is discussed in detail in the following sections.
+Please continue with section <a href="/impresario/web/devguide/macrotutorial2/">Setting up macro information</a>.</p>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">Creating a macro</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#example">Example</a></li>
+  </ul>
+</nav>
+		</div>
+	</div>
+  
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	<p>Copyright 2015-2020 Lars Libuda</p>
+</footer>
+
+
+
+<script src="https://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
+
+<script src="https://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>

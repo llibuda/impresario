@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario 2.1">
+		<link rel="icon" href="https://llibuda.github.io/impresario/web/impresario.png">
+		<title>Advanced parameter presentation - Impresario 2.1</title>
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootie-docs.css">
+	</head>
+	
+<style>
+.navbar-custom {
+    color: #00AA00;
+    background-color: #CC3333;
+}
+</style>	
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="https://llibuda.github.io/impresario/web">Impresario 2.1</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="https://llibuda.github.io/impresario/web">Home</a></li>
+				
+				
+           
+					  <li ><a  href="/impresario/web/download/">Download</a></li>
+          
+				
+          
+            <li  class="dropdown">
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">User&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/userguide/introduction/">Introduction</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/install/">Installing Impresario</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/guioverview/">Introducing Impresario&#39;s GUI</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/createprocessgraph/">Editing process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/runprocessgraph/">Running process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/macrodb/">Reference: Macro database window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/propwnd/">Reference: Property window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/settings/">Reference: Settings</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/menu/">Reference: Commands</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/auxdocks/">Reference: Auxiliary windows</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/history/">Release History</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+          
+            <li  class="dropdown active" >
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Developer&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/buildimpresario/">Build Impresario from source</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/createmacroproject/">Creating a macro project</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial1/">Creating a macro</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial2/">- Setting up macro information</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial3/">- Setting up macro input and output ports</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial4/">- Setting up macro parameters</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial5/">- Processing data</a></li>
+						  
+							  <li  class="active"><a href="/impresario/web/devguide/advancedparameter/">Advanced parameter presentation</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/apireference/">Macro API Reference</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+        
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">Advanced parameter presentation</h1>
+				
+				<section>
+					<figure class="float">
+    <a href="https://llibuda.github.io/impresario/web/resources/images/propwnd_annotated.png">
+        <img src="https://llibuda.github.io/impresario/web/resources/images/propwnd_annotated.png" alt="QML components of settings area" />
+    </a>
+    
+    <figcaption>
+        <h4>QML components of settings area (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure>
+<p>In case the <a href="/impresario/web/devguide/macrotutorial4/#default-parameter-presentation">default parameter presentation</a>
+is not sufficient, this section shows two more options how to customize parameter presentation:</p>
+<ul>
+<li>You can create customized inplace editor components (green rectangle in the right figure) but use the standard
+property display.</li>
+<li>You can provide your own property display and replace the complete widget in the red rectangle shown
+in the figure to the right.</li>
+</ul>
+<p>Both methods are described in the following subsections and require good knowledge of QML. In addition you have to
+know how Impresario interfaces with QML which is detailed now.</p>
+<h1 id="impresarios-qml-interface">Impresario&rsquo;s QML interface</h1>
+<p>Impresario provides a QML context object to the QML component representing the settings area (red rectangle
+in the figure above). This QML context object can be addressed with identifier <code>macro</code>.
+It provides the following methods and signals within QML:</p>
+<ol>
+<li>
+<p><code>variant macro.parameters()</code>:
+This method returns a list of variants containing all parameters of the macro. Within QML you can assign this
+list to a property like this:
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">property variant props: macro.parameters<span style="color:#666">(</span><span style="color:#666">)</span>;
+  </code></pre></div>
+In the following you can access the different fields of each parameter by <code>props[index]</code> where <code>index</code>
+identifies the parameter:</p>
+<ul>
+<li><code>props[index].value</code>: Current value of the parameter as variant</li>
+<li><code>props[index].name</code>: Name of the parameter as read-only string</li>
+<li><code>props[index].type</code>: Type of the parameter as read-only string</li>
+<li><code>props[index].description</code>: Description of the parameter as read-only string</li>
+<li><code>props[index].component</code>: Inplace editor component of the parameter as read-only string</li>
+<li><code>props[index].properties</code>: Properties for the inplace editor component as read-only string</li>
+</ul>
+</li>
+<li>
+<p><code>macro.showDescription(int parameterIndex)</code>:
+Call this method to tell Impresario to show the description of the parameter identified by <code>parameterIndex</code>
+in the <a href="/impresario/web/userguide/propwnd/#information-area">information area</a> of the property window.
+As you have full control over parameter presentation you also have to define when which parameter is selected
+and its help has to be displayed.</p>
+</li>
+<li>
+<p><code>signal onParameterUpdated(int index)</code>:
+You receive this signal from <code>macro</code> when a parameter value has been changed programmatically, i.e. by calling
+the API method from within a macro instance:
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">template</span><span style="color:#666">&lt;</span><span style="color:#007020;font-weight:bold">typename</span> T<span style="color:#666">&gt;</span>
+<span style="color:#902000">void</span> setParameterValue(std<span style="color:#666">:</span><span style="color:#666">:</span>size_t index, <span style="color:#007020;font-weight:bold">const</span> T<span style="color:#666">&amp;</span> value);
+  
+</code></pre></div>
+In this case you have to make sure that the display of the parameter referenced by <code>index</code> is updated as well.</p>
+</li>
+</ol>
+<h1 id="use-default-presentation-with-custom-inplace-editors">Use default presentation with custom inplace editors</h1>
+<p>If you are happy with the default presentation but require a special presentation for a parameter you can
+create your own inplace editor component. This component will be dynamically loaded by the default
+presentation implemented in <code class="path">PropertyWidget.qml</code> located in Impresario&rsquo;s
+<a href="/impresario/web/userguide/settings/#resources">resource directory</a> which is <code class="path">resources</code> by default.</p>
+<p>The easiest way to start is to copy one of the shipped inplace editor components introduced in section
+<a href="/impresario/web/devguide/macrotutorial4/#default-parameter-presentation">Default parameter presentation</a> and
+modify it to fit your requirements.</p>
+<h1 id="create-your-own-property-widget">Create your own property widget</h1>
+<p>If you like full freedom for parameter presentation you can also use your own property widget. These are the steps
+required:</p>
+<ol>
+<li>Create your own property widget component in a separate QML file, using the interface described above. The easiest
+way to start is to copy Impresario&rsquo;s default component <code class="path">PropertyWidget.qml</code> and customize it the way you require it.</li>
+<li>Place your new QML file in Impresario&rsquo;s <a href="/impresario/web/userguide/settings/#resources">resource directory</a>.</li>
+<li>Impresario&rsquo;s API provides the following method you have to call in your macro&rsquo;s constructor:
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#902000">void</span> <span style="color:#06287e">setPropertyWidgetComponent</span>(<span style="color:#007020;font-weight:bold">const</span> std<span style="color:#666">:</span><span style="color:#666">:</span>wstring<span style="color:#666">&amp;</span> qmlFile);
+   
+</code></pre></div>
+The parameter <code>qmlFile</code> is the name of your QML file including the extension <code class="path">.qml</code> but without path.</li>
+</ol>
+<p>Whenever an instance of this macro is now selected in the process graph editor Impresario will show your own
+parameter presentation.</p>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">Advanced parameter presentation</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#impresarios-qml-interface">Impresario&rsquo;s QML interface</a></li>
+    <li><a href="#use-default-presentation-with-custom-inplace-editors">Use default presentation with custom inplace editors</a></li>
+    <li><a href="#create-your-own-property-widget">Create your own property widget</a></li>
+  </ul>
+</nav>
+		</div>
+	</div>
+  
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	<p>Copyright 2015-2020 Lars Libuda</p>
+</footer>
+
+
+
+<script src="https://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
+
+<script src="https://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>

@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 
 
+
+
+
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario 2.1">
-		<link rel="icon" href="http://llibuda.github.io/impresario/web/impresario.png">
+		<link rel="icon" href="https://llibuda.github.io/impresario/web/impresario.png">
 		<title>Reference: Commands - Impresario 2.1</title>
-		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/highlight.js.min.css">
-		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap.min.css">
-		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
-		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/theme.css">
-		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootie-docs.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootie-docs.css">
 	</head>
 	
 <style>
@@ -34,11 +36,11 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="http://llibuda.github.io/impresario/web">Impresario 2.1</a>
+				<a class="navbar-brand" href="https://llibuda.github.io/impresario/web">Impresario 2.1</a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li ><a href="http://llibuda.github.io/impresario/web">Home</a></li>
+					<li ><a href="https://llibuda.github.io/impresario/web">Home</a></li>
 				
 				
            
@@ -83,6 +85,24 @@
 						  
 							  <li ><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
 						  
+							  <li ><a href="/impresario/web/devguide/buildimpresario/">Build Impresario from source</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/createmacroproject/">Creating a macro project</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial1/">Creating a macro</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial2/">- Setting up macro information</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial3/">- Setting up macro input and output ports</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial4/">- Setting up macro parameters</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial5/">- Processing data</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/advancedparameter/">Advanced parameter presentation</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/apireference/">Macro API Reference</a></li>
+						  
 						  </ul>
 					  </li>
           
@@ -104,213 +124,162 @@
 				<h1 class="doc-entry-title">Reference: Commands</h1>
 				
 				<section>
-					
-
-<p>This section contains an overview of all available commands in the menu bar, toolbars, and context menus. Not
+					<p>This section contains an overview of all available commands in the menu bar, toolbars, and context menus. Not
 all commands are available all the time. It depends on the application&rsquo;s context which commands can be triggered.</p>
-
 <h1 id="file-menu">File menu</h1>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/new.png"/>&nbsp;New</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/new.png"/>&nbsp;New</code>
  creates a new empty process graph.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/open.png"/>&nbsp;Open...</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/open.png"/>&nbsp;Open...</code>
  displays a file dialog to open an existing process graph. The
 dialog starts by default in the directory for process graphs as given by the settings dialog.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/save.png"/>&nbsp;Save</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/save.png"/>&nbsp;Save</code>
  saves the current process graph. In case the process graph is still
 unnamed, a &ldquo;Save as&rdquo; dialog will be shown to select an appropriate file name.</p>
-
 <p>
 <code class="menu_command">Save as...</code>
  saves the current process graph under a different name. The file name can
 be set in the shown &ldquo;Save as&rdquo; file dialog.</p>
-
 <p>
 <code class="menu_command">Close</code>
  closes the current process graph. In case the process graph is still running you
 will be prompted to stop it first. In case there are unsaved changes in the current process graph you will be
 prompted to save or discard the changes.</p>
-
 <p>
 <code class="menu_command">Close all</code>
  closes all open process graphs. In case a process graph is still running you
 will be prompted to stop it first. In case there are unsaved changes in an open process graph you will be
 prompted to save or discard the changes.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/quit.png"/>&nbsp;Quit</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/quit.png"/>&nbsp;Quit</code>
  quits the application. If a process graph is still running
 you have to stop it before you can quit Impresario. If there are unsaved changes in any open
 process graphs you will be prompted to save or discard the changes.</p>
-
 <h1 id="edit-menu">Edit menu</h1>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/undo.png"/>&nbsp;Undo</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/undo.png"/>&nbsp;Undo</code>
  will undo the last edit action. This command is coupled to the
 <a href="/impresario/web/userguide/auxdocks/#change-log-window">Change Log window</a>.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/redo.png"/>&nbsp;Redo</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/redo.png"/>&nbsp;Redo</code>
  will redo the last edit action which was undone before. This command is coupled
 to the <a href="/impresario/web/userguide/auxdocks/#change-log-window">Change Log window</a>.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/cut.png"/>&nbsp;Cut</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/cut.png"/>&nbsp;Cut</code>
  cuts the selected items (macros and links) from the current process graph and
 adds them to the clipboard. <strong>Please note</strong>:</p>
-
 <ul>
 <li>Links which are not selected but will become loose by cutting either the source or destination macro will be deleted!</li>
 <li>Links which are selected but both their respective source <strong>and</strong> destination macros are not part of the selection are
 not added to the clipboard but will be deleted!</li>
 </ul>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/copy.png"/>&nbsp;Copy</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/copy.png"/>&nbsp;Copy</code>
  copies the selected items (macros and links) to the clipboard.
 <strong>Please note</strong>: &ldquo;Loose&rdquo; links are not copied, i.e. links which are selected but both their respective source <strong>and</strong> destination macros
 are not part of the selection!</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/paste.png"/>&nbsp;Paste</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/paste.png"/>&nbsp;Paste</code>
  pastes the contents of the clipboard to the current process graph.</p>
-
 <p>
 <code class="menu_command">Delete</code>
  deletes the selected items (macros and links) in the current process graph. <strong>Pleate note:</strong>
 Links which are not selected but will become loose by deleting either the source or destination macro will also be deleted!</p>
-
 <p>
 <code class="menu_command">Select all</code>
  selects all items in the current process graph.</p>
-
 <h1 id="view-menu">View menu</h1>
-
 <p>
 <code class="menu_command">Toolbars</code>
  opens a submenu which allows to toggle the visibility of all toolbars.</p>
-
 <p>
 <code class="menu_command">Docks</code>
  opens a submenu which allows to toggle the visibility of all docking windows.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/zoom_100.png"/>&nbsp;Zoom 100%</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/zoom_100.png"/>&nbsp;Zoom 100%</code>
  zooms the view on the current process graph to its original size.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/zoom_in.png"/>&nbsp;Zoom In</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/zoom_in.png"/>&nbsp;Zoom In</code>
  increases the zoom level on the current view. Maximum zoom is 300%.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/zoom_out.png"/>&nbsp;Zoom Out</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/zoom_out.png"/>&nbsp;Zoom Out</code>
  decreases the zoom level on the current view. Minimum zoom is 20%.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/zoom_selection.png"/>&nbsp;Fit to Selection</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/zoom_selection.png"/>&nbsp;Fit to Selection</code>
  activates the zoom cursor which allows you to select an
 area in the current process graph to zoom into. After selection the selected area is zoomed to fit the current view.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/zoom_page.png"/>&nbsp;Fit to Page</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/zoom_page.png"/>&nbsp;Fit to Page</code>
  fits the zoom so that the whole process graph is shown in the current
 view. However, the zoom will not go below 20% or above 300%.</p>
-
 <h1 id="control-menu">Control menu</h1>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/control_play.png"/>&nbsp;Start</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/control_play.png"/>&nbsp;Start</code>
  starts executing the current process graph. In case an error occurs
 the process graph is stopped automatically and an error message is displayed in the System Messages window.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/control_pause.png"/>&nbsp;Pause</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/control_pause.png"/>&nbsp;Pause</code>
  pauses execution of the current process graph.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/control_stop.png"/>&nbsp;Stop</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/control_stop.png"/>&nbsp;Stop</code>
  stops executing the current process graph.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/control_end.png"/>&nbsp;Snap</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/control_end.png"/>&nbsp;Snap</code>
  executes the current process graph for exactly one cylce, i.e. every
 macro in the process graph is run once. Afterwards execution is stopped.</p>
-
 <h1 id="extras-menu">Extras menu</h1>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/settings.png"/>&nbsp;Settings...</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/settings.png"/>&nbsp;Settings...</code>
  displays the <a href="/impresario/web/userguide/settings/">settings dialog</a> to configure
 some aspects of Impresario.</p>
-
 <h1 id="help-menu">Help menu</h1>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/help.png"/>&nbsp;Contents...</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/help.png"/>&nbsp;Contents...</code>
  opens this online help.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/information.png"/>&nbsp;About Impresario...</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/information.png"/>&nbsp;About Impresario...</code>
  shows the dialog containg information about Impresario like version number,
 license, and credits.</p>
-
 <h1 id="process-graph-editor-context-menu">Process graph editor context menu</h1>
-
 <p>Within a process graph editor different context menus are shown depending on which component the user right clicks. These context
 menus offer the standard commands for <a href="#edit-menu">Edit</a> and <a href="#control-menu">Control</a>, and the
 following special commands:</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/anchor.png"/>&nbsp;Toggle cycle anchor</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/anchor.png"/>&nbsp;Toggle cycle anchor</code>
  allows to set and unset a cycle anchor for the selected macro to disambiguate a cycle
 in the process graph. This command is only available in the macro context menu if a cycle in the current process graph is detected which
 Impresario cannot disambiguate itself.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/eye.png"/>&nbsp;Watch</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/eye.png"/>&nbsp;Watch</code>
  opens a viewer window for the selected output pin or link. This command is available by right clicking
 either an link or a macro&rsquo;s ouput pin.</p>
-
 <h1 id="macro-database-context-menu">Macro database context menu</h1>
-
 <p>In the Macro database window two context menus are available. In the <a href="/impresario/web/userguide/macrodb/#macro-area">Macro area</a> a right click
-on a <img src="http://llibuda.github.io/impresario/web/images/macro.png"/>&nbsp;<i>Macro</i>
+on a <img src="https://llibuda.github.io/impresario/web/resources/images/macro.png"/>&nbsp;<i>Macro</i>
  opens a context menu for adding macro instances to the current process graph.
 The context menu in the <a href="/impresario/web/userguide/macrodb/#instances-tab">Instances tab</a> of the <a href="/impresario/web/userguide/macrodb/#information-area">Information area</a>
 allows to navigate to the selected macro.</p>
-
 <h2 id="macro-area-context-menu">Macro area context menu</h2>
-
 <p>
 <code class="menu_command">Create 1 instance</code>
  creates a new instance of the selected macro and adds it to the current process graph editor.</p>
-
 <p>
 <code class="menu_command">Create 2 instances</code>
  creates two new instances of the selected macro and adds them to the current process graph editor.</p>
-
 <p>
 <code class="menu_command">Create 3 instances</code>
  creates three new instances of the selected macro and adds them to the current process graph editor.</p>
-
 <p>
-<code class="menu_command"><img src="http://llibuda.github.io/impresario/web/images/macrocreate.png"/>&nbsp;Create multiple instances...</code>
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/macrocreate.png"/>&nbsp;Create multiple instances...</code>
  opens a dialog where you can choose the number of instances which are to
 be created of the selected macro and added to the current process graph editor. The dialog allows to create up to 10 instances at once.</p>
-
 <h2 id="instances-tab-context-menu">Instances tab context menu</h2>
-
 <p>
 <code class="menu_command">Navigate to Macro instance</code>
  activates the process graph editor in which the selected macro is located and selects the macro
 within the editor. This command is only available when the selected Macro is part of a process graph.</p>
-
 <p>
 <code class="menu_command">Navigate to Process graph</code>
  activates the process graph editor in which the selected macro was located before it was deleted from the
@@ -331,20 +300,21 @@ editor. This command is only available when the selected Macro was deleted from 
 				<li><strong><a href="#title">Reference: Commands</a></strong></li>
 			</ul>
 			<nav id="TableOfContents">
-<ul>
-<li><a href="#file-menu">File menu</a></li>
-<li><a href="#edit-menu">Edit menu</a></li>
-<li><a href="#view-menu">View menu</a></li>
-<li><a href="#control-menu">Control menu</a></li>
-<li><a href="#extras-menu">Extras menu</a></li>
-<li><a href="#help-menu">Help menu</a></li>
-<li><a href="#process-graph-editor-context-menu">Process graph editor context menu</a></li>
-<li><a href="#macro-database-context-menu">Macro database context menu</a>
-<ul>
-<li><a href="#macro-area-context-menu">Macro area context menu</a></li>
-<li><a href="#instances-tab-context-menu">Instances tab context menu</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#file-menu">File menu</a></li>
+    <li><a href="#edit-menu">Edit menu</a></li>
+    <li><a href="#view-menu">View menu</a></li>
+    <li><a href="#control-menu">Control menu</a></li>
+    <li><a href="#extras-menu">Extras menu</a></li>
+    <li><a href="#help-menu">Help menu</a></li>
+    <li><a href="#process-graph-editor-context-menu">Process graph editor context menu</a></li>
+    <li><a href="#macro-database-context-menu">Macro database context menu</a>
+      <ul>
+        <li><a href="#macro-area-context-menu">Macro area context menu</a></li>
+        <li><a href="#instances-tab-context-menu">Instances tab context menu</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
 		</div>
 	</div>
@@ -365,17 +335,17 @@ editor. This command is only available when the selected Macro was deleted from 
 </div> 
 
 <footer class="doc-footer">
-	<p>Copyright 2015-2017 Lars Libuda</p>
+	<p>Copyright 2015-2020 Lars Libuda</p>
 </footer>
 
 
 
-<script src="http://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
-<script src="http://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
 
-<script src="http://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
-<script src="http://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
 
 </body>
 </html>

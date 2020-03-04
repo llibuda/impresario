@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 
 
+
+
+
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario 2.1">
-		<link rel="icon" href="http://llibuda.github.io/impresario/web/impresario.png">
+		<link rel="icon" href="https://llibuda.github.io/impresario/web/impresario.png">
 		<title>Setup of Development Environment - Impresario 2.1</title>
-		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/highlight.js.min.css">
-		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap.min.css">
-		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
-		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/theme.css">
-		<link rel="stylesheet" href="http://llibuda.github.io/impresario/web/css/bootie-docs.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootie-docs.css">
 	</head>
 	
 <style>
@@ -34,11 +36,11 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="http://llibuda.github.io/impresario/web">Impresario 2.1</a>
+				<a class="navbar-brand" href="https://llibuda.github.io/impresario/web">Impresario 2.1</a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li ><a href="http://llibuda.github.io/impresario/web">Home</a></li>
+					<li ><a href="https://llibuda.github.io/impresario/web">Home</a></li>
 				
 				
            
@@ -83,6 +85,24 @@
 						  
 							  <li  class="active"><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
 						  
+							  <li ><a href="/impresario/web/devguide/buildimpresario/">Build Impresario from source</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/createmacroproject/">Creating a macro project</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial1/">Creating a macro</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial2/">- Setting up macro information</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial3/">- Setting up macro input and output ports</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial4/">- Setting up macro parameters</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial5/">- Processing data</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/advancedparameter/">Advanced parameter presentation</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/apireference/">Macro API Reference</a></li>
+						  
 						  </ul>
 					  </li>
           
@@ -104,33 +124,25 @@
 				<h1 class="doc-entry-title">Setup of Development Environment</h1>
 				
 				<section>
-					
-
-<p>In order to create your own Impresario Macro libraries or to build Impresario yourself from its source code,
+					<p>In order to create your own Impresario Macro libraries or to build Impresario yourself from its source code,
 you need a development enviroment.</p>
-
 <p>In general three components are required:</p>
-
 <ul>
-<li>Qt Framework 5.6 with QtCreator</li>
-<li>A suitable compiler for QtCreator</li>
+<li>Qt Framework version 5.12 LTS or higher with QtCreator.</li>
+<li>A suitable compiler for QtCreator. The compiler must support at least the C++11 standard.</li>
 <li><em>Git</em> as version control system</li>
 </ul>
-
 <p>The following two subsections show how to set it up on Windows and Linux systems.</p>
-
 <h1 id="setup-for-windows-systems">Setup for Windows systems</h1>
-
-<p>On Windows systems Impresario currently supports Microsoft&rsquo;s C++ compilers version 18.0 with runtime 12.0 and version 19.0 with runtime 14.0.
-Both 32bit and 64bit builds are supported. These compilers are shipped with Visual Studio 2013 and Visual Studio 2015 respectively.</p>
-
+<p>On Windows systems Impresario supports Microsoft&rsquo;s C++ compilers which are shipped with Visual Studio. At the time of this writing
+Impresario is built with the compiler shipped with Visual Studio 2017. Therefore this one is recommended.</p>
 <ul>
 <li>Go to <a href="http://www.qt.io/download-open-source/">http://www.qt.io/download-open-source/</a> and download the Qt Online Installer for Windows.</li>
 <li>Run the downloaded installer. After creating a Qt account (it&rsquo;s free) you can choose which Qt components to install. The following
 screenshot shows what is needed by Impresario:
 <figure >
-    <a href="http://llibuda.github.io/impresario/web/images/qt_install_windows.png">
-        <img src="http://llibuda.github.io/impresario/web/images/qt_install_windows.png" alt="Qt components to be installed on Windows" />
+    <a href="https://llibuda.github.io/impresario/web/resources/images/qt_install_windows.png">
+        <img src="https://llibuda.github.io/impresario/web/resources/images/qt_install_windows.png" alt="Qt components to be installed on Windows" />
     </a>
     
     <figcaption>
@@ -138,30 +150,24 @@ screenshot shows what is needed by Impresario:
         
     </figcaption>
     
-</figure><br>
-Color legend:
-
-<ul>
-<li>Green: Mandatory components to be installed in any case</li>
-<li>Blue: Install one or more, depending on which compiler and build type you prefer.</li>
-</ul></li>
-<li>For <em>msvc2013</em> packages you have to install Visual Studio 2013. For <em>msvc2015</em> packages you have to install Visual Studio 2015.
-You can get the Visual Studio 2013 Express Edition or Visual Studio 2015 Community Edition free of charge from
-<a href="https://www.visualstudio.com/downloads/download-visual-studio-vs">https://www.visualstudio.com/downloads/download-visual-studio-vs</a>.</li>
+</figure>
+Next to the pre-build Qt core libraries for the compiler it is also mandatory to install the <em>Qt WebEngine</em> component which is used
+by Impresario&rsquo;s help system.</li>
+<li>Download Visual Studio 2017 Community Edition free of charge from
+<a href="https://visualstudio.microsoft.com/de/vs/older-downloads/">https://visualstudio.microsoft.com/de/vs/older-downloads/</a>.
+Visual Studion 2017 may have been moved to the older versions section so that you have to browse for it. After download
+run the installer.</li>
 <li>Download Git for Windows from <a href="https://git-scm.com/download/win">https://git-scm.com/download/win</a>. Afterwards, run the installer.</li>
 </ul>
-
 <h1 id="setup-for-linux-systems">Setup for Linux systems</h1>
-
 <p>On Linux systems the GNU 64bit gcc is the compiler of choice.</p>
-
 <ul>
 <li>Go to <a href="http://www.qt.io/download-open-source/">http://www.qt.io/download-open-source/</a> and download the Qt Online Installer for Linux.</li>
 <li>Run the downloaded installer. After creating a Qt account (it&rsquo;s free) you can choose which Qt components to install. The following
 screenshot shows what is needed by Impresario:
 <figure >
-    <a href="http://llibuda.github.io/impresario/web/images/qt_install_linux.png">
-        <img src="http://llibuda.github.io/impresario/web/images/qt_install_linux.png" alt="Qt components to be installed on Linux" />
+    <a href="https://llibuda.github.io/impresario/web/resources/images/qt_install_linux.png">
+        <img src="https://llibuda.github.io/impresario/web/resources/images/qt_install_linux.png" alt="Qt components to be installed on Linux" />
     </a>
     
     <figcaption>
@@ -169,11 +175,15 @@ screenshot shows what is needed by Impresario:
         
     </figcaption>
     
-</figure></li>
-<li>If not already installed on your system you have to install gcc itself. On Debian based systems like Ubuntu or Linux Mint with apt repository
-maintenance this is achieved by running <code>sudo apt-get install build-essential</code> from the command line.</li>
-<li>Install Git on your system if not already done. For Debian based systems run <code>sudo apt-get install git</code> from the command line. The website
-<a href="https://git-scm.com/download/linux">https://git-scm.com/download/linux</a> shows how to install Git on other Linux systems.</li>
+</figure>
+Next to the pre-build Qt core libraries for the compiler it is also mandatory to install the <em>Qt WebEngine</em> component which is used
+by Impresario&rsquo;s help system.</li>
+<li>If not already installed on your system you have to install gcc and git. On Debian based systems like Ubuntu or Linux Mint
+with apt package manager this is achieved by running
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">  sudo apt-get install build-essential git
+  </code></pre></div>
+from the command line.
+On Linux distributions with a different package management system please refer to its documentation.</li>
 </ul>
 
 				</section>
@@ -190,10 +200,10 @@ maintenance this is achieved by running <code>sudo apt-get install build-essenti
 				<li><strong><a href="#title">Setup of Development Environment</a></strong></li>
 			</ul>
 			<nav id="TableOfContents">
-<ul>
-<li><a href="#setup-for-windows-systems">Setup for Windows systems</a></li>
-<li><a href="#setup-for-linux-systems">Setup for Linux systems</a></li>
-</ul>
+  <ul>
+    <li><a href="#setup-for-windows-systems">Setup for Windows systems</a></li>
+    <li><a href="#setup-for-linux-systems">Setup for Linux systems</a></li>
+  </ul>
 </nav>
 		</div>
 	</div>
@@ -214,17 +224,17 @@ maintenance this is achieved by running <code>sudo apt-get install build-essenti
 </div> 
 
 <footer class="doc-footer">
-	<p>Copyright 2015-2017 Lars Libuda</p>
+	<p>Copyright 2015-2020 Lars Libuda</p>
 </footer>
 
 
 
-<script src="http://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
-<script src="http://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
 
-<script src="http://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
-<script src="http://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
 
 </body>
 </html>

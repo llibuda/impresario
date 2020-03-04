@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario 2.1">
+		<link rel="icon" href="https://llibuda.github.io/impresario/web/impresario.png">
+		<title>Processing data - Impresario 2.1</title>
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/theme.css">
+		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootie-docs.css">
+	</head>
+	
+<style>
+.navbar-custom {
+    color: #00AA00;
+    background-color: #CC3333;
+}
+</style>	
+
+<body role="document">
+
+	
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="https://llibuda.github.io/impresario/web">Impresario 2.1</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li ><a href="https://llibuda.github.io/impresario/web">Home</a></li>
+				
+				
+           
+					  <li ><a  href="/impresario/web/download/">Download</a></li>
+          
+				
+          
+            <li  class="dropdown">
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">User&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/userguide/introduction/">Introduction</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/install/">Installing Impresario</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/guioverview/">Introducing Impresario&#39;s GUI</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/createprocessgraph/">Editing process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/runprocessgraph/">Running process graphs</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/macrodb/">Reference: Macro database window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/propwnd/">Reference: Property window</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/settings/">Reference: Settings</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/menu/">Reference: Commands</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/auxdocks/">Reference: Auxiliary windows</a></li>
+						  
+							  <li ><a href="/impresario/web/userguide/history/">Release History</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+          
+            <li  class="dropdown active" >
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Developer&#39;s Guide<span class="caret"></span></a>
+						  <ul class="dropdown-menu" role="menu">
+						  
+							  <li ><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/buildimpresario/">Build Impresario from source</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/createmacroproject/">Creating a macro project</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial1/">Creating a macro</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial2/">- Setting up macro information</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial3/">- Setting up macro input and output ports</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/macrotutorial4/">- Setting up macro parameters</a></li>
+						  
+							  <li  class="active"><a href="/impresario/web/devguide/macrotutorial5/">- Processing data</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/advancedparameter/">Advanced parameter presentation</a></li>
+						  
+							  <li ><a href="/impresario/web/devguide/apireference/">Macro API Reference</a></li>
+						  
+						  </ul>
+					  </li>
+          
+				
+        
+				
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+<div class="container">
+
+<div class="row">
+	<div class="col-sm-8 doc-main">
+		<main role="main">
+			<article>
+				<a id="title"></a>
+				<h1 class="doc-entry-title">Processing data</h1>
+				
+				<section>
+					<p>After input ports, output ports, and parameters have been set up in the macro&rsquo;s constructor,
+we are ready to process data.</p>
+<h1 id="overridables">Overridables</h1>
+<p>The macro&rsquo;s base class <code>MacroBase</code> defines four virtual methods
+which are called by Impresario during processing:</p>
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">virtual</span> Status <span style="color:#06287e">onInit</span>();
+<span style="color:#007020;font-weight:bold">virtual</span> Status <span style="color:#06287e">onApply</span>();
+<span style="color:#007020;font-weight:bold">virtual</span> Status <span style="color:#06287e">onExit</span>();
+<span style="color:#007020;font-weight:bold">virtual</span> <span style="color:#902000">void</span> <span style="color:#06287e">onParametersChanged</span>(ParameterSet<span style="color:#666">&amp;</span> parameters);
+</code></pre></div>
+<p>The methods <code>onInit()</code>, <code>onApply()</code>, and <code>onExit()</code> return a <code>Status</code> code which is defined
+as follows:</p>
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">enum</span> <span style="color:#0e84b5;font-weight:bold">Status</span> {
+  Ok,   <span style="color:#60a0b0;font-style:italic">// tell Impresario to continue processing normally
+</span><span style="color:#60a0b0;font-style:italic"></span>  Stop, <span style="color:#60a0b0;font-style:italic">// tell Impresario to stop processing
+</span><span style="color:#60a0b0;font-style:italic"></span>  Error <span style="color:#60a0b0;font-style:italic">// tell Impresario to abort processing abnormally
+</span><span style="color:#60a0b0;font-style:italic"></span>};
+</code></pre></div>
+<p>The base class implementations of <code>onInit()</code>, <code>onApply()</code>, and <code>onExit()</code> just return <code>Ok</code>,
+<code>onParametersChanged(ParameterSet&amp; parameters)</code> does nothing.</p>
+<p><code>onInit()</code> is called once for each macro in the <a href="/impresario/web/userguide/introduction/#impresario-process-graphs">process graph</a>
+before the first call to <code>onApply()</code>. So this is the place to check whether all requirements are
+met to start processing and to initialize internal data which is needed in subsequent processing.
+<code>onInit()</code> has to return <code>Ok</code> to indicate that processing can continue. Returning <code>Error</code> or <code>Stop</code>
+will stopp processing immediately and <code>onExit()</code> will be called for every macro in the process graph.</p>
+<p><code>onApply()</code> is the only method which must be overridden to realize data processing, overriding the other methods
+is optional. <code>onApply()</code> is called by Impresario cyclically with new input data and must return <code>Ok</code> to continue
+processing, <code>Stop</code> to stop processing, or <code>Error</code> to abort processing.</p>
+<p><code>onExit()</code> is called for each macro in the process graph in case <code>onInit()</code> or <code>onApply()</code> of any macro in the
+process graph returns <code>Stop</code> or <code>Error</code> or the user stopped processing with the 
+<code class="menu_command"><img src="https://llibuda.github.io/impresario/web/resources/images/control_stop.png"/>&nbsp;Stop</code>
+
+command in Impresario&rsquo;s GUI. You can override this method in case you have to do some cleanup after processing.</p>
+<p>Finally, <code>onParametersChanged(ParameterSet&amp; parameters)</code> is called by Impresario just before each call to <code>onInit()</code>,
+<code>onApply()</code>, and <code>onExit()</code>. <code>ParameterSet</code> is defined as <code>std::set&lt;unsigned int&gt;</code> and contains the indices of all
+changed parameters. You can override this method to handle parameter changes separately, e.g. in case more complex computations
+are required in case a parameter changes. There are two important aspects to mention here:</p>
+<ul>
+<li>When <code>onParametersChanged(ParameterSet&amp; parameters)</code> is called just after processing was started and before <code>onInit()</code>,
+<code>ParameterSet</code> contains the indices of all defined paramters to make sure everything can be initialized correctly.</li>
+<li>In subsequent calls before <code>onApply()</code>, and <code>onExit()</code>, <code>ParameterSet</code> only contains the indices of parameters which
+have been changed by the user since the last call. In case no paramters have been changed, <code>onParametersChanged(ParameterSet&amp; parameters)</code>
+is not called at all, i.e. you will never see an empty set.</li>
+</ul>
+<p>When you override one or more of the above methods you need to access the input ports, output ports, and parameters within
+these methods. Therefore the API provides access methods.</p>
+<h1 id="access-methods">Access methods</h1>
+<p>Within the overridable methods you can you the following access methods to access inputs, outputs, and parameters:</p>
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">template</span><span style="color:#666">&lt;</span><span style="color:#007020;font-weight:bold">typename</span> T<span style="color:#666">&gt;</span>
+<span style="color:#007020;font-weight:bold">const</span> T<span style="color:#666">*</span> accessInput(std<span style="color:#666">:</span><span style="color:#666">:</span>size_t index);
+<span style="color:#007020;font-weight:bold">template</span><span style="color:#666">&lt;</span><span style="color:#007020;font-weight:bold">typename</span> T<span style="color:#666">&gt;</span>
+T<span style="color:#666">&amp;</span> accessOutput(std<span style="color:#666">:</span><span style="color:#666">:</span>size_t index);
+<span style="color:#007020;font-weight:bold">template</span><span style="color:#666">&lt;</span><span style="color:#007020;font-weight:bold">typename</span> T<span style="color:#666">&gt;</span>
+<span style="color:#007020;font-weight:bold">const</span> T<span style="color:#666">&amp;</span> getParameterValue(std<span style="color:#666">:</span><span style="color:#666">:</span>size_t index);
+</code></pre></div>
+<p>All methods take an <code>index</code> as parameter which is the zero based index of inputs, outputs, and parameters in the order they
+are defined in the macro&rsquo;s constructor. The template type provided must match the type used for the definition.</p>
+<p><code>accessInput(std::size_t index)</code> returns a pointer to the input object instance which can be <code>nullptr</code> in case the input port
+is not connected in the corresponing process graph. This can be checked in <code>onInit()</code> once before processing starts as it is
+not possible to change the process graph while Impresario is processing it. The returned input object instance is also constant,
+i.e. not modifyable. Only outputs can be manipulated.</p>
+<p>Outputs are accessed with <code>accessOutput(std::size_t index)</code>. This method returns a reference to the output object instance which
+can be modified. <strong>Please note</strong>: Outputs must only be modified in <code>onApply()</code> as Impresario expects modifications only here.</p>
+<p>With <code>getParameterValue(std::size_t index)</code> you can read the current parameters. Parameters are usually set by the user in
+Impresario&rsquo;s <a href="/impresario/web/userguide/propwnd/">property window</a> but the API provides a method to set parameter
+values also in code:</p>
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020;font-weight:bold">template</span><span style="color:#666">&lt;</span><span style="color:#007020;font-weight:bold">typename</span> T<span style="color:#666">&gt;</span>
+<span style="color:#902000">void</span> setParameterValue(std<span style="color:#666">:</span><span style="color:#666">:</span>size_t index, <span style="color:#007020;font-weight:bold">const</span> T<span style="color:#666">&amp;</span> value);
+</code></pre></div>
+<p>Usually both access methods are called in the overridable <code>onParametersChanged(ParameterSet&amp; parameters)</code> but can also be used
+in the other overridable methods.</p>
+<h1 id="message-output">Message output</h1>
+<p>There are two ways to provide text output to Impresario. First, in case you return <code>Error</code> in <code>onInit()</code>, <code>onApply()</code>, or <code>onExit()</code>
+you can set an error message with the following method:</p>
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#902000">void</span> <span style="color:#06287e">setErrorMsg</span>(<span style="color:#007020;font-weight:bold">const</span> std<span style="color:#666">:</span><span style="color:#666">:</span>wstring<span style="color:#666">&amp;</span> strErrorMsg);
+</code></pre></div>
+<p>The text you provide to this method will be shown in Impresario&rsquo;s
+<a href="/impresario/web/userguide/auxdocks/#system-messages-window">System Messages Window</a>. <strong>Please note</strong>: This message is only shown
+when you return <code>Error</code>, otherwise a call to this message does not have any effect.</p>
+<p>Second, you can use the standard streams <code>std::cout</code> and <code>std::cerr</code>. Impresario redirects these streams to it&rsquo;s
+<a href="/impresario/web/userguide/auxdocks/#console-output-window">Console output Window</a>. This is sometimes helpful for debugging.</p>
+<h1 id="example">Example</h1>
+<p>The following shows the implementation of the overridables in our example. In this example we do not use <code>onExit()</code> so that the
+base class implementation is used.</p>
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp">MacroBase<span style="color:#666">:</span><span style="color:#666">:</span>Status LtiCannyEdge<span style="color:#666">:</span><span style="color:#666">:</span>onInit() {
+  <span style="color:#60a0b0;font-style:italic">// check whether the input port is connected
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#007020;font-weight:bold">const</span> lti<span style="color:#666">:</span><span style="color:#666">:</span>channel8<span style="color:#666">*</span> input <span style="color:#666">=</span> accessInput<span style="color:#666">&lt;</span>lti<span style="color:#666">:</span><span style="color:#666">:</span>channel8<span style="color:#666">&gt;</span>(<span style="color:#40a070">0</span>);
+  <span style="color:#007020;font-weight:bold">if</span> (input <span style="color:#666">=</span><span style="color:#666">=</span> <span style="color:#007020;font-weight:bold">nullptr</span>) {
+    <span style="color:#60a0b0;font-style:italic">// input port is not connected, so abort processing
+</span><span style="color:#60a0b0;font-style:italic"></span>	<span style="color:#60a0b0;font-style:italic">// with an error message
+</span><span style="color:#60a0b0;font-style:italic"></span>    setErrorMsg(<span style="color:#4070a0">L</span><span style="color:#4070a0">&#34;</span><span style="color:#4070a0">Input is not connected.</span><span style="color:#4070a0">&#34;</span>);
+    <span style="color:#007020;font-weight:bold">return</span> Error;
+  }
+  <span style="color:#007020;font-weight:bold">return</span> Ok;
+}
+
+MacroBase<span style="color:#666">:</span><span style="color:#666">:</span>Status LtiCannyEdge<span style="color:#666">:</span><span style="color:#666">:</span>onApply() {
+  <span style="color:#60a0b0;font-style:italic">// access input
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#007020;font-weight:bold">const</span> lti<span style="color:#666">:</span><span style="color:#666">:</span>channel8<span style="color:#666">*</span> input <span style="color:#666">=</span> accessInput<span style="color:#666">&lt;</span>lti<span style="color:#666">:</span><span style="color:#666">:</span>channel8<span style="color:#666">&gt;</span>(<span style="color:#40a070">0</span>);
+  <span style="color:#60a0b0;font-style:italic">// access output
+</span><span style="color:#60a0b0;font-style:italic"></span>  lti<span style="color:#666">:</span><span style="color:#666">:</span>channel8<span style="color:#666">&amp;</span> output <span style="color:#666">=</span> accessOutput<span style="color:#666">&lt;</span>lti<span style="color:#666">:</span><span style="color:#666">:</span>channel8<span style="color:#666">&gt;</span>(<span style="color:#40a070">0</span>);
+  <span style="color:#60a0b0;font-style:italic">// just let the LTI Lib 2 algorithm do the work
+</span><span style="color:#60a0b0;font-style:italic"></span>  <span style="color:#007020;font-weight:bold">return</span> (cannyFunctor.apply(<span style="color:#666">*</span>input,output)) <span style="color:#666">?</span> <span style="color:#002070;font-weight:bold">Ok</span> : Error;
+}
+
+<span style="color:#902000">void</span> LtiCannyEdge<span style="color:#666">:</span><span style="color:#666">:</span>onParametersChanged(ParameterSet <span style="color:#666">&amp;</span> paramSet) {
+  <span style="color:#007020;font-weight:bold">for</span>(ParameterSet<span style="color:#666">:</span><span style="color:#666">:</span>iterator it <span style="color:#666">=</span> paramSet.begin(); 
+      it <span style="color:#666">!</span><span style="color:#666">=</span> paramSet.end(); <span style="color:#666">+</span><span style="color:#666">+</span>it) {
+    <span style="color:#007020;font-weight:bold">switch</span> (<span style="color:#666">*</span>it) {
+      <span style="color:#007020;font-weight:bold">case</span> <span style="color:#40a070">0</span><span style="color:#666">:</span>
+        params.edgeValue <span style="color:#666">=</span> lti<span style="color:#666">:</span><span style="color:#666">:</span>ubyte(getParameterValue<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span>(<span style="color:#40a070">0</span>));
+        <span style="color:#007020;font-weight:bold">break</span>;
+      <span style="color:#007020;font-weight:bold">case</span> <span style="color:#40a070">1</span><span style="color:#666">:</span>
+        params.noEdgeValue <span style="color:#666">=</span> lti<span style="color:#666">:</span><span style="color:#666">:</span>ubyte(getParameterValue<span style="color:#666">&lt;</span><span style="color:#902000">int</span><span style="color:#666">&gt;</span>(<span style="color:#40a070">1</span>));
+        <span style="color:#007020;font-weight:bold">break</span>;
+    }
+  }
+  cannyFunctor.setParameters(params);
+}
+</code></pre></div>
+
+				</section>
+			</article>
+		</main>
+	</div> 
+
+	
+<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+	<div class="sidebar-module">
+		<div class="sidebar-toc">
+			<h4>Table of Contents</h4>
+			<ul>
+				<li><strong><a href="#title">Processing data</a></strong></li>
+			</ul>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#overridables">Overridables</a></li>
+    <li><a href="#access-methods">Access methods</a></li>
+    <li><a href="#message-output">Message output</a></li>
+    <li><a href="#example">Example</a></li>
+  </ul>
+</nav>
+		</div>
+	</div>
+  
+</div>
+
+</div> 
+
+
+<hr />
+
+<div class="row">
+	<div class="col-sm-8">
+		<p class="doc-footer-em"><a href="#">Back to TOP</a></p>
+	</div>
+</div>
+
+</div> 
+
+<footer class="doc-footer">
+	<p>Copyright 2015-2020 Lars Libuda</p>
+</footer>
+
+
+
+<script src="https://llibuda.github.io/impresario/web/js/jquery-1.11.2.min.js"></script>
+<script src="https://llibuda.github.io/impresario/web/js/bootstrap.min.js"></script>
+
+<script src="https://llibuda.github.io/impresario/web/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script src="https://llibuda.github.io/impresario/web/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>

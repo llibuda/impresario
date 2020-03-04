@@ -10,7 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="alternate" href="/index.xml" type="application/rss+xml" title="Impresario 2.1">
 		<link rel="icon" href="https://llibuda.github.io/impresario/web/impresario.png">
-		<title>Release history - Impresario 2.1</title>
+		<title>Build Impresario from source - Impresario 2.1</title>
 		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap.min.css">
 		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/bootstrap-theme.css">
 		<link rel="stylesheet" href="https://llibuda.github.io/impresario/web/css/theme.css">
@@ -48,7 +48,7 @@
           
 				
           
-            <li  class="dropdown active" >
+            <li  class="dropdown">
 						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">User&#39;s Guide<span class="caret"></span></a>
 						  <ul class="dropdown-menu" role="menu">
 						  
@@ -72,20 +72,20 @@
 						  
 							  <li ><a href="/impresario/web/userguide/auxdocks/">Reference: Auxiliary windows</a></li>
 						  
-							  <li  class="active"><a href="/impresario/web/userguide/history/">Release History</a></li>
+							  <li ><a href="/impresario/web/userguide/history/">Release History</a></li>
 						  
 						  </ul>
 					  </li>
           
 				
           
-            <li  class="dropdown">
+            <li  class="dropdown active" >
 						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Developer&#39;s Guide<span class="caret"></span></a>
 						  <ul class="dropdown-menu" role="menu">
 						  
 							  <li ><a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a></li>
 						  
-							  <li ><a href="/impresario/web/devguide/buildimpresario/">Build Impresario from source</a></li>
+							  <li  class="active"><a href="/impresario/web/devguide/buildimpresario/">Build Impresario from source</a></li>
 						  
 							  <li ><a href="/impresario/web/devguide/createmacroproject/">Creating a macro project</a></li>
 						  
@@ -121,90 +121,82 @@
 		<main role="main">
 			<article>
 				<a id="title"></a>
-				<h1 class="doc-entry-title">Release history</h1>
+				<h1 class="doc-entry-title">Build Impresario from source</h1>
 				
 				<section>
-					<h1 id="impresario">Impresario</h1>
-<h2 id="version-211">Version 2.1.1</h2>
-<ul>
-<li>Release date: March, 4th 2020</li>
-<li>Release notes:
-<ul>
-<li>Completed developer&rsquo;s guide in online help</li>
-<li>Added progress bar on start up while loading libraries</li>
-<li>Loading of libraries is multithreaded now</li>
-<li>Improved System Log Window which now wraps messages</li>
-<li>Impresario is now based on Qt 5.12.7 LTS</li>
-<li>C++11 compatible compiler is now required</li>
-<li>On Windows platform Microsoft Visual Studio 2017 is now default compiler for 32bit and 64bit builds</li>
-<li>Various small bug fixes</li>
-</ul>
-</li>
-</ul>
-<h2 id="version-210">Version 2.1.0</h2>
-<ul>
-<li>Release date: March, 18th 2017</li>
-<li>Release notes:
-<ul>
-<li>Added online help</li>
-<li>Improved directory handling. All directories are now saved as
-relative paths to Impresario&rsquo;s bin-directory which allows moving
-the whole installation without the need to adapt all paths afterwards. Further, more
-fallbacks are added for directories containing macro libraries and dependent libraries.</li>
-<li>Macro search in database now matches from any position in macro name, not only from beginning</li>
-<li>Improved QML components for parameter settings with better mouse and keyboard support</li>
-<li>Impresario is now based on Qt 5.6.2 LTS</li>
-<li>On Windows platform Microsoft C++ Compiler 19.0 from Visual Studio 2015 is supported for 32bit and 64bit builds</li>
-</ul>
-</li>
-</ul>
-<h2 id="version-200">Version 2.0.0</h2>
-<ul>
-<li>Release date: December, 4th 2015</li>
-<li>Release notes:
-<ul>
-<li>Initial 2.0.0 release with all the bugs you will find</li>
-<li>Support of Impresario API 1.0</li>
-</ul>
-</li>
-</ul>
-<h1 id="impresario-macros">Impresario Macros</h1>
-<h2 id="version-111">Version 1.1.1</h2>
-<ul>
-<li>Release date: March, 4th 2020</li>
-<li>Release notes:
-<ul>
-<li>C++11 compatible compiler is now required</li>
-<li>Code base is modernized based on C++11 standard</li>
-<li>Viewer macros are now based on Qt 5.12.7 LTS</li>
-<li>Added OpenCV macro for Cascaded Classifier</li>
-<li>Various small bug fixes</li>
-</ul>
-</li>
-</ul>
-<h2 id="version-110">Version 1.1.0</h2>
-<ul>
-<li>Release date: March, 18th 2017</li>
-<li>Release notes:
-<ul>
-<li>OpenCV macros are now based on OpenCV 3.1.0</li>
-<li>Improved build configurations for easier support of new compilers</li>
-<li>Viewer macros are now based on Qt 5.6.2</li>
-<li>Improved parameter handling for lti::convolution macro</li>
-</ul>
-</li>
-</ul>
-<h2 id="version-100">Version 1.0.0</h2>
-<ul>
-<li>Release date: December, 4th 2015</li>
-<li>Release notes:
-<ul>
-<li>Initial 1.0.0 release to demonstrate Impresario&rsquo;s features</li>
-<li>Macros are not yet fully fault tolerant and allow for improvements</li>
-<li>Based on Impresario API 1.0</li>
-</ul>
-</li>
-</ul>
+					<p>If you cannot make use of the prebuild binaries of Impresario, e.g. you require a 32bit version,
+you have to build Impresario from source. This section shows how to do this.</p>
+<h1 id="get-source-code">Get source code</h1>
+<p>You can get the most up to date source code from <a href="https://github.com/llibuda/impresario">Impresario&rsquo;s GitHub repository</a>.
+Here you can download a zip file containing the source code or if you like to stay connected with the
+repository, open a command line and run:
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git clone https://github.com/llibuda/impresario.git</code></pre></div></p>
+<p>You should now have a directory called <code class="path">impresario</code> in the location from where you run the git command.
+The directory structure looks like this:</p>
+<pre><code>impresario
+├─ .git
+├─ development
+│  ├─ impresario
+│  │  ├─ components
+│  │  ├─ impresario   
+│  │  └─ misc
+│  └─ impresario-interface_1.0.0
+├─ doc
+├─ licenses
+└─ resources
+</code></pre><h1 id="run-qt-creator">Run Qt Creator</h1>
+<p>Start Qt Creator and open the project file <code class="path">impresario/development/impresario/impresario.pro</code>.</p>
+<p>Qt Creator will ask you to configure your project in a similar dialog as depicted below:
+<figure >
+    <a href="https://llibuda.github.io/impresario/web/resources/images/qtcreator_configure.png">
+        <img src="https://llibuda.github.io/impresario/web/resources/images/qtcreator_configure.png" alt="Qt Creator configuration dialog" />
+    </a>
+    
+    <figcaption>
+        <h4>Qt Creator configuration dialog (Click to enlarge)</h4>
+        
+    </figcaption>
+    
+</figure></p>
+<p>Please choose the kit you like to use for your build. Refer to
+<a href="/impresario/web/devguide/devenvironment/">Setup of Development Environment</a> to see which
+kits are supported on the different platforms. Press the 
+<code class="menu_command">Configure Project</code>
+ button
+to prepare the project for build.</p>
+<p>Finally, you can build Impresario by selecting 
+<code class="menu_command">Build Project &#34;impresario&#34;</code>
+ from Qt Creator&rsquo;s
+Build menu.</p>
+<h1 id="run-impresario">Run Impresario</h1>
+<p>After a successful build you will find the following directory structure:</p>
+<pre><code>impresario
+├─ .git
+├─ bin_...
+├─ development
+│  ├─ impresario
+│  │  ├─ build-impresario
+│  │  ├─ components
+│  │  ├─ impresario
+│  │  └─ misc
+│  └─ impresario-interface_1.0.0
+├─ doc
+├─ lib
+├─ licenses
+├─ processgraphs
+└─ resources
+</code></pre><p>In the <code class="path">build-impresario</code> directory and its subdirectories Qt Creator stores all intermediate files generated
+during compilation and linking.</p>
+<p>The <code class="path">bin_...</code> directory contains the executable with all required files. On Windows platforms you can run
+<code class="path">Impresario.exe</code> from this directory. On Linux systems you have to start Impresario by calling the shell
+script <code class="path">impresario.sh</code>.</p>
+<p><strong>Please note</strong>: When running Impresario now you won&rsquo;t have any macro libraries and online help. These components
+have to be added manually. Example macro libraries can be found in the GitHub repository
+<a href="https://github.com/llibuda/impresario-macros">impresario-macros</a>. Or you create your own macro libraries. How
+this is done is described in the remaining sections of this Developer&rsquo;s Guide.</p>
+<p>The online help is available in the separate repository
+<a href="https://github.com/llibuda/impresario-doc">impresario-doc</a>. In the release section you will find the latest help file
+which you just have to copy to Impresario&rsquo;s <a href="/impresario/web/userguide/settings/#documentation">documentation directory</a>.</p>
 
 				</section>
 			</article>
@@ -217,24 +209,13 @@ fallbacks are added for directories containing macro libraries and dependent lib
 		<div class="sidebar-toc">
 			<h4>Table of Contents</h4>
 			<ul>
-				<li><strong><a href="#title">Release history</a></strong></li>
+				<li><strong><a href="#title">Build Impresario from source</a></strong></li>
 			</ul>
 			<nav id="TableOfContents">
   <ul>
-    <li><a href="#impresario">Impresario</a>
-      <ul>
-        <li><a href="#version-211">Version 2.1.1</a></li>
-        <li><a href="#version-210">Version 2.1.0</a></li>
-        <li><a href="#version-200">Version 2.0.0</a></li>
-      </ul>
-    </li>
-    <li><a href="#impresario-macros">Impresario Macros</a>
-      <ul>
-        <li><a href="#version-111">Version 1.1.1</a></li>
-        <li><a href="#version-110">Version 1.1.0</a></li>
-        <li><a href="#version-100">Version 1.0.0</a></li>
-      </ul>
-    </li>
+    <li><a href="#get-source-code">Get source code</a></li>
+    <li><a href="#run-qt-creator">Run Qt Creator</a></li>
+    <li><a href="#run-impresario">Run Impresario</a></li>
   </ul>
 </nav>
 		</div>
