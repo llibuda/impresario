@@ -35,6 +35,7 @@ win32 {
   QMAKE_POST_LINK = $$quote($${_PRO_FILE_PWD_}/../qt_deploy_win.bat) "$${DESTDIR}/$${TARGET}.exe"
   RC_ICONS += ../misc/impresario.ico
   DEFINES += QT_QTPROPERTYBROWSER_IMPORT
+
   CONFIG(release, release|debug) {
     LIBS += $$quote(-L../components/libavoid/release) -llibavoid
     LIBS += $$quote(-L../components/qtpropertybrowser/release) -lQt5PropertyBrowser
@@ -42,6 +43,12 @@ win32 {
   CONFIG(debug, release|debug) {
     LIBS += $$quote(-L../components/libavoid/debug) -llibavoidd
     LIBS += $$quote(-L../components/qtpropertybrowser/debug) -lQt5PropertyBrowserd
+    # Add support for Visual Leak Detector 2.5.1 for debug version on Windows.
+    # You also have to add "C:\Program Files (x86)\Visual Leak Detector\bin\Win64" to
+    # the PATH environment variable.
+    # Comment out the following two lines if Visual Leak Detector is not installed
+    INCLUDEPATH += "C:/Program Files (x86)/Visual Leak Detector/include/"
+    LIBS += -L"C:/Program Files (x86)/Visual Leak Detector/lib/Win64"
   }
 }
 
