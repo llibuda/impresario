@@ -31,7 +31,7 @@
  * memory leaks in your code quite comfortably.
  * Comment out the following include in case Visual Leak Detector is not installed.
  */
-  #include <vld.h>
+  //#include <vld.h>
 #endif // _MSC_VER
 
 int main(int argc, char *argv[])

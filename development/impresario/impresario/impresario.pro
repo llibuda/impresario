@@ -47,8 +47,8 @@ win32 {
     # You also have to add "C:\Program Files (x86)\Visual Leak Detector\bin\Win64" to
     # the PATH environment variable.
     # Comment out the following two lines if Visual Leak Detector is not installed
-    INCLUDEPATH += "C:/Program Files (x86)/Visual Leak Detector/include/"
-    LIBS += -L"C:/Program Files (x86)/Visual Leak Detector/lib/Win64"
+    #INCLUDEPATH += "C:/Program Files (x86)/Visual Leak Detector/include/"
+    #LIBS += -L"C:/Program Files (x86)/Visual Leak Detector/lib/Win64"
   }
 }
 
