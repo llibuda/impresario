@@ -124,15 +124,15 @@
 				<h1 class="doc-entry-title">Creating a macro</h1>
 				
 				<section>
-					<p>Internally a macro is represented by a C++ class which is derived from the class <code>MacroBase</code>.
+					<p>Internally a macro is represented by a C++ class which is derived from the class <code>MacroBase</code>. 
 <code>MacroBase</code> defines the common interface to Impresario. Therefore the header file <code class="path">macrobase.h</code>
 has to be included in every macro project.</p>
-<p>The follwing code shows an annotated header file for a new macro. You can use it as template and replace
+<p>The follwing code shows an annotated header file for a new macro. You can use it as template and replace 
 &ldquo;MyMacroClass&rdquo; by your class name.</p>
-<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020">#</span><span style="color:#007020">ifndef MYMACROCLASS_H_</span><span style="color:#007020">
-</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">define MYMACROCLASS_H_</span><span style="color:#007020">
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020">#</span><span style="color:#007020">ifndef MYMACROCLASS_H_</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">define MYMACROCLASS_H_</span><span style="color:#007020">
 </span><span style="color:#007020"></span>
-<span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;macrobase.h&#34;</span><span style="color:#007020">
+<span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;macrobase.h&#34;</span><span style="color:#007020">
 </span><span style="color:#007020"></span>
 <span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">MyMacroClass</span> <span style="color:#666">:</span> <span style="color:#007020;font-weight:bold">public</span> MacroBase {
 <span style="color:#007020;font-weight:bold">public</span><span style="color:#666">:</span>
@@ -181,25 +181,25 @@ has to be included in every macro project.</p>
 
 <span style="color:#007020">#</span><span style="color:#007020">endif </span><span style="color:#60a0b0;font-style:italic">// MYMACROCLASS_H_
 </span></code></pre></div>
-<p>Within the implementation of the macro&rsquo;s constructor it&rsquo;s creator, display name, description,
+<p>Within the implementation of the macro&rsquo;s constructor it&rsquo;s creator, display name, description, 
 and group are declared (for details see <a href="/impresario/web/devguide/macrotutorial2/">Setting up macro information</a>)
-along with the input ports and output ports (<a href="/impresario/web/devguide/macrotutorial3/">Setting up macro input and output ports</a>),
+along with the input ports and output ports (<a href="/impresario/web/devguide/macrotutorial3/">Setting up macro input and output ports</a>), 
 as well as it&rsquo;s parameters (<a href="/impresario/web/devguide/macrotutorial4/">Setting up macro parameters</a>).</p>
-<p>The four protected virtual methods <code>onInit()</code>, <code>onApply()</code>, <code>onExit</code>(), and
-<code>onParametersChanged(ParameterSet&amp; parameters)</code> are called by Impresario during processing.
-At least the <code>onApply()</code> method has to be overridden in every macro class as this method is used to
+<p>The four protected virtual methods <code>onInit()</code>, <code>onApply()</code>, <code>onExit</code>(), and 
+<code>onParametersChanged(ParameterSet&amp; parameters)</code> are called by Impresario during processing. 
+At least the <code>onApply()</code> method has to be overridden in every macro class as this method is used to 
 process the input data and to produce the output data. This is explained in detail in section
 (<a href="/impresario/web/devguide/macrotutorial5/">Processing data</a>).</p>
 <h1 id="example">Example</h1>
 <p>The code depicted below is one example for a macro declaration. Everything declared in the private
 section is macro specific data and will be used during implementation of the different methods. In this
-case the attributes refer to the Canny Edge algorithm implemted in the
+case the attributes refer to the Canny Edge algorithm implemted in the 
 <a href="http://www.ie.tec.ac.cr/palvarado/ltilib-2/html/index.html">LTI Lib 2 image processing library</a>.</p>
-<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020">#</span><span style="color:#007020">ifndef CANNYEDGE_H_</span><span style="color:#007020">
-</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">define CANNYEDGE_H_</span><span style="color:#007020">
+<div class="highlight"><pre style="background-color:#f0f0f0;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#007020">#</span><span style="color:#007020">ifndef CANNYEDGE_H_</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">define CANNYEDGE_H_</span><span style="color:#007020">
 </span><span style="color:#007020"></span>
-<span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;macrobase.h&#34;</span><span style="color:#007020">
-</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;ltiCannyEdges.h&#34;</span><span style="color:#007020">
+<span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;macrobase.h&#34;</span><span style="color:#007020">
+</span><span style="color:#007020"></span><span style="color:#007020">#</span><span style="color:#007020">include</span> <span style="color:#007020">&#34;ltiCannyEdges.h&#34;</span><span style="color:#007020">
 </span><span style="color:#007020"></span>
 <span style="color:#007020;font-weight:bold">class</span> <span style="color:#0e84b5;font-weight:bold">LtiCannyEdge</span> <span style="color:#666">:</span> <span style="color:#007020;font-weight:bold">public</span> MacroBase {
 <span style="color:#007020;font-weight:bold">public</span><span style="color:#666">:</span>
