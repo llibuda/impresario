@@ -42,13 +42,31 @@ If not exist "%TARGETDIR%..\processgraphs" (
   mkdir %TARGETDIR%..\processgraphs
 )
 
-REM call windeployqt to get required Qt components
-"%WINDEPLOYTOOL%" "%TARGETFILE%" --plugindir="%TARGETDIR%qtplugins" --no-quick-import
-
-REM clean up and reorder some files and directories
+REM delete old subdirectories in case they exist
 If exist "%TARGETDIR%qtweb" (
   rmdir %TARGETDIR%qtweb /S /Q
 )
+If exist "%TARGETDIR%qtqml" (
+  rmdir %TARGETDIR%qtqml /S /Q
+)
+If exist "%TARGETDIR%qtplugins" (
+  rmdir %TARGETDIR%qtplugins /S /Q
+)
+
+REM call windeployqt to get required Qt components
+REM "%WINDEPLOYTOOL%" "%TARGETFILE%" --plugindir="%TARGETDIR%qtplugins" --no-quick-import
+"%WINDEPLOYTOOL%" "%TARGETFILE%" --plugindir="%TARGETDIR%plugins" --qmldir="%TARGETDIR%..\resources"
+
+REM move all QML directories to subdirectory qml
+mkdir %TARGETDIR%qml
+FOR /f %%d in ('dir %TARGETDIR%Qt* /A:D /B') DO (
+  move %TARGETDIR%%%d %TARGETDIR%qml
+)
+
+REM rename and reorder some files and directories
+rename %TARGETDIR%qml qtqml
+rename %TARGETDIR%plugins qtplugins
+
 move %TARGETDIR%QtWebEngineProcess*.exe %TARGETDIR%resources
 move %TARGETDIR%translations\qtwebengine_locales %TARGETDIR%resources
 rename %TARGETDIR%resources qtweb
