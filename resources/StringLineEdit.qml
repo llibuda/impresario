@@ -18,72 +18,73 @@
 **   along with Impresario in subdirectory "licenses", file "LICENSE_Impresario.GPLv3".
 **   If not, see <http://www.gnu.org/licenses/>.
 ******************************************************************************************/
-import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 
 Item {
-    SystemPalette { id: palette; colorGroup: SystemPalette.Active }
     id: lineTextEditor
     anchors.fill: parent
 
     property int maxLength: 255;
 
+    property bool selected: propertyView.currentItemRow === model.row
+    property bool editorActive: false
+
+    onSelectedChanged: function() {
+        if (!selected) {
+            editorActive = false
+            valueInPlaceEditor.text = model.display
+        }
+    }
+
     // Component used to render value in TableView
     Text {
         id: valueRenderer
         anchors.fill: parent
-        text: styleData.value
-        color: if (styleData.selected) {
-            return palette.highlightedText
-        }
-        else {
-            return palette.text
-        }
-        elide: styleData.elideMode
-        verticalAlignment: Text.AlignVCenter
-        renderType: Text.NativeRendering
-    }
+        text: model.display
+        elide: Text.ElideRight
+        padding: 5
+        color: (lineTextEditor.selected) ? palette.highlightedText : text
+        focus: lineTextEditor.selected && !lineTextEditor.editorActive
 
-    // Component used as in-place editor in TableView
-    // Component is invisible first and rendered only if row becomes active (selected)
-    TextField {
-        id: valueInPlaceEditor
-        anchors.fill: parent
-        visible: false
-        maximumLength: parent.maxLength
-        text: styleData.value
-        style: TextFieldStyle {
-            renderType: Text.NativeRendering
+        MouseArea{
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onPressed: function(mouse) {
+                lineTextEditor.editorActive = true;
+                mouse.accepted = false;
+            }
         }
-        onTextChanged: {
-            itemProperties.setProperty(styleData.row,"value",text);
-        }
-        Keys.onPressed: {
-            if (event.key === Qt.Key_Escape || event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
-                visible = false;
+
+        Keys.onPressed: function(event) {
+            if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+                lineTextEditor.editorActive = true;
+                event.accepted = true;
             }
         }
     }
 
-    property bool showInPlaceEditor: if (!styleData.selected) {
-        return false;
-    }
-    else if (styleData.selected && styleData.pressed) {
-        forceActiveFocus();
-        return true;
-    }
-    else {
-        return valueInPlaceEditor.visible;
-    }
+    // Component used as in-place editor in TableView
+    // Component is invisible first and rendered only if editor is activated
+    TextField {
+        id: valueInPlaceEditor
+        anchors.fill: parent
 
-    states: [
-        State {
-            name: "selected"
-            when: showInPlaceEditor
-            PropertyChanges {target: valueInPlaceEditor; visible: true}
-            PropertyChanges {target: valueInPlaceEditor; focus: true}
+        maximumLength: lineTextEditor.maxLength
+
+        visible: lineTextEditor.editorActive
+        focus: lineTextEditor.editorActive
+        selectByMouse: true;
+        text: model.display
+        Keys.onPressed: function(event) {
+            if (event.key === Qt.Key_Escape) {
+                lineTextEditor.editorActive = false;
+                text = model.display
+            }
+            else if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+                lineTextEditor.editorActive = false;
+                model.display = text
+            }
         }
-    ]
-
+    }
 }

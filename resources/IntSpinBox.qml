@@ -18,12 +18,10 @@
 **   along with Impresario in subdirectory "licenses", file "LICENSE_Impresario.GPLv3".
 **   If not, see <http://www.gnu.org/licenses/>.
 ******************************************************************************************/
-import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 
 Item {
-    SystemPalette { id: palette; colorGroup: SystemPalette.Active }
     id: spinBoxEditor
     anchors.fill: parent
 
@@ -31,20 +29,40 @@ Item {
     property int maxValue: 0;
     property int step: 1;
 
+    property bool selected: propertyView.currentItemRow === model.row
+    property bool editorActive: false
+
+    onSelectedChanged: function() {
+        if (!selected) {
+            editorActive = false
+        }
+    }
+
     // Component used to render value in TableView
     Text {
         id: valueRenderer
         anchors.fill: parent
-        text: styleData.value
-        color: if (styleData.selected) {
-            return palette.highlightedText
+        text: model.display
+        elide: Text.ElideRight
+        padding: 5
+        color: (spinBoxEditor.selected) ? palette.highlightedText : text
+        focus: spinBoxEditor.selected && !spinBoxEditor.editorActive
+
+        MouseArea{
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onPressed: function(mouse) {
+                spinBoxEditor.editorActive = true;
+                mouse.accepted = false;
+            }
         }
-        else {
-            return palette.text
+
+        Keys.onPressed: function(event) {
+            if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+                spinBoxEditor.editorActive = true;
+                event.accepted = true;
+            }
         }
-        elide: styleData.elideMode
-        verticalAlignment: Text.AlignVCenter
-        renderType: Text.NativeRendering
     }
 
     // Component used as in-place editor in TableView
@@ -52,49 +70,39 @@ Item {
     SpinBox {
         id: valueInPlaceEditor
         anchors.fill: parent
-        visible: false
-        value: styleData.value
-        minimumValue: parent.minValue
-        maximumValue: parent.maxValue
+        visible: spinBoxEditor.editorActive
+        focus: spinBoxEditor.editorActive
+        editable: true
+        wheelEnabled: true
+        leftPadding: 5
+
+        from: parent.minValue
+        to: parent.maxValue
         stepSize: parent.step
-        style: SpinBoxStyle {
-            renderType: Text.NativeRendering
-            horizontalAlignment: Qt.AlignLeft
+
+        property bool blockUpdate: true
+
+        Component.onCompleted: function() {
+            // we do not use property binding here but just assign the control the current value
+            // otherwise there will be a binding loop in onValueChanged handler
+            value = model.display
+            // modification of SpinBox's contentItem
+            contentItem.horizontalAlignment = Qt.AlignLeft
+            contentItem.selectByMouse = true
+            blockUpdate = false
         }
-        property bool blockUpdate: true;
-        onValueChanged: {
-            if (styleData.row >= 0 && !blockUpdate) {
-                itemProperties.setProperty(styleData.row,"value",value.toString());
+
+        onValueChanged: function() {
+            if (!blockUpdate) {
+                model.display = value
             }
         }
-        Component.onCompleted: {
-            blockUpdate = false;
-        }
-        Keys.onPressed: {
+
+        Keys.onPressed: function(event) {
             if (event.key === Qt.Key_Escape || event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
-                visible = false;
+                spinBoxEditor.editorActive = false;
+                event.accepted = true
             }
         }
     }
-
-    property bool showInPlaceEditor: if (!styleData.selected) {
-        return false;
-    }
-    else if (styleData.selected && styleData.pressed) {
-        forceActiveFocus();
-        return true;
-    }
-    else {
-        return valueInPlaceEditor.visible;
-    }
-
-    states: [
-        State {
-            name: "selected"
-            when: showInPlaceEditor
-            PropertyChanges {target: valueInPlaceEditor; visible: true}
-            PropertyChanges {target: valueInPlaceEditor; focus: true}
-        }
-    ]
-
 }

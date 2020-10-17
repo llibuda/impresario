@@ -18,176 +18,211 @@
 **   along with Impresario in subdirectory "licenses", file "LICENSE_Impresario.GPLv3".
 **   If not, see <http://www.gnu.org/licenses/>.
 ******************************************************************************************/
-import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQml 2.15
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import Qt.labs.qmlmodels 1.0
 
 Item {
+    // "macro" is passed as QML Context by Impresario
+
     width: 300
     height: 300
 
-    ListModel {
-        id: itemProperties;
+    onWidthChanged: propertyView.forceLayout()
 
-        property variant props: macro.parameters();
+    SystemPalette {
+        id: palette
+        colorGroup: SystemPalette.Active
+    }
 
-        Component.onCompleted: {
-            for(var prop in props) {
-                //console.log("Name",props[prop].name,"Value",props[prop].value);
-                append({"property": props[prop].name, "value": props[prop].value, "component": props[prop].component, "properties": props[prop].properties, "description": props[prop].description });
-            }
-            // NOTE: There is a nasty bug in the TableView component introduced in Qt 5.6
-            // It seems like a racing condition between this method and loading the TableView
-            // Assigning the model to the TableView here fixes this problem
-            propertyView.model = this;
+    TableModel {
+        id: itemModel
+
+        property variant props: (macro === null) ? null : macro.parameters()
+
+        TableModelColumn {
+            display: "name"
+        }
+        TableModelColumn {
+            display: "value"
+            edit: "component"              // misuse of edit role to pass editor component to model
+            accessibleText: "properties"   // misuse of accessibleText role to pass properties for editor component to model
+            accessibleDescription: "name"  // misuse of accessibleDescription role to have the name of the property in model
         }
 
-        onDataChanged: {
-            if (propertyView.currentRow >= 0 && propertyView.currentRow < itemProperties.count) {
-                //console.log("Old Property value ",props[propertyView.currentRow].value);
-                props[propertyView.currentRow].value = itemProperties.get(propertyView.currentRow).value;
-                //console.log("New Property value ",props[propertyView.currentRow].value);
+        Component.onCompleted: function() {
+            for(var prop in props) {
+                appendRow({"name": props[prop].name, "value": props[prop].value, "component": props[prop].component, "properties": props[prop].properties, "description": props[prop].description });
             }
+        }
+
+        onDataChanged: function(modelIndex) {
+            props[modelIndex.row].value = data(modelIndex,"display")
         }
     }
 
     Connections {
-        target: macro;
-        onParameterUpdated: {
-            itemProperties.set(index,{"value": itemProperties.props[index].value });
+        target: macro
+        function onParameterUpdated(index) {
+            itemModel.setData(itemModel.index(index,1), "display", itemModel.props[index].value)
         }
     }
 
     Component {
-        id: propertyDelegate
+        id: propertyValueDelegate
 
         Item {
-            SystemPalette { id: palette; colorGroup: SystemPalette.Active }
             id: propertyDelegateItem
-            //anchors.fill: parent
-            Component.onCompleted: {
-                if (styleData.column === 0) {
-                    Qt.createQmlObject(
-                        'import QtQuick 2.5
-                         Text {
-                            id: propertyDelegateText
-                            anchors.fill: parent
-                            anchors.leftMargin: 3.0
-                            text: styleData.value
-                            elide: styleData.elideMode
-                            verticalAlignment: Text.AlignVCenter
-                            renderType: Text.NativeRendering
-                            color: if (styleData.selected) {
-                                return palette.highlightedText
-                            }
-                            else {
-                                return palette.text
-                            }
-                         }',propertyDelegateItem,"propertyNameItem");
+            Component.onCompleted: function() {
+                var component = Qt.createComponent(model.edit + ".qml")
+                if (component.status === Component.Error) {
+                    component = Qt.createComponent("StringLineEdit.qml")
                 }
-                else if (styleData.column === 1) {
-                    var component = Qt.createComponent(itemProperties.props[styleData.row].component + ".qml");
-                    if (component.status === Component.Error) {
-                        component = Qt.createComponent("StringLineEdit.qml");
-                    }
-                    if (component.status === Component.Error) {
-                        throw "\nFailed to load custom component '" + itemProperties.props[styleData.row].component + ".qml'" +
-                              "and default component 'StringLineEdit.qml' as backup for parameter '" + itemProperties.props[styleData.row].name + "'";
-                    }
+                if (component.status === Component.Error) {
+                    throw "\nFailed to load custom component '" + model.edit + ".qml'" +
+                            "and default component 'StringLineEdit.qml' as backup for parameter '" + model.accessibleDescription + "'"
+                }
 
-                    if (itemProperties.props[styleData.row].properties.length > 0) {
-                        var errorCaught = false;
-                        var props;
-                        try {
-                            props = JSON.parse(itemProperties.props[styleData.row].properties);
+                if (model.accessibleText.length > 0) {
+                    var errorCaught = false
+                    var props;
+                    try {
+                        props = JSON.parse(model.accessibleText)
+                    }
+                    catch(error) {
+                        errorCaught = true;
+                        throw "\nFailed to correctly parse custom properties '" + model.accessibleText + "'\n" +
+                                "for parameter '" + model.accessibleDescription + "':" +
+                                error.message +
+                                "\nProperties are ignored."
+                    }
+                    finally {
+                        if (errorCaught) {
+                            component.createObject(propertyDelegateItem)
                         }
-                        catch(error) {
-                            errorCaught = true;
-                            throw "\nFailed to correctly parse custom properties '" + itemProperties.props[styleData.row].properties + "'\n" +
-                                  "for parameter '" + itemProperties.props[styleData.row].name + "':" +
-                                  error.message +
-                                  "\nProperties are ignored.";
-                        }
-                        finally {
-                            if (errorCaught) {
-                                component.createObject(propertyDelegateItem);
-                            }
-                            else {
-                                component.createObject(propertyDelegateItem,props);
-                            }
+                        else {
+                            component.createObject(propertyDelegateItem,props)
                         }
                     }
-                    else {
-                        component.createObject(propertyDelegateItem);
-                    }
+                }
+                else {
+                    component.createObject(propertyDelegateItem)
                 }
             }
 
             Rectangle {
                 anchors.fill: parent
-                color: palette.midlight
-
-                Rectangle {
-                    anchors.fill: parent
-                    anchors.bottomMargin: 1.0
-                    anchors.rightMargin: 1.0
-                    color: {
-                        if (styleData.selected) {
-                            return palette.highlight;
-                        }
-                        else if ((propertyView.rowCount - styleData.row) % 2 === 1) {
-                            return palette.alternateBase
-                        }
-                        else {
-                            return palette.base;
-                        }
+                z: -1
+                border.width: 1
+                border.color: palette.midlight
+                color: {
+                    if (propertyView.currentItemRow === model.row) {
+                        return palette.highlight
+                    }
+                    else if ((model.row) % 2 === 0) {
+                        return palette.alternateBase
+                    }
+                    else {
+                        return palette.base;
                     }
                 }
             }
         }
     }
 
-    Component {
-        id: propertyRowDelegate
-
-        Rectangle {
-            SystemPalette { id: palette; colorGroup: SystemPalette.Active }
-            FontMetrics { id: defaultFont; }
-            id: rowRectangle
-            height: defaultFont.height + 7
-            color: palette.base
-        }
+    HorizontalHeaderView {
+        id: headerView
+        boundsBehavior: Flickable.StopAtBounds
+        syncView: propertyView
+        anchors.left: propertyView.left
+        width: parent.width
+        model: ["Property","Value"]
     }
 
     TableView {
-        id : propertyView;
-        // NOTE: No model assignment here any more, see also comment in ListModel:Component.onCompleted
-        //model: itemProperties;
-        anchors.fill: parent;
-        itemDelegate: propertyDelegate
-        rowDelegate: propertyRowDelegate
+        id: propertyView
+        model: itemModel;
+        boundsBehavior: Flickable.StopAtBounds
+        anchors.fill: parent
+        anchors.topMargin: headerView.height
+        clip: true
+        focus: true
 
-        onClicked: {
-            macro.showDescription(row);
+        columnWidthProvider: function(column) {
+            if (column === 0)
+                return parent.width / 3
+            else
+                return parent.width / 3 * 2
         }
 
-        TableViewColumn {
-            id: colPropertyName
-            role: "property"
-            title: "Property"
-            width: 120
-            resizable: true
-            movable: false
-        }
-        TableViewColumn {
-            id: colPropertyValue
-            role: "value"
-            title: "Value"
-            width: propertyView.width - colPropertyName.width - 2
-            resizable: false
-            movable: false
+        property int  currentItemRow: -1
+
+        onActiveFocusChanged: function(hasFocus) {
+            if (!hasFocus) {
+                propertyView.currentItemRow = -1
+                macro.showDescription(propertyView.currentItemRow)
+            }
         }
 
+        Keys.onPressed: function(event) {
+            if (event.key === Qt.Key_Up) {
+                if (propertyView.currentItemRow < 0) propertyView.currentItemRow = 0
+                else if (propertyView.currentItemRow > 0) propertyView.currentItemRow--
+                macro.showDescription(propertyView.currentItemRow)
+                event.accepted = true;
+            }
+            else if (event.key === Qt.Key_Down) {
+                if (propertyView.currentItemRow < 0) propertyView.currentItemRow = 0
+                else if (propertyView.currentItemRow < propertyView.rows - 1) propertyView.currentItemRow++
+                macro.showDescription(propertyView.currentItemRow)
+                event.accepted = true;
+            }
+        }
+
+        MouseArea{
+            id: propertyViewMouseArea
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onPressed: function(mouse) {
+                // the following formular implies that all rows have the same height ...
+                propertyView.currentItemRow = Math.min(mouse.y / propertyView.contentHeight * propertyView.rows, propertyView.rows - 1)
+                macro.showDescription(propertyView.currentItemRow)
+                mouse.accepted = true
+            }
+        }
+
+        delegate: DelegateChooser {
+            DelegateChoice {
+                column: 0
+                delegate: Text {
+                    text: model.display
+                    elide: Text.ElideRight
+                    color: (propertyView.currentItemRow === model.row) ? palette.highlightedText : text
+                    padding: 5
+                    Rectangle {
+                        anchors.fill: parent
+                        z: -1
+                        border.width: 1
+                        border.color: palette.midlight
+                        color: {
+                            if (propertyView.currentItemRow === model.row) {
+                                return palette.highlight
+                            }
+                            else if ((model.row) % 2 === 0) {
+                                return palette.alternateBase
+                            }
+                            else {
+                                return palette.base;
+                            }
+                        }
+                    }
+                }
+            }
+            DelegateChoice {
+                column: 1
+                delegate: propertyValueDelegate
+            }
+        }
     }
-
 }

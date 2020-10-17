@@ -18,123 +18,134 @@
 **   along with Impresario in subdirectory "licenses", file "LICENSE_Impresario.GPLv3".
 **   If not, see <http://www.gnu.org/licenses/>.
 ******************************************************************************************/
-import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
-import QtQuick.Dialogs 1.2
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import Qt.labs.platform 1.1
 
 Item {
-    SystemPalette { id: palette; colorGroup: SystemPalette.Active }
     id: dirSelectDialog
     anchors.fill: parent
 
     property int maxLength: 512;
 
+    property bool selected: propertyView.currentItemRow === model.row
+    property bool editorActive: false
+
+    onSelectedChanged: {
+        if (!selected) {
+            editorActive = false
+            dirTextField.text = model.display
+        }
+    }
+
     // Component used to render value in TableView
     Text {
         id: valueRenderer
         anchors.fill: parent
-        text: styleData.value
-        color: if (styleData.selected) {
-            return palette.highlightedText
+        text: model.display
+        elide: Text.ElideRight
+        padding: 5
+        color: (dirSelectDialog.selected) ? palette.highlightedText : text
+        focus: dirSelectDialog.selected && !dirSelectDialog.editorActive
+
+        MouseArea{
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onPressed: function(mouse) {
+                dirSelectDialog.editorActive = true;
+                mouse.accepted = false;
+            }
         }
-        else {
-            return palette.text
+
+        Keys.onPressed: function(event) {
+            if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+                dirSelectDialog.editorActive = true;
+                event.accepted = true;
+            }
         }
-        elide: styleData.elideMode
-        verticalAlignment: Text.AlignVCenter
-        renderType: Text.NativeRendering
     }
 
     // Component used as in-place editor in TableView
-    // Component is invisible first and rendered only if row becomes active (selected)
+    // Component is invisible first and rendered only if editor is activated
     FocusScope {
         id: valueInPlaceEditor
         anchors.fill: parent
-        visible: false
+        visible: dirSelectDialog.editorActive
+        focus: dirSelectDialog.editorActive
 
-        FileDialog {
-            id: dirDialog
-            modality: Qt.WindowModal
-            title: "Choose a folder"
-            selectExisting: true
-            selectMultiple: false
-            selectFolder: true
-            onAccepted: {
-                if (folder.toString().match("^file:///[A-Z,a-z]:")) {
-                    dirTextField.text = decodeURIComponent(folder.toString()).replace("file:///","");//.replace(/\//g,'\\');
+        TextField {
+            id: dirTextField
+            anchors.fill: parent
+            anchors.rightMargin: dirSelectBtn.implicitWidth
+
+            maximumLength: dirSelectDialog.maxLength
+
+            visible: dirSelectDialog.editorActive
+            focus: dirSelectDialog.editorActive
+            selectByMouse: true;
+
+            Component.onCompleted: function() {
+                text = model.display
+            }
+
+            Keys.onPressed: function(event) {
+                if (event.key === Qt.Key_Escape) {
+                    dirSelectDialog.editorActive = false;
+                    text = model.display
                 }
-                else {
-                    dirTextField.text = decodeURIComponent(folder.toString()).replace("file://","");
+                else if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+                    dirSelectDialog.editorActive = false;
+                    model.display = text
                 }
             }
         }
 
-        TextField {
-            id: dirTextField
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.right: dirSelectBtn.left
-            maximumLength: parent.parent.maxLength
-            text: styleData.value
-            focus: true
-            style: TextFieldStyle {
-                renderType: Text.NativeRendering
-            }
-            onTextChanged: {
-                itemProperties.setProperty(styleData.row,"value",text);
-            }
-            Keys.onPressed: {
-                if (event.key === Qt.Key_Escape || event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
-                    valueInPlaceEditor.visible = false;
+        FolderDialog {
+            id: dirDialog
+            modality: Qt.ApplicationModal
+            title: "Choose a folder"
+            options: FolderDialog.ShowDirsOnly | FolderDialog.ReadOnly
+            onAccepted: {
+                if (folder.toString().match("^file:///[A-Z,a-z]:")) {
+                    dirTextField.text = decodeURIComponent(folder.toString()).replace("file:///","") //.replace(/\//g,'\\')
                 }
+                else {
+                    dirTextField.text = decodeURIComponent(folder.toString()).replace("file://","")
+                }
+                model.display = dirTextField.text
             }
         }
 
         Button {
             id: dirSelectBtn
+            anchors.left: dirTextField.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.right: parent.right
-            width: 20
-            text: "..."
-            isDefault: false
-            onClicked: {
-                var dir = Qt.resolvedUrl(dirTextField.text);
+
+            TextMetrics {
+                id: btnText
+                text: "..."
+            }
+
+            implicitWidth: btnText.width + 16
+            text: btnText.text
+
+            onClicked: function() {
+                var dir = Qt.resolvedUrl(dirTextField.text)
                 if (!dir.match("^file://")) {
                     if (dir.match("^[A-Z,a-z]:")) {
-                        dirDialog.folder = "file:///" + encodeURIComponent(dir);
+                        dirDialog.folder = "file:///" + encodeURIComponent(dir)
                     }
                     else {
-                        dirDialog.folder = "file://" + encodeURIComponent(dir);
+                        dirDialog.folder = "file://" + encodeURIComponent(dir)
                     }
                 }
                 else {
-                   dirDialog.folder = "file://" + encodeURIComponent(dir.replace("file://",""));
+                   dirDialog.folder = "file://" + encodeURIComponent(dir.replace("file://",""))
                 }
-                dirDialog.open();
+                dirDialog.open()
             }
         }
     }
-
-    property bool showInPlaceEditor: if (!styleData.selected) {
-        return false;
-    }
-    else if (styleData.selected && styleData.pressed) {
-        forceActiveFocus();
-        return true;
-    }
-    else {
-        return valueInPlaceEditor.visible;
-    }
-
-    states: [
-        State {
-            name: "selected"
-            when: showInPlaceEditor
-            PropertyChanges {target: valueInPlaceEditor; visible: true}
-            PropertyChanges {target: valueInPlaceEditor; focus: true}
-        }
-    ]
 }

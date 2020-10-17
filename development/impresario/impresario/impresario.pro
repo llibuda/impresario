@@ -162,7 +162,7 @@ OTHER_FILES += \
     ../../../resources/StringDirSelector.qml \
     ../../../resources/IntComboBox.qml \
     ../../../resources/RealSpinBox.qml \
-    ../../../resources/StringFileSelector.qml \
+    ../../../resources/StringFileSelector.qml
 
 DISTFILES +=
 

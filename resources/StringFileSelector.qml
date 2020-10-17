@@ -18,93 +18,124 @@
 **   along with Impresario in subdirectory "licenses", file "LICENSE_Impresario.GPLv3".
 **   If not, see <http://www.gnu.org/licenses/>.
 ******************************************************************************************/
-import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
-import QtQuick.Dialogs 1.2
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import Qt.labs.platform 1.1
 
 Item {
-    SystemPalette { id: palette; colorGroup: SystemPalette.Active }
-    id: fileSelector
+    id: fileSelectDialog
     anchors.fill: parent
 
     property int maxLength: 512;
     property bool mustExists : true;
     property string title: "Select file"
-    property variant filters: [ "All files (*.*)" ]
+    property variant filters: [ "All files (*)" ]
+
+    property bool selected: propertyView.currentItemRow === model.row
+    property bool editorActive: false
+
+    onSelectedChanged: {
+        if (!selected) {
+            editorActive = false
+            fileTextField.text = model.display
+        }
+    }
 
     // Component used to render value in TableView
     Text {
         id: valueRenderer
         anchors.fill: parent
-        text: styleData.value
-        color: if (styleData.selected) {
-            return palette.highlightedText
+        text: model.display
+        elide: Text.ElideRight
+        padding: 5
+        color: (fileSelectDialog.selected) ? palette.highlightedText : text
+        focus: fileSelectDialog.selected && !fileSelectDialog.editorActive
+
+        MouseArea{
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onPressed: function(mouse) {
+                fileSelectDialog.editorActive = true;
+                mouse.accepted = false;
+            }
         }
-        else {
-            return palette.text
+
+        Keys.onPressed: function(event) {
+            if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+                fileSelectDialog.editorActive = true;
+                event.accepted = true;
+            }
         }
-        elide: styleData.elideMode
-        verticalAlignment: Text.AlignVCenter
-        renderType: Text.NativeRendering
     }
 
     // Component used as in-place editor in TableView
-    // Component is invisible first and rendered only if row becomes active (selected)
+    // Component is invisible first and rendered only if editor is activated
     FocusScope {
         id: valueInPlaceEditor
         anchors.fill: parent
-        visible: false
+        visible: fileSelectDialog.editorActive
+        focus: fileSelectDialog.editorActive
 
-        FileDialog {
-            id: fileDialog
-            modality: Qt.WindowModal
-            title: fileSelector.title
-            nameFilters: fileSelector.filters
-            selectExisting: fileSelector.mustExists
-            selectMultiple: false
-            selectFolder: false
-            onAccepted: {
-                if (fileUrl.toString().match("^file:///[A-Z,a-z]:")) {
-                    fileTextField.text = decodeURIComponent(fileUrl.toString()).replace("file:///","");//.replace(/\//g,'\\');
+        TextField {
+            id: fileTextField
+            anchors.fill: parent
+            anchors.rightMargin: dirSelectBtn.implicitWidth
+
+            maximumLength: fileSelectDialog.maxLength
+
+            visible: fileSelectDialog.editorActive
+            focus: fileSelectDialog.editorActive
+            selectByMouse: true;
+
+            Component.onCompleted: function() {
+                text = model.display
+            }
+
+            Keys.onPressed: function(event) {
+                if (event.key === Qt.Key_Escape) {
+                    fileSelectDialog.editorActive = false;
+                    text = model.display
                 }
-                else {
-                    fileTextField.text = decodeURIComponent(fileUrl.toString()).replace("file://","");
+                else if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+                    fileSelectDialog.editorActive = false;
+                    model.display = text
                 }
             }
         }
 
-        TextField {
-            id: fileTextField
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.right: fileSelectBtn.left
-            maximumLength: parent.parent.maxLength
-            text: styleData.value
-            focus: true
-            style: TextFieldStyle {
-                renderType: Text.NativeRendering
-            }
-            onTextChanged: {
-                itemProperties.setProperty(styleData.row,"value",text);
-            }
-            Keys.onPressed: {
-                if (event.key === Qt.Key_Escape || event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
-                    valueInPlaceEditor.visible = false;
+        FileDialog {
+            id: fileDialog
+            modality: Qt.ApplicationModal
+            title: fileSelectDialog.title
+            nameFilters: fileSelectDialog.filters
+            options: FolderDialog.ShowDirsOnly | FolderDialog.ReadOnly
+            onAccepted: {
+                if (file.toString().match("^file:///[A-Z,a-z]:")) {
+                    fileTextField.text = decodeURIComponent(file.toString()).replace("file:///","") //.replace(/\//g,'\\')
                 }
+                else {
+                    fileTextField.text = decodeURIComponent(file.toString()).replace("file://","")
+                }
+                model.display = fileTextField.text
             }
         }
 
         Button {
-            id: fileSelectBtn
+            id: dirSelectBtn
+            anchors.left: fileTextField.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.right: parent.right
-            width: 20
-            text: "..."
-            isDefault: false
-            onClicked: {
+
+            TextMetrics {
+                id: btnText
+                text: "..."
+            }
+
+            implicitWidth: btnText.width + 16
+            text: btnText.text
+
+            onClicked: function() {
                 var file = Qt.resolvedUrl(fileTextField.text);
                 var folder = file.substring(0,file.lastIndexOf("/"));
                 if (!folder.match("^file://")) {
@@ -122,24 +153,4 @@ Item {
             }
         }
     }
-
-    property bool showInPlaceEditor: if (!styleData.selected) {
-        return false;
-    }
-    else if (styleData.selected && styleData.pressed) {
-        forceActiveFocus();
-        return true;
-    }
-    else {
-        return valueInPlaceEditor.visible;
-    }
-
-    states: [
-        State {
-            name: "selected"
-            when: showInPlaceEditor
-            PropertyChanges {target: valueInPlaceEditor; visible: true}
-            PropertyChanges {target: valueInPlaceEditor; focus: true}
-        }
-    ]
 }
