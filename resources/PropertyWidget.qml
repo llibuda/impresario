@@ -30,6 +30,7 @@ Item {
     height: 300
 
     onWidthChanged: propertyView.forceLayout()
+    onHeightChanged: propertyView.forceLayout()
 
     SystemPalette {
         id: palette
@@ -58,7 +59,9 @@ Item {
         }
 
         onDataChanged: function(modelIndex) {
-            props[modelIndex.row].value = data(modelIndex,"display")
+            if (props[modelIndex.row].value !== data(modelIndex,"display")) {
+                props[modelIndex.row].value = data(modelIndex,"display")
+            }
         }
     }
 
@@ -224,5 +227,7 @@ Item {
                 delegate: propertyValueDelegate
             }
         }
+
+        ScrollBar.vertical: ScrollBar { }
     }
 }
