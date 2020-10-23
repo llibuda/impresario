@@ -34,7 +34,6 @@ Item {
     onSelectedChanged: function() {
         if (!selected) {
             editorActive = false
-            valueInPlaceEditor.text = model.display
         }
     }
 
@@ -78,15 +77,16 @@ Item {
         visible: lineTextEditor.editorActive
         focus: lineTextEditor.editorActive
         selectByMouse: true;
-        text: model.display
+        text: lineTextEditor.editorActive, model.display
+
+        onAccepted: function() {
+            model.display = text
+            lineTextEditor.editorActive = false
+        }
+
         Keys.onPressed: function(event) {
             if (event.key === Qt.Key_Escape) {
-                lineTextEditor.editorActive = false;
-                text = model.display
-            }
-            else if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
-                lineTextEditor.editorActive = false;
-                model.display = text
+                lineTextEditor.editorActive = false
             }
         }
     }

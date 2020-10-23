@@ -80,19 +80,18 @@ Item {
         to: parent.maxValue
         stepSize: parent.step
 
+        value: model.display
+
         property bool blockUpdate: true
 
         Component.onCompleted: function() {
-            // we do not use property binding here but just assign the control the current value
-            // otherwise there will be a binding loop in onValueChanged handler
-            value = model.display
             // modification of SpinBox's contentItem
             contentItem.horizontalAlignment = Qt.AlignLeft
             contentItem.selectByMouse = true
             blockUpdate = false
         }
 
-        onValueChanged: function() {
+        onValueModified: function() {
             if (!blockUpdate) {
                 model.display = value
             }

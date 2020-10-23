@@ -34,7 +34,6 @@ Item {
     onSelectedChanged: {
         if (!selected) {
             editorActive = false
-            dirTextField.text = model.display
         }
     }
 
@@ -84,18 +83,16 @@ Item {
             focus: dirSelectDialog.editorActive
             selectByMouse: true;
 
-            Component.onCompleted: function() {
-                text = model.display
+            text: dirSelectDialog.editorActive, model.display
+
+            onAccepted: function() {
+                model.display = text
+                dirSelectDialog.editorActive = false
             }
 
             Keys.onPressed: function(event) {
                 if (event.key === Qt.Key_Escape) {
-                    dirSelectDialog.editorActive = false;
-                    text = model.display
-                }
-                else if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
-                    dirSelectDialog.editorActive = false;
-                    model.display = text
+                    dirSelectDialog.editorActive = false
                 }
             }
         }
@@ -107,12 +104,11 @@ Item {
             options: FolderDialog.ShowDirsOnly | FolderDialog.ReadOnly
             onAccepted: {
                 if (folder.toString().match("^file:///[A-Z,a-z]:")) {
-                    dirTextField.text = decodeURIComponent(folder.toString()).replace("file:///","") //.replace(/\//g,'\\')
+                    model.display = decodeURIComponent(folder.toString()).replace("file:///","") //.replace(/\//g,'\\')
                 }
                 else {
-                    dirTextField.text = decodeURIComponent(folder.toString()).replace("file://","")
+                    model.display = decodeURIComponent(folder.toString()).replace("file://","")
                 }
-                model.display = dirTextField.text
             }
         }
 

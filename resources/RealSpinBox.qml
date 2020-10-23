@@ -85,6 +85,8 @@ Item {
         to: parent.maxValue * scalingFactor
         stepSize: parent.step * scalingFactor
 
+        value: Number(model.display) * scalingFactor
+
         validator: DoubleValidator {
             bottom: Math.min(spinBoxEditor.from, spinBoxEditor.to)
             top:  Math.max(spinBoxEditor.from, spinBoxEditor.to)
@@ -99,16 +101,13 @@ Item {
         }
 
         Component.onCompleted: function() {
-            // we do not use property binding here but just assign the control the current value
-            // otherwise there will be a binding loop in onValueChanged handler
-            value = Number(model.display) * scalingFactor
             // modification of SpinBox's contentItem
             contentItem.horizontalAlignment = Qt.AlignLeft
             contentItem.selectByMouse = true
             blockUpdate = false
         }
 
-        onValueChanged: function() {
+        onValueModified: function() {
             if (!blockUpdate)
             {
                 model.display = Number(value / scalingFactor)

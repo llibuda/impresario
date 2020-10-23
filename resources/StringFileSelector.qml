@@ -37,7 +37,6 @@ Item {
     onSelectedChanged: {
         if (!selected) {
             editorActive = false
-            fileTextField.text = model.display
         }
     }
 
@@ -87,18 +86,16 @@ Item {
             focus: fileSelectDialog.editorActive
             selectByMouse: true;
 
-            Component.onCompleted: function() {
-                text = model.display
+            text: fileSelectDialog.editorActive, model.display
+
+            onAccepted: function() {
+                model.display = text
+                fileSelectDialog.editorActive = false
             }
 
             Keys.onPressed: function(event) {
                 if (event.key === Qt.Key_Escape) {
-                    fileSelectDialog.editorActive = false;
-                    text = model.display
-                }
-                else if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
-                    fileSelectDialog.editorActive = false;
-                    model.display = text
+                    fileSelectDialog.editorActive = false
                 }
             }
         }
@@ -111,12 +108,11 @@ Item {
             options: FolderDialog.ShowDirsOnly | FolderDialog.ReadOnly
             onAccepted: {
                 if (file.toString().match("^file:///[A-Z,a-z]:")) {
-                    fileTextField.text = decodeURIComponent(file.toString()).replace("file:///","") //.replace(/\//g,'\\')
+                    model.display = decodeURIComponent(file.toString()).replace("file:///","") //.replace(/\//g,'\\')
                 }
                 else {
-                    fileTextField.text = decodeURIComponent(file.toString()).replace("file://","")
+                    model.display = decodeURIComponent(file.toString()).replace("file://","")
                 }
-                model.display = fileTextField.text
             }
         }
 
