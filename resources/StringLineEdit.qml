@@ -26,6 +26,7 @@ Item {
     anchors.fill: parent
 
     property int maxLength: 255;
+    property bool readOnly: false;
 
     property bool selected: propertyView.currentItemRow === model.row
     property bool editorActive: false
@@ -51,13 +52,15 @@ Item {
             anchors.fill: parent
             acceptedButtons: Qt.LeftButton | Qt.RightButton
             onPressed: function(mouse) {
-                lineTextEditor.editorActive = true;
+                if (!lineTextEditor.readOnly) {
+                    lineTextEditor.editorActive = true;
+                }
                 mouse.accepted = false;
             }
         }
 
         Keys.onPressed: function(event) {
-            if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+            if (!lineTextEditor.readOnly && (event.key === Qt.Key_Enter || event.key === Qt.Key_Return)) {
                 lineTextEditor.editorActive = true;
                 event.accepted = true;
             }
