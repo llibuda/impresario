@@ -22,7 +22,7 @@ QT += core gui widgets network xmlpatterns qml quick quickwidgets concurrent hel
 CONFIG += c++11
 TARGET = Impresario
 TEMPLATE = app
-VERSION = 2.1.1
+VERSION = 2.1.2
 QMAKE_TARGET_DESCRIPTION = "Image Processing Engineering System applying Reusable Interactive Objects"
 QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2015-2020  Lars Libuda"
 

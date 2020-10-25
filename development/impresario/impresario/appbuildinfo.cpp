@@ -44,19 +44,21 @@ namespace app
 #elif _MSC_VER == 1310
   compiler.append(" (Visual C++ 2003)");
 #elif _MSC_VER == 1400
-  compiler.append(" (Visual C++ 2005)");
+  compiler.append(" (Visual Studio 2005)");
 #elif _MSC_VER == 1500
-  compiler.append(" (Visual C++ 2008)");
+  compiler.append(" (Visual Studio 2008)");
 #elif _MSC_VER == 1600
-  compiler.append(" (Visual C++ 2010)");
+  compiler.append(" (Visual Studio 2010)");
 #elif _MSC_VER == 1700
-  compiler.append(" (Visual C++ 2012)");
+  compiler.append(" (Visual Studio 2012)");
 #elif _MSC_VER == 1800
-  compiler.append(" (Visual C++ 2013)");
+  compiler.append(" (Visual Studio 2013)");
 #elif _MSC_VER == 1900
-  compiler.append(" (Visual C++ 2015)");
-#elif _MSC_VER == 1914
-  compiler.append(" (Visual C++ 2017)");
+  compiler.append(" (Visual Studio 2015)");
+#elif _MSC_VER >= 1910 && _MSC_VER < 1920
+  compiler.append(" (Visual Studio 2017)");
+#elif _MSC_VER >= 1920
+  compiler.append(" (Visual Studio 2019)");
 #endif
     return compiler;
 #else

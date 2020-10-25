@@ -24,6 +24,6 @@
 // Version information for this program
 #define VERSION_MAJOR 2
 #define VERSION_MINOR 1
-#define VERSION_PATCH 1
+#define VERSION_PATCH 2
 
 #endif /* VERSION_H */
