@@ -141,6 +141,23 @@ Item {
         anchors.left: propertyView.left
         width: parent.width
         model: ["Property","Value"]
+
+        MouseArea {
+            anchors.fill: parent
+            anchors.leftMargin: parent.width * propertyView.columnDevider - 3
+            anchors.rightMargin: parent.width * (1 - propertyView.columnDevider) - 3
+            cursorShape: Qt.SplitHCursor
+            acceptedButtons: Qt.LeftButton
+
+            onPositionChanged: function(mouse) {
+                var pos = mapToItem(parent,mouse.x,mouse.y)
+                var devider = pos.x / parent.width
+                if (devider < 0.1) devider = 0.1
+                if (devider > 0.9) devider = 0.9
+                propertyView.columnDevider = devider
+                propertyView.forceLayout()
+            }
+        }
     }
 
     TableView {
@@ -152,14 +169,15 @@ Item {
         clip: true
         focus: true
 
+        property int currentItemRow: -1
+        property real columnDevider: 0.3
+
         columnWidthProvider: function(column) {
             if (column === 0)
-                return parent.width / 3
+                return parent.width * columnDevider
             else
-                return parent.width / 3 * 2
+                return parent.width * (1 - columnDevider)
         }
-
-        property int  currentItemRow: -1
 
         onActiveFocusChanged: function(hasFocus) {
             if (!hasFocus) {
