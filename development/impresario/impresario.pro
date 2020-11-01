@@ -5,3 +5,4 @@ SUBDIRS = components/libavoid \
 
 CONFIG += ordered
 SUBDIRS += impresario
+
