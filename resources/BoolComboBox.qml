@@ -79,25 +79,46 @@ Item {
         visible: boolComboBoxEditor.editorActive
         focus: boolComboBoxEditor.editorActive
         editable: false
+        textRole: "text"
 
-        model: ListModel {
-            id: cbItems
-            ListElement { text: "False"}
-            ListElement { text: "True"}
-        }
+        model: [ {text: "False"}, { text: "True"} ]
 
         Component.onCompleted: function() {
             currentIndex = parent.cbIndex
         }
 
         onActivated: function(index) {
-            parent.cbIndex = index.toString()
+            parent.cbIndex = index
         }
 
         Keys.onPressed: function(event) {
             if (event.key === Qt.Key_Escape || event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
                 boolComboBoxEditor.editorActive = false;
                 event.accepted = true
+            }
+        }
+
+        // On Linux ComboBox causes a segfault when using default popup and this popup was activated once.
+        // Defining a custom popup mitigates this segfault. On Windows default popup works.
+        popup: Popup {
+            y: valueInPlaceEditor.height - 1
+            width: valueInPlaceEditor.width
+            implicitHeight: contentItem.implicitHeight
+            padding: 1
+
+            contentItem: ListView {
+                clip: true
+                implicitHeight: contentHeight
+                model: valueInPlaceEditor.popup.visible ? valueInPlaceEditor.delegateModel : null
+                currentIndex: valueInPlaceEditor.highlightedIndex
+
+                ScrollIndicator.vertical: ScrollIndicator { }
+            }
+
+            background: Rectangle {
+                color: palette.window
+                border.color: palette.dark
+                radius: 2
             }
         }
     }
