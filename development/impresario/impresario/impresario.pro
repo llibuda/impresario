@@ -53,6 +53,12 @@ win32 {
 }
 
 unix {
+  # Starting with GCC version 9 the gold linker is used
+  GCC_VERSION = $${system( g++ -dumpversion )}
+  versionAtLeast(GCC_VERSION,9) {
+    QMAKE_LFLAGS = -fuse-ld=gold
+  }
+
   QMAKE_POST_LINK = $$quote($${_PRO_FILE_PWD_}/../qt_deploy_unix.sh) "$${DESTDIR}/$${TARGET}"
   CONFIG(release, release|debug) {
     LIBS += $$quote(-L../components/libavoid) -lavoid

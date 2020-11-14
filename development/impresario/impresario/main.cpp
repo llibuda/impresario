@@ -23,6 +23,10 @@
 #include "framemainwindow.h"
 #include "appdlgterminate.h"
 #include <vector>
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5,15,0)) && defined(Q_OS_LINUX)
+  #include <regex>
+#endif
 
 #if defined(_MSC_VER) && defined(_DEBUG)
 /* The following line includes the header of Visual Leak Detector 2.5.1 (see
@@ -36,6 +40,14 @@
 
 int main(int argc, char *argv[])
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(5,15,0)) && defined(Q_OS_LINUX)
+  /* Starting with Qt 5.15 there is a segfault on Linux when any macro uses
+   * std::regex. Declaring a dummy std::regex here prevents the
+   * segfault why so ever. This is not a bug fix but a workaround.
+   */
+  std::regex dummy("dummy");
+#endif
+
   /* We add command line parameter --disable-seccomp-filter-sandbox here
    * This parameter is passed to QtWebEngineProcess which is started by the help system.
    * In general, this parameter speeds up loading contents significantly.
