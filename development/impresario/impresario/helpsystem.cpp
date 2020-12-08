@@ -167,19 +167,19 @@ namespace help
       QUrl url = urlMainPage;
       if (!helpID.isEmpty())
       {
-#if QT_VERSION < 0x050F00
+//#if QT_VERSION < 0x050F00
         QMap<QString,QUrl> hits = ptrHelpEngine->linksForIdentifier(helpID);
         if (hits.count() > 0)
         {
           url = hits.first();
         }
-#else
-        QList<QHelpLink> hits = ptrHelpEngine->documentsForIdentifier(helpID);
-        if (hits.count() > 0)
-        {
-          url = hits.first().url;
-        }
-#endif
+//#else
+//        QList<QHelpLink> hits = ptrHelpEngine->documentsForIdentifier(helpID);
+//        if (hits.count() > 0)
+//        {
+//          url = hits.first().url;
+//        }
+//#endif
       }
       showHelpMainWindow(url);
     }
