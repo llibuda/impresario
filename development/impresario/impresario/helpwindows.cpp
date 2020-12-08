@@ -386,29 +386,6 @@ namespace help
         default: ; // stop complaining
       }
     }
-    /*
-    else if (obj == lvIndex && e->type() == QEvent::ContextMenu)
-    {
-      QContextMenuEvent *ctxtEvent = static_cast<QContextMenuEvent*>(e);
-      QModelIndex idx = lvIndex->indexAt(ctxtEvent->pos());
-      if (idx.isValid())
-      {
-        QMenu menu;
-        QAction *curTab = menu.addAction(tr("Open Link"));
-        QAction *newTab = menu.addAction(tr("Open Link in New Tab"));
-        menu.move(lvIndex->mapToGlobal(ctxtEvent->pos()));
-        QAction *action = menu.exec();
-        if (curTab == action)
-        {
-          lvIndex->activateCurrentItem();
-        }
-        else if (newTab == action)
-        {
-          open(lvIndex, idx);
-        }
-      }
-    }
-    */
     else if (lvIndex && obj == lvIndex->viewport() && e->type() == QEvent::MouseButtonRelease)
     {
       QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(e);
@@ -416,18 +393,25 @@ namespace help
       if (idx.isValid())
       {
         Qt::MouseButtons button = mouseEvent->button();
-        if (((button == Qt::LeftButton) && (mouseEvent->modifiers() & Qt::ControlModifier)) || (button == Qt::MidButton))
+        if ((button == Qt::LeftButton && (mouseEvent->modifiers() & Qt::ControlModifier)) || button == Qt::MidButton)
         {
           open(lvIndex, idx);
         }
       }
     }
-#ifdef Q_OS_MAC
-    else if (obj == lvIndex && e->type() == QEvent::KeyPress)
+#if QT_VERSION >= 0x050F00
+    else if (lvIndex && obj == lvIndex->viewport() && e->type() == QEvent::MouseButtonDblClick)
     {
-      QKeyEvent *ke = static_cast<QKeyEvent*>(e);
-      if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter)
-        lvIndex->activateCurrentItem();
+      QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(e);
+      QModelIndex idx = lvIndex->indexAt(mouseEvent->pos());
+      if (idx.isValid())
+      {
+        Qt::MouseButtons button = mouseEvent->button();
+        if (button == Qt::LeftButton)
+        {
+          open(lvIndex, idx);
+        }
+      }
     }
 #endif
     return QWidget::eventFilter(obj, e);
@@ -465,14 +449,13 @@ namespace help
     {
       QString keyword = model->data(index, Qt::DisplayRole).toString();
       QMap<QString, QUrl> links = model->linksForKeyword(keyword);
-      QUrl url;
       if (links.count() > 1)
       {
         emit linksActivated(links,keyword);
       }
       else if (links.count() == 1)
       {
-        emit linkActivated(url,keyword);
+        emit linkActivated(links.first(),keyword);
       }
     }
   }
@@ -620,7 +603,11 @@ namespace help
 
   void MainWindow::runSearch()
   {
+#if QT_VERSION < 0x050F00
     helpEngineInstance.searchEngine()->search(helpEngineInstance.searchEngine()->queryWidget()->query());
+#else
+    helpEngineInstance.searchEngine()->search(helpEngineInstance.searchEngine()->queryWidget()->searchInput());
+#endif
   }
 
   void MainWindow::showPage(const QUrl &url)

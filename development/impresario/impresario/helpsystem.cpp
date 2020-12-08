@@ -89,7 +89,7 @@ namespace help
         }
         else
         {
-          syslog::error(QString(tr("Failed to unregister non-existing help file '%1'. %2")).arg(QDir::toNativeSeparators(helpFile)).arg(ptrHelpEngine->error()),tr("Help System"));
+          syslog::error(QString(tr("Failed to unregister non-existing help file '%1'. %2")).arg(QDir::toNativeSeparators(helpFile), ptrHelpEngine->error()),tr("Help System"));
         }
       }
       else
@@ -108,7 +108,7 @@ namespace help
       }
       else
       {
-        syslog::error(QString(tr("Failed to register help file '%1'. %2")).arg(QDir::toNativeSeparators(helpFile)).arg(ptrHelpEngine->error()),tr("Help System"));
+        syslog::error(QString(tr("Failed to register help file '%1'. %2")).arg(QDir::toNativeSeparators(helpFile), ptrHelpEngine->error()),tr("Help System"));
       }
     }
     // connect signals and slots
@@ -129,21 +129,33 @@ namespace help
     QStringList registeredHelpFiles = ptrHelpEngine->registeredDocumentations();
     if (registeredHelpFiles.count() == 0)
     {
-      syslog::error(QString(tr("Online help is not available. No help files registered in path '%1'. %2")).arg(QDir::toNativeSeparators(helpDir.absolutePath())).arg(ptrHelpEngine->error()),tr("Help System"));
+      syslog::error(QString(tr("Online help is not available. No help files registered in path '%1'. %2")).arg(QDir::toNativeSeparators(helpDir.absolutePath()), ptrHelpEngine->error()),tr("Help System"));
       destroyHelpEngine();
       return;
     }
 
     // check whether we have main help
-    QMap<QString,QUrl> mapHits = ptrHelpEngine->linksForIdentifier(mainPageID);
-    if (mapHits.count() == 0)
+//#if QT_VERSION < 0x050F00
+    QMap<QString,QUrl> hits = ptrHelpEngine->linksForIdentifier(mainPageID);
+    if (hits.count() == 0)
     {
       syslog::warning(QString(tr("Main help for application is not available due to missing help file.")),tr("Help System"));
     }
     else
     {
-      urlMainPage = mapHits.first();
+      urlMainPage = hits.first();
     }
+//#else
+//    QList<QHelpLink> hits = ptrHelpEngine->documentsForIdentifier(mainPageID);
+//    if (hits.size() == 0)
+//    {
+//      syslog::warning(QString(tr("Main help for application is not available due to missing help file.")),tr("Help System"));
+//    }
+//    else
+//    {
+//      urlMainPage = hits.first().url;
+//    }
+//#endif
     syslog::info(QString(tr("Online help initialized. Number of referenced help files: %1")).arg(registeredHelpFiles.count()),tr("Help System"));
     helpInitialized = true;
   }
@@ -155,11 +167,19 @@ namespace help
       QUrl url = urlMainPage;
       if (!helpID.isEmpty())
       {
-        QMap<QString,QUrl> mapHits = ptrHelpEngine->linksForIdentifier(helpID);
-        if (mapHits.count() > 0)
+#if QT_VERSION < 0x050F00
+        QMap<QString,QUrl> hits = ptrHelpEngine->linksForIdentifier(helpID);
+        if (hits.count() > 0)
         {
-          url = mapHits.first();
+          url = hits.first();
         }
+#else
+        QList<QHelpLink> hits = ptrHelpEngine->documentsForIdentifier(helpID);
+        if (hits.count() > 0)
+        {
+          url = hits.first().url;
+        }
+#endif
       }
       showHelpMainWindow(url);
     }
