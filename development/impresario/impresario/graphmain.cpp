@@ -598,7 +598,7 @@ namespace graph
       const Vertex::EdgeRefMap& edgeMap = vertex.edges();
       for(Vertex::EdgeRefMap::const_iterator it = edgeMap.begin(); it != edgeMap.end(); ++it)
       {
-        Edge::Ptr edgePtr = it.value().toStrongRef();
+        Edge::Ptr edgePtr = it.value();
         if (edges.contains(edgePtr->id()) && !edgePtr->isValid())
         {
           invalidEdges.append(edgePtr);
@@ -638,7 +638,7 @@ namespace graph
     Vertex::EdgeRefList edgeList = vertex->edges(Defines::Outgoing);
     foreach(Edge::Ref edgeRef,edgeList)
     {
-      Vertex& v = edgeRef.toStrongRef()->destPin().toStrongRef()->vertex();
+      Vertex& v = edgeRef->destPin()->vertex();
       if (!components.contains(v.id()))
       {
         visitVertex(&v,compNr,components);
@@ -647,7 +647,7 @@ namespace graph
     edgeList = vertex->edges(Defines::Incoming);
     foreach(Edge::Ref edgeRef,edgeList)
     {
-      Vertex& v = edgeRef.toStrongRef()->srcPin().toStrongRef()->vertex();
+      Vertex& v = edgeRef->srcPin()->vertex();
       if (!components.contains(v.id()))
       {
         visitVertex(&v,compNr,components);
@@ -828,7 +828,7 @@ namespace graph
       Vertex::EdgeRefList edgeList = vertex->edges(Defines::Outgoing);
       foreach(Edge::Ref edgeRef,edgeList)
       {
-        Vertex& v = edgeRef.toStrongRef()->destPin().toStrongRef()->vertex();
+        Vertex& v = edgeRef->destPin()->vertex();
         visitVertex(&v,verticesVisited,order + 1,vertexMap);
       }
       verticesVisited.remove(vertex);
@@ -844,7 +844,7 @@ namespace graph
     Vertex::EdgeRefList edgeList = vertex->edges(Defines::Outgoing);
     foreach(Edge::Ref edgeRef,edgeList)
     {
-      Vertex& v = edgeRef.toStrongRef()->destPin().toStrongRef()->vertex();
+      Vertex& v = edgeRef->destPin()->vertex();
       m = (!verticesVisited.contains(v.id())) ? visitVertex(&v,verticesVisited,id,vertices,stack,components) : verticesVisited[v.id()];
       if (m < min) min = m;
     }

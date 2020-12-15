@@ -98,7 +98,7 @@ namespace pge
     Q_INVOKABLE const QVariantList parameters() const
     {
       Q_ASSERT(!currentMacro.isNull());
-      return currentMacro.toStrongRef()->parameters();
+      return currentMacro->parameters();
     }
 
     Q_INVOKABLE void showDescription(int index)

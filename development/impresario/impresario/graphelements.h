@@ -48,7 +48,7 @@ namespace graph
 
   public:
     typedef QSharedPointer<BaseElement> Ptr;
-    typedef QWeakPointer<BaseElement>   Ref;
+    typedef QSharedPointer<BaseElement>   Ref;
 
     BaseElement();
 
@@ -123,7 +123,7 @@ namespace graph
     Q_OBJECT
   public:
     typedef QSharedPointer<GraphElement> Ptr;
-    typedef QWeakPointer<GraphElement>   Ref;
+    typedef QSharedPointer<GraphElement>   Ref;
 
     GraphElement() : BaseElement(), graphRef(), flagDelete(true)
     {
@@ -164,7 +164,7 @@ namespace graph
     Q_OBJECT
   public:
     typedef QSharedPointer<Pin> Ptr;
-    typedef QWeakPointer<Pin>   Ref;
+    typedef QSharedPointer<Pin>   Ref;
 
     Pin(Vertex& vertex, PinData::Ptr dataPtr) : BaseElement(),
       vertexRef(vertex), cntConnections(0)
@@ -240,7 +240,7 @@ namespace graph
     Q_OBJECT
   public:
     typedef QSharedPointer<Edge> Ptr;
-    typedef QWeakPointer<Edge>   Ref;
+    typedef QSharedPointer<Edge>   Ref;
 
     Edge(Pin::Ref source, Pin::Ref destination, EdgeData::Ptr dataPtr);
 
@@ -290,7 +290,7 @@ namespace graph
     Q_PROPERTY(bool topologyForced READ topologicalOrderForced WRITE forceTopologicalOrder)
   public:
     typedef QSharedPointer<Vertex> Ptr;
-    typedef QWeakPointer<Vertex>   Ref;
+    typedef QSharedPointer<Vertex>   Ref;
 
     typedef QMultiMap<Defines::PinDirectionType,Pin::Ptr> PinMap;
     typedef QList<Pin::Ptr> PinList;

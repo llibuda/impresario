@@ -101,7 +101,7 @@ namespace syslog
       out.setFieldAlignment(QTextStream::AlignLeft);
       out << "------- " << QCoreApplication::applicationName();
       out << " log written " << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
-      out << " -------" << endl;
+      out << " -------" << Qt::endl;
 
       const int timeFieldWidth = 24;
       const int typeFieldWidth = 2;
@@ -126,7 +126,7 @@ namespace syslog
           {
             out << QString(timeFieldWidth + typeFieldWidth + categoryFieldWidth,' ');
           }
-          out << textLines.at(index) << endl;
+          out << textLines.at(index) << Qt::endl;
         }
       }
 

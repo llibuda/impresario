@@ -179,8 +179,8 @@ namespace graph
   EdgeItem::EdgeItem(Edge& edgeRef, BaseItem* parent) : BaseItem(edgeRef,parent),
     routerConnector(0), linkPath(), linkArrowHead(), ptEnd(), rectBound(), arrowHeadTransform()
   {
-    sourcePin = edge().srcPin().toStrongRef()->sceneItem().staticCast<PinItem>().data();
-    destPin = edge().destPin().toStrongRef()->sceneItem().staticCast<PinItem>().data();
+    sourcePin = edge().srcPin()->sceneItem().staticCast<PinItem>().data();
+    destPin = edge().destPin()->sceneItem().staticCast<PinItem>().data();
     setFlag(QGraphicsItem::ItemIsSelectable,true);
     setFlag(QGraphicsItem::ItemIsMovable,false);
 
@@ -1008,7 +1008,7 @@ namespace graph
     const Vertex::EdgeRefMap& edgeMap = vertex().edges();
     for(Vertex::EdgeRefMap::const_iterator it = edgeMap.begin(); it != edgeMap.end(); ++it)
     {
-      EdgeItem::Ptr edgeItem = it.value().toStrongRef()->sceneItem().staticCast<EdgeItem>();
+      EdgeItem::Ptr edgeItem = it.value()->sceneItem().staticCast<EdgeItem>();
       static_cast<EdgeItemUpdateInterface*>(edgeItem.data())->refresh();
     }
     if (graphScene != 0)

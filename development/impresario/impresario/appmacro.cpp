@@ -37,7 +37,7 @@ namespace app
   MacroParameter::MacroParameter(const Macro& macro, const QString& paramName, const QString& descr, const QString& paramType, const QString& paramConfig, int idx) : QObject(0),
     macroRef(macro), name(paramName), description(descr), type(paramType), qmlUIComponent(), qmlUIProperties(), propValue(), propDefaultValue(), index(idx), mutex(QMutex::Recursive)
   {
-    QStringList config = paramConfig.split('|',QString::SkipEmptyParts);
+    QStringList config = paramConfig.split('|',Qt::SkipEmptyParts);
     if (config.count() > 0)
     {
       qmlUIComponent = config[0];
@@ -119,8 +119,8 @@ namespace app
       case graph::BaseElement::AddedToGraph:
       {
         graph::Edge& edge = static_cast<graph::Edge&>(element);
-        MacroInput::Ptr pinIn = edge.destPin().toStrongRef()->dataRef().staticCast<MacroInput>();
-        MacroOutput::Ptr pinOut = edge.srcPin().toStrongRef()->dataRef().staticCast<MacroOutput>();
+        MacroInput::Ptr pinIn = edge.destPin()->dataRef().staticCast<MacroInput>();
+        MacroOutput::Ptr pinOut = edge.srcPin()->dataRef().staticCast<MacroOutput>();
         if (!pinIn.isNull() && !pinOut.isNull())
         {
           pinIn->setDataPtr(*pinOut.data());
@@ -130,7 +130,7 @@ namespace app
       case graph::BaseElement::RemovedFromGraph:
       {
         graph::Edge& edge = static_cast<graph::Edge&>(element);
-        MacroInput::Ptr pinIn = edge.destPin().toStrongRef()->dataRef().staticCast<MacroInput>();
+        MacroInput::Ptr pinIn = edge.destPin()->dataRef().staticCast<MacroInput>();
         if (!pinIn.isNull())
         {
           pinIn->resetDataPtr();
@@ -332,7 +332,7 @@ namespace app
       QString itemValue = lib.getMacroParameter(macroHandle,count++);
       QVariant value(itemValue);
       item->setDefaultValue(value);
-      params.append(qVariantFromValue(item));
+      params.append(QVariant::fromValue(item));
       connect(item,SIGNAL(valueChangedByUser()),this,SLOT(parameterChangedByUser()));
       dataDescr = dataDescr->next;
     }
@@ -555,7 +555,7 @@ namespace app
       MacroInput::Ref inputRef = dataTypeMap[data->getType()];
       if (!inputRef.isNull())
       {
-        return inputRef.toStrongRef()->setDataPtr(*data.data());
+        return inputRef->setDataPtr(*data.data());
       }
       else
       {

@@ -77,7 +77,7 @@ QStringList Resource::getPaths(Resource::SettingsIDs id, QSettings::Scope scope)
   QDir::setCurrent(QApplication::applicationDirPath());
   if (scope == QSettings::UserScope)
   {
-    QStringList dirList = settings.value(Resource::path(id)).toString().split('|',QString::SkipEmptyParts);
+    QStringList dirList = settings.value(Resource::path(id)).toString().split('|',Qt::SkipEmptyParts);
     for(int i = 0; i < dirList.count(); ++i)
     {
       QDir dir(dirList[i]);
@@ -89,7 +89,7 @@ QStringList Resource::getPaths(Resource::SettingsIDs id, QSettings::Scope scope)
   {
     QVariant savedValue = settings.value(Resource::path(id));
     settings.remove(Resource::path(id));
-    QStringList dirList = settings.value(Resource::path(id)).toString().split('|',QString::SkipEmptyParts);
+    QStringList dirList = settings.value(Resource::path(id)).toString().split('|',Qt::SkipEmptyParts);
     settings.setValue(Resource::path(id),savedValue);
     for(int i = 0; i < dirList.count(); ++i)
     {

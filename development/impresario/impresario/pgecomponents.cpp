@@ -358,10 +358,10 @@ namespace pge
       }
     }
     // get list of macro type signatures to be created
-    QStringList signatureList = typeSignatures.split("\n",QString::SkipEmptyParts);
+    QStringList signatureList = typeSignatures.split("\n",Qt::SkipEmptyParts);
     if (signatureList.isEmpty())
     {
-      signatureList = Resource::action(Resource::MACRO_CREATEINSTANCE_MULT)->data().toString().split("\n",QString::SkipEmptyParts);
+      signatureList = Resource::action(Resource::MACRO_CREATEINSTANCE_MULT)->data().toString().split("\n",Qt::SkipEmptyParts);
     }
     Q_ASSERT(signatureList.count() > 0);
     QPointF insertPos = QPointF(0.0,0.0);

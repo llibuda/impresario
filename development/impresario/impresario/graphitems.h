@@ -49,7 +49,7 @@ namespace graph
     Q_OBJECT
   public:
     typedef QSharedPointer<BaseItem> Ptr;
-    typedef QWeakPointer<BaseItem>   Ref;
+    typedef QSharedPointer<BaseItem>   Ref;
 
     enum ItemType
     {
@@ -117,7 +117,7 @@ namespace graph
     Q_OBJECT
   public:
     typedef QSharedPointer<PinItem> Ptr;
-    typedef QWeakPointer<PinItem>   Ref;
+    typedef QSharedPointer<PinItem>   Ref;
 
     PinItem(Pin& pinRef, BaseItem* parent = 0);
     ~PinItem();
@@ -162,7 +162,7 @@ namespace graph
     Q_OBJECT
   public:
     typedef QSharedPointer<EdgeItem> Ptr;
-    typedef QWeakPointer<EdgeItem>   Ref;
+    typedef QSharedPointer<EdgeItem>   Ref;
 
     EdgeItem(Edge& edgeRef, BaseItem* parent = 0);
     EdgeItem(PinItem* startPin, QPointF endPoint);
@@ -216,7 +216,7 @@ namespace graph
     Q_OBJECT
   public:
     typedef QSharedPointer<VertexItem> Ptr;
-    typedef QWeakPointer<VertexItem>   Ref;
+    typedef QSharedPointer<VertexItem>   Ref;
 
     VertexItem(Vertex& vertexRef, BaseItem* parent = 0);
     ~VertexItem();

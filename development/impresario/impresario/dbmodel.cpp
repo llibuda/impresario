@@ -887,7 +887,7 @@ namespace db
   {
     if (!index.isValid())
     {
-      return 0;
+        return QFlags<Qt::ItemFlag>{};
     }
     Qt::ItemFlags fl =  Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     const ModelItem* item = static_cast<const ModelItem*>(index.internalPointer());
@@ -999,8 +999,7 @@ namespace db
         }
       }
     }
-    QByteArray encodedData;
-    encodedData.append(typeList.join("\n"));
+    QByteArray encodedData{typeList.join("\n").toLatin1()};
     QMimeData *mimeData = new QMimeData();
     mimeData->setData("text/graph-vertex-type-signature",encodedData);
     return mimeData;

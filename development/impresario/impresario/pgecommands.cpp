@@ -455,13 +455,13 @@ namespace pge
   {
     Q_ASSERT(processGraphEditor != 0 && items.count() == 1);
     graph::Edge& edge = items[0].staticCast<graph::EdgeItem>()->edge();
-    app::Macro* macroSrc = static_cast<app::Macro*>(edge.srcPin().toStrongRef()->vertex().dataRef().data());
-    app::Macro* macroDst = static_cast<app::Macro*>(edge.destPin().toStrongRef()->vertex().dataRef().data());
+    app::Macro* macroSrc = static_cast<app::Macro*>(edge.srcPin()->vertex().dataRef().data());
+    app::Macro* macroDst = static_cast<app::Macro*>(edge.destPin()->vertex().dataRef().data());
     setText(QString(QObject::tr("add link from '%1:%2' to '%3:%4'"))
             .arg(macroSrc->getName())
-            .arg(edge.srcPin().toStrongRef()->dataRef()->id())
+            .arg(edge.srcPin()->dataRef()->id())
             .arg(macroDst->getName())
-            .arg(edge.destPin().toStrongRef()->dataRef()->id()));
+            .arg(edge.destPin()->dataRef()->id()));
   }
 
   CmdAddLink::~CmdAddLink()

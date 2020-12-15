@@ -465,7 +465,7 @@ namespace db
     lblHint->setBackgroundRole(QPalette::Base);
     lblHint->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
     lblHint->setText(tr("<h3>Database is loading...</h3>"));
-    QLayoutItem* item = this->layout()->replaceWidget(vwMacros,lblHint,0);
+    QLayoutItem* item = this->layout()->replaceWidget(vwMacros,lblHint,QFlags<Qt::FindChildOption>{});
     delete item;
     vwMacros->hide();
   }
@@ -475,7 +475,7 @@ namespace db
     cbView->setEnabled(true);
     cbFilter->setEnabled(true);
     edtSearch->setEnabled(true);
-    QLayoutItem* item = this->layout()->replaceWidget(dynamic_cast<QWidget*>(this->layout()->itemAt(1)->widget()),vwMacros,0);
+    QLayoutItem* item = this->layout()->replaceWidget(dynamic_cast<QWidget*>(this->layout()->itemAt(1)->widget()),vwMacros,QFlags<Qt::FindChildOption>{});
     delete item->widget();
     delete item;
     vwMacros->show();

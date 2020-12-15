@@ -121,7 +121,7 @@ namespace syslog
       QTextStream out(&file);
       out << "------- " << app::Impresario::instance().applicationName();
       out << " console output written " << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
-      out << " -------" << endl;
+      out << " -------" << Qt::endl;
       out << consoleLog.toPlainText();
       file.close();
     }

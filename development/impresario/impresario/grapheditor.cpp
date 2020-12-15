@@ -371,13 +371,13 @@ namespace graph
           case BaseItem::VertexItemType:
           {
             VertexItem::Ptr vertexItem = (*it).staticCast<VertexItem>();
-            graphBase.addVertex(graphElements[vertexItem->vertex().id()].toStrongRef().staticCast<Vertex>());
+            graphBase.addVertex(graphElements[vertexItem->vertex().id()].staticCast<Vertex>());
             break;
           }
           case BaseItem::EdgeItemType:
           {
             EdgeItem::Ptr edgeItem = (*it).staticCast<EdgeItem>();
-            graphBase.addEdge(graphElements[edgeItem->edge().id()].toStrongRef().staticCast<Edge>());
+            graphBase.addEdge(graphElements[edgeItem->edge().id()].staticCast<Edge>());
             break;
           }
           default:
@@ -395,13 +395,13 @@ namespace graph
           case BaseItem::VertexItemType:
           {
             VertexItem::Ptr vertexItem = item.staticCast<VertexItem>();
-            graphBase.addVertex(graphElements[vertexItem->vertex().id()].toStrongRef().staticCast<Vertex>());
+            graphBase.addVertex(graphElements[vertexItem->vertex().id()].staticCast<Vertex>());
             break;
           }
           case BaseItem::EdgeItemType:
           {
             EdgeItem::Ptr edgeItem = item.staticCast<EdgeItem>();
-            graphBase.addEdge(graphElements[edgeItem->edge().id()].toStrongRef().staticCast<Edge>());
+            graphBase.addEdge(graphElements[edgeItem->edge().id()].staticCast<Edge>());
             break;
           }
           default:
@@ -426,13 +426,13 @@ namespace graph
           case BaseItem::VertexItemType:
           {
             VertexItem::Ptr vertexItem = (*it).staticCast<VertexItem>();
-            graphBase.removeVertex(graphElements[vertexItem->vertex().id()].toStrongRef().staticCast<Vertex>());
+            graphBase.removeVertex(graphElements[vertexItem->vertex().id()].staticCast<Vertex>());
             break;
           }
           case BaseItem::EdgeItemType:
           {
             EdgeItem::Ptr edgeItem = (*it).staticCast<EdgeItem>();
-            graphBase.removeEdge(graphElements[edgeItem->edge().id()].toStrongRef().staticCast<Edge>());
+            graphBase.removeEdge(graphElements[edgeItem->edge().id()].staticCast<Edge>());
             break;
           }
           default:
@@ -450,13 +450,13 @@ namespace graph
           case BaseItem::VertexItemType:
           {
             VertexItem::Ptr vertexItem = item.staticCast<VertexItem>();
-            graphBase.removeVertex(graphElements[vertexItem->vertex().id()].toStrongRef().staticCast<Vertex>());
+            graphBase.removeVertex(graphElements[vertexItem->vertex().id()].staticCast<Vertex>());
             break;
           }
           case BaseItem::EdgeItemType:
           {
             EdgeItem::Ptr edgeItem = item.staticCast<EdgeItem>();
-            graphBase.removeEdge(graphElements[edgeItem->edge().id()].toStrongRef().staticCast<Edge>());
+            graphBase.removeEdge(graphElements[edgeItem->edge().id()].staticCast<Edge>());
             break;
           }
           default:
@@ -753,7 +753,7 @@ namespace graph
           const Vertex::EdgeRefMap& edgeRefs = vertex.edges();
           for(Vertex::EdgeRefMap::const_iterator it = edgeRefs.begin(); it != edgeRefs.end(); ++it)
           {
-            edges.insert(it.value().toStrongRef()->sceneItem());
+            edges.insert(it.value()->sceneItem());
           }
           break;
         }
@@ -767,7 +767,7 @@ namespace graph
         break;
       }
     }
-    list.append(edges.toList());
+    list.append(edges.values());
     return list;
   }
 
@@ -789,8 +789,8 @@ namespace graph
         {
           Edge& edge = static_cast<EdgeItem*>(item)->edge();
           if (!edge.srcPin().isNull() && ! edge.destPin().isNull() &&
-              edge.srcPin().toStrongRef()->vertex().sceneItem()->isSelected() &&
-              edge.destPin().toStrongRef()->vertex().sceneItem()->isSelected())
+              edge.srcPin()->vertex().sceneItem()->isSelected() &&
+              edge.destPin()->vertex().sceneItem()->isSelected())
           {
             edges.append(edge.sceneItem());
           }
@@ -909,7 +909,7 @@ namespace graph
     ElementMap::iterator it = graphElements.begin();
     while(it != graphElements.end())
     {
-      GraphElement::Ptr elementPtr = it.value().toStrongRef();
+      GraphElement::Ptr elementPtr = it.value();
       BaseItem::Ptr item = elementPtr->sceneItem();
       if (item->scene() == 0)
       {
@@ -989,7 +989,7 @@ namespace graph
   {
     if (event->modifiers() & Qt::ControlModifier)
     {
-      int numDegrees = event->delta() / 8;
+      int numDegrees = event->angleDelta().y() / 8;
       int numSteps = numDegrees / 15;
       if (numSteps > 0)
       {
