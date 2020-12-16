@@ -60,6 +60,9 @@ int main(int argc, char *argv[])
     arguments[i] = argv[i];
   arguments[argumentCount - 1] = const_cast<char*>(webEngineParameter);
 
+  QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
+  QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor);
+
   int result = 1;
   app::Impresario& a = app::Impresario::instance(argumentCount, arguments.data());
   if (a.initCritical())
