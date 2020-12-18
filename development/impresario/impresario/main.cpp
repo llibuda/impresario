@@ -60,8 +60,24 @@ int main(int argc, char *argv[])
     arguments[i] = argv[i];
   arguments[argumentCount - 1] = const_cast<char*>(webEngineParameter);
 
-  QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
-  QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+  /* Check for High DPI. We create a temporary QGuiApplication object to get
+   * access to the screen. By default we enable High DPI but in case the
+   * DPI value of the primary screen is lower than 100 we disable it
+   */
+  bool enableHighDPISupport = true;
+  {
+    QGuiApplication testApp{argc,argv};
+    QScreen* screen = testApp.primaryScreen();
+    if (screen != nullptr && screen->physicalDotsPerInch() < 100.0)
+    {
+      enableHighDPISupport = false;
+    }
+  }
+  if (enableHighDPISupport)
+  {
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+  }
 
   int result = 1;
   app::Impresario& a = app::Impresario::instance(argumentCount, arguments.data());
