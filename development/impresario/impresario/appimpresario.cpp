@@ -166,6 +166,16 @@ namespace app
     QSettings::setDefaultFormat(XmlFormat);
 
     connect(this,SIGNAL(showUp()),this,SLOT(activatedByAnotherInstance()));
+
+    // check whether High DPI support is enabled and give a message
+    if (testAttribute(Qt::AA_EnableHighDpiScaling))
+    {
+        syslog::info(tr("High DPI support enabled."),"Configuration");
+    }
+    else
+    {
+        syslog::info(tr("High DPI support disabled."),"Configuration");
+    }
   }
 
   Impresario::~Impresario()
