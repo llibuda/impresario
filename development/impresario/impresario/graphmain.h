@@ -57,8 +57,8 @@ namespace graph
 
     Vertex::Ptr createVertexInstance(VertexData::Ptr vertexDataType);
     Vertex::Ptr createVertexInstance(const QString& typeSignature);
-    Edge::Ptr createEdgeInstance(Pin::Ref source, Pin::Ref destination, EdgeData::Ptr edgeDataType);
-    Edge::Ptr createEdgeInstance(Pin::Ref source, Pin::Ref destination, const QString& typeSignature);
+    Edge::Ptr createEdgeInstance(Pin::Ptr source, Pin::Ptr destination, EdgeData::Ptr edgeDataType);
+    Edge::Ptr createEdgeInstance(Pin::Ptr source, Pin::Ptr destination, const QString& typeSignature);
 
     bool deleteVertexInstance(Vertex::Ptr vertex);
     bool deleteEdgeInstance(Edge::Ptr edge);

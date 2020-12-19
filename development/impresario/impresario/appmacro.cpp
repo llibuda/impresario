@@ -552,7 +552,7 @@ namespace app
   {
     if (!data.isNull() && dataTypeMap.contains(data->getType()))
     {
-      MacroInput::Ref inputRef = dataTypeMap[data->getType()];
+      MacroInput::Ptr inputRef = dataTypeMap[data->getType()];
       if (!inputRef.isNull())
       {
         return inputRef->setDataPtr(*data.data());

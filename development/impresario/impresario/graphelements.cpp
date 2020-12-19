@@ -170,7 +170,7 @@ namespace graph
   //-----------------------------------------------------------------------
   // Class Edge
   //-----------------------------------------------------------------------
-  Edge::Edge(Pin::Ref source, Pin::Ref destination, EdgeData::Ptr dataPtr) : GraphElement(),
+  Edge::Edge(Pin::Ptr source, Pin::Ptr destination, EdgeData::Ptr dataPtr) : GraphElement(),
     pinSrc(source), pinDest(destination)
   {
     setDataRef(dataPtr);
@@ -380,7 +380,7 @@ namespace graph
     }
   }
 
-  void Vertex::addEdgeReference(Edge::Ref edgeRef, Defines::PinDirectionType direction)
+  void Vertex::addEdgeReference(Edge::Ptr edgeRef, Defines::PinDirectionType direction)
   {
     Q_ASSERT_X(!edgeRefs.contains(direction,edgeRef),"graph::Vertex::addEdgeReference","Given edge is already in reference list.");
     if (!edgeRefs.contains(direction,edgeRef))
@@ -389,7 +389,7 @@ namespace graph
     }
   }
 
-  void Vertex::removeEdgeReference(Edge::Ref edgeRef, Defines::PinDirectionType direction)
+  void Vertex::removeEdgeReference(Edge::Ptr edgeRef, Defines::PinDirectionType direction)
   {
     Q_ASSERT_X(edgeRefs.contains(direction,edgeRef),"graph::Vertex::removeEdgeReference","Given edge is not in reference list.");
     if (edgeRefs.contains(direction,edgeRef))

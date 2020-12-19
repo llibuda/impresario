@@ -48,7 +48,6 @@ namespace graph
 
   public:
     typedef QSharedPointer<BaseElement> Ptr;
-    typedef QSharedPointer<BaseElement>   Ref;
 
     BaseElement();
 
@@ -123,7 +122,6 @@ namespace graph
     Q_OBJECT
   public:
     typedef QSharedPointer<GraphElement> Ptr;
-    typedef QSharedPointer<GraphElement>   Ref;
 
     GraphElement() : BaseElement(), graphRef(), flagDelete(true)
     {
@@ -164,7 +162,6 @@ namespace graph
     Q_OBJECT
   public:
     typedef QSharedPointer<Pin> Ptr;
-    typedef QSharedPointer<Pin>   Ref;
 
     Pin(Vertex& vertex, PinData::Ptr dataPtr) : BaseElement(),
       vertexRef(vertex), cntConnections(0)
@@ -240,16 +237,15 @@ namespace graph
     Q_OBJECT
   public:
     typedef QSharedPointer<Edge> Ptr;
-    typedef QSharedPointer<Edge>   Ref;
 
-    Edge(Pin::Ref source, Pin::Ref destination, EdgeData::Ptr dataPtr);
+    Edge(Pin::Ptr source, Pin::Ptr destination, EdgeData::Ptr dataPtr);
 
-    const Pin::Ref srcPin() const
+    const Pin::Ptr srcPin() const
     {
       return pinSrc;
     }
 
-    const Pin::Ref destPin() const
+    const Pin::Ptr destPin() const
     {
       return pinDest;
     }
@@ -272,16 +268,16 @@ namespace graph
   private:
     Q_DISABLE_COPY(Edge)
 
-    Pin::Ref pinSrc;
-    Pin::Ref pinDest;
+    Pin::Ptr pinSrc;
+    Pin::Ptr pinDest;
   };
 
   class VertexHandler
   {
     friend class GraphBase;
   protected:
-    virtual void addEdgeReference(Edge::Ref edgeRef, Defines::PinDirectionType direction) = 0;
-    virtual void removeEdgeReference(Edge::Ref edgeRef, Defines::PinDirectionType direction) = 0;
+    virtual void addEdgeReference(Edge::Ptr edgeRef, Defines::PinDirectionType direction) = 0;
+    virtual void removeEdgeReference(Edge::Ptr edgeRef, Defines::PinDirectionType direction) = 0;
   };
 
   class Vertex : public GraphElement, public VertexHandler
@@ -290,12 +286,11 @@ namespace graph
     Q_PROPERTY(bool topologyForced READ topologicalOrderForced WRITE forceTopologicalOrder)
   public:
     typedef QSharedPointer<Vertex> Ptr;
-    typedef QSharedPointer<Vertex>   Ref;
 
     typedef QMultiMap<Defines::PinDirectionType,Pin::Ptr> PinMap;
     typedef QList<Pin::Ptr> PinList;
-    typedef QMultiMap<Defines::PinDirectionType,Edge::Ref> EdgeRefMap;
-    typedef QList<Edge::Ref> EdgeRefList;
+    typedef QMultiMap<Defines::PinDirectionType,Edge::Ptr> EdgeRefMap;
+    typedef QList<Edge::Ptr> EdgeRefList;
 
     Vertex(VertexData::Ptr dataPtr);
     virtual ~Vertex();
@@ -361,8 +356,8 @@ namespace graph
 
   protected:
     virtual BaseItem::Ptr createSceneItem(BaseItem* parent = 0);
-    virtual void addEdgeReference(Edge::Ref edgeRef, Defines::PinDirectionType direction);
-    virtual void removeEdgeReference(Edge::Ref edgeRef, Defines::PinDirectionType direction);
+    virtual void addEdgeReference(Edge::Ptr edgeRef, Defines::PinDirectionType direction);
+    virtual void removeEdgeReference(Edge::Ptr edgeRef, Defines::PinDirectionType direction);
 
   private:
     PinMap         vertexPins;

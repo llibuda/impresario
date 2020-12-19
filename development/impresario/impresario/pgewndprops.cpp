@@ -144,7 +144,7 @@ namespace pge
     propChangeWnd = 0;
   }
 
-  void WndProperties::setQMLProperties(app::Macro::Ref macro)
+  void WndProperties::setQMLProperties(app::Macro::Ptr macro)
   {
     if (qmlPropWnd != 0 && !macro.isNull())
     {

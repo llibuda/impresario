@@ -709,7 +709,7 @@ namespace graph
     return list;
   }
 
-  SceneEditor::BaseItemList SceneEditor::createEdgeItem(Pin::Ref srcPin,Pin::Ref destPin,const QString& edgeSignature)
+  SceneEditor::BaseItemList SceneEditor::createEdgeItem(Pin::Ptr srcPin,Pin::Ptr destPin,const QString& edgeSignature)
   {
     BaseItemList list;
     if (graphBase.editLockActive())
@@ -956,7 +956,7 @@ namespace graph
     addElementItemsToGraph(list);
   }
 
-  void SceneEditor::onEdgeToBeCreated(Pin::Ref /*srcPin*/, Pin::Ref /*destPin*/)
+  void SceneEditor::onEdgeToBeCreated(Pin::Ptr /*srcPin*/, Pin::Ptr /*destPin*/)
   {
   }
 
@@ -1082,8 +1082,8 @@ namespace graph
 
   void SceneEditor::edgeItemToBeCreated(Scene& /*scene*/, PinItem& source, PinItem& dest)
   {
-    // find correct Pin::Ref for source
-    Pin::Ref srcRef = Pin::Ref();
+    // find correct Pin::Ptr for source
+    Pin::Ptr srcRef = Pin::Ptr();
     const Vertex::PinMap& pinsSrc = source.pin().vertex().pins();
     for(Vertex::PinMap::const_iterator it = pinsSrc.begin(); it != pinsSrc.end(); ++it)
     {
@@ -1093,8 +1093,8 @@ namespace graph
         break;
       }
     }
-    // find correct Pin::Ref for destination
-    Pin::Ref destRef = Pin::Ref();
+    // find correct Pin::Ptr for destination
+    Pin::Ptr destRef = Pin::Ptr();
     const Vertex::PinMap& pinsDest = dest.pin().vertex().pins();
     for(Vertex::PinMap::const_iterator it = pinsDest.begin(); it != pinsDest.end(); ++it)
     {

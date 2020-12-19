@@ -592,7 +592,7 @@ namespace pge
     popup.exec(QCursor::pos(),createInstance1);
   }
 
-  void ProcessGraphEditor::onEdgeToBeCreated(graph::Pin::Ref srcPin, graph::Pin::Ref destPin)
+  void ProcessGraphEditor::onEdgeToBeCreated(graph::Pin::Ptr srcPin, graph::Pin::Ptr destPin)
   {
     BaseItemList edges = createEdgeItem(srcPin,destPin,"Impresario::DataFlowEdge");
     if (!edges.empty())

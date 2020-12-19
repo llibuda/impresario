@@ -123,7 +123,7 @@ namespace pge
     virtual void initialize();
     virtual void onVertexTypeLeftClickDrop(const QString& typeSignature, QPointF pos);
     virtual void onVertexTypeRightClickDrop(const QString& typeSignature, QPointF pos);
-    virtual void onEdgeToBeCreated(graph::Pin::Ref srcPin,graph::Pin::Ref destPin);
+    virtual void onEdgeToBeCreated(graph::Pin::Ptr srcPin,graph::Pin::Ptr destPin);
     virtual void onItemMoved(BaseItemList elementItems, QPointF offset);
     virtual void onItemResized(graph::BaseItem::Ptr element, QRectF initialSize);
     virtual void contextMenuEvent(QContextMenuEvent* event);

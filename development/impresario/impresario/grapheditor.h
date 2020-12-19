@@ -210,7 +210,7 @@ namespace graph
     virtual bool load(QXmlStreamReader &stream);
 
     BaseItemList createVertexItem(int countInstances, const QStringList& signatures, QPointF startPos = QPointF(0.0,0.0));
-    BaseItemList createEdgeItem(Pin::Ref srcPin,Pin::Ref destPin,const QString& edgeSignature);
+    BaseItemList createEdgeItem(Pin::Ptr srcPin,Pin::Ptr destPin,const QString& edgeSignature);
     BaseItemList collectElementItemsForDeletion();
     BaseItemList collectElementItemsForClipboard();
     BaseItemList pasteElementItemsFromClipboard();
@@ -219,7 +219,7 @@ namespace graph
     virtual void initialize();
     virtual void onVertexTypeLeftClickDrop(const QString& typeSignature, QPointF pos);
     virtual void onVertexTypeRightClickDrop(const QString& typeSignature, QPointF pos);
-    virtual void onEdgeToBeCreated(Pin::Ref srcPin,Pin::Ref destPin);
+    virtual void onEdgeToBeCreated(Pin::Ptr srcPin,Pin::Ptr destPin);
     virtual void onItemMoved(BaseItemList elementItems, QPointF offset);
     virtual void onItemResized(BaseItem::Ptr element, QRectF initialSize);
 
@@ -237,7 +237,7 @@ namespace graph
     void edgeItemToBeCreated(Scene& scene, PinItem& source, PinItem& dest);
 
   private:
-    typedef QMap<QUuid, GraphElement::Ref> ElementMap;
+    typedef QMap<QUuid, GraphElement::Ptr> ElementMap;
 
     static int SetSceneEvent;
 

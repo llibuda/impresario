@@ -115,7 +115,7 @@ namespace graph
   }
 
 
-  Edge::Ptr ElementManager::createEdgeInstance(Pin::Ref source, Pin::Ref destination, EdgeData::Ptr edgeDataType)
+  Edge::Ptr ElementManager::createEdgeInstance(Pin::Ptr source, Pin::Ptr destination, EdgeData::Ptr edgeDataType)
   {
     if (!edgeDataType.isNull())
     {
@@ -127,7 +127,7 @@ namespace graph
     }
   }
 
-  Edge::Ptr ElementManager::createEdgeInstance(Pin::Ref source, Pin::Ref destination, const QString& typeSignature)
+  Edge::Ptr ElementManager::createEdgeInstance(Pin::Ptr source, Pin::Ptr destination, const QString& typeSignature)
   {
     QMutexLocker lock(&mutex);
     QString signature = matchEdgeSignature(edgeTypes,typeSignature);
@@ -636,7 +636,7 @@ namespace graph
   {
     components.insert(vertex->id(),compNr);
     Vertex::EdgeRefList edgeList = vertex->edges(Defines::Outgoing);
-    foreach(Edge::Ref edgeRef,edgeList)
+    foreach(Edge::Ptr edgeRef,edgeList)
     {
       Vertex& v = edgeRef->destPin()->vertex();
       if (!components.contains(v.id()))
@@ -645,7 +645,7 @@ namespace graph
       }
     }
     edgeList = vertex->edges(Defines::Incoming);
-    foreach(Edge::Ref edgeRef,edgeList)
+    foreach(Edge::Ptr edgeRef,edgeList)
     {
       Vertex& v = edgeRef->srcPin()->vertex();
       if (!components.contains(v.id()))
@@ -826,7 +826,7 @@ namespace graph
       vertexMap[vertex->id()].order = order;
       verticesVisited.insert(vertex);
       Vertex::EdgeRefList edgeList = vertex->edges(Defines::Outgoing);
-      foreach(Edge::Ref edgeRef,edgeList)
+      foreach(Edge::Ptr edgeRef,edgeList)
       {
         Vertex& v = edgeRef->destPin()->vertex();
         visitVertex(&v,verticesVisited,order + 1,vertexMap);
@@ -842,7 +842,7 @@ namespace graph
     min = id;
     stack.push(vertex);
     Vertex::EdgeRefList edgeList = vertex->edges(Defines::Outgoing);
-    foreach(Edge::Ref edgeRef,edgeList)
+    foreach(Edge::Ptr edgeRef,edgeList)
     {
       Vertex& v = edgeRef->destPin()->vertex();
       m = (!verticesVisited.contains(v.id())) ? visitVertex(&v,verticesVisited,id,vertices,stack,components) : verticesVisited[v.id()];

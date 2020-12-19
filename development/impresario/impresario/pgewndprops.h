@@ -82,7 +82,7 @@ namespace pge
     {
     }
 
-    void setMacro(app::Macro::Ref newMacro)
+    void setMacro(app::Macro::Ptr newMacro)
     {
       if (!currentMacro.isNull())
       {
@@ -117,7 +117,7 @@ namespace pge
     void parameterUpdated(int index);
 
   private:
-    app::Macro::Ref currentMacro;
+    app::Macro::Ptr currentMacro;
   };
 
   class WndProperties : public QWidget
@@ -159,7 +159,7 @@ namespace pge
       return infoPropWnd->properties();
     }
 
-    void setQMLProperties(app::Macro::Ref macro);
+    void setQMLProperties(app::Macro::Ptr macro);
 
   signals:
 

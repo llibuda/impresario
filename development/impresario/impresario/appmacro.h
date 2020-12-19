@@ -199,7 +199,6 @@ namespace app
     Q_PROPERTY(QString output READ getType)
   public:
     typedef QSharedPointer<MacroOutput> Ptr;
-    typedef QSharedPointer<MacroOutput>   Ref;
 
     MacroOutput(const Macro& macro, const QString& itemName, const QString& itemDescr, const QString& itemType, void* itemData);
     ~MacroOutput();
@@ -212,7 +211,6 @@ namespace app
     Q_PROPERTY(QString input READ getType)
   public:
     typedef QSharedPointer<MacroInput> Ptr;
-    typedef QSharedPointer<MacroInput>   Ref;
 
     MacroInput(const Macro& macro, const QString& itemName, const QString& itemDescr, const QString& itemType, void* itemData);
     ~MacroInput();
@@ -266,7 +264,6 @@ namespace app
     Q_DISABLE_COPY(Macro)
   public:
     typedef QSharedPointer<Macro> Ptr;
-    typedef QSharedPointer<Macro>   Ref;
 
     virtual ~Macro();
 
@@ -470,7 +467,7 @@ namespace app
   private:
     MacroViewer(const MacroLibraryDLL& lib, const MacroLibraryDLL::MacroHandle& handle);
 
-    typedef QMap<QString,MacroInput::Ref> DataTypeMap;
+    typedef QMap<QString,MacroInput::Ptr> DataTypeMap;
 
     DataTypeMap dataTypeMap;
   };
