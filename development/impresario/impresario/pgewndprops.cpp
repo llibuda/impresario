@@ -127,7 +127,7 @@ namespace pge
     splitter->restoreState(QByteArray::fromBase64(settings.value(Resource::path(Resource::SETTINGS_GUI_PROPWND_SPLITTER)).toByteArray()));
 
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->setMargin(0);
+    layout->setContentsMargins(0,0,0,0);
     layout->addWidget(splitter);
     setLayout(layout);
   }

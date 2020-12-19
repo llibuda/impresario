@@ -191,7 +191,7 @@ namespace help
 
   QFont ContentWindow::viewerFont() const
   {
-    QWebEngineSettings *webSettings = QWebEngineSettings::globalSettings();
+    QWebEngineSettings *webSettings = QWebEngineSettings::defaultSettings();
     return QFont(webSettings->fontFamily(QWebEngineSettings::SansSerifFont),
                  webSettings->fontSize(QWebEngineSettings::DefaultFontSize));
   }
@@ -325,7 +325,7 @@ namespace help
     edtSearch->setPlaceholderText(tr("Look for"));
     connect(edtSearch, SIGNAL(textChanged(QString)), this, SLOT(filterIndices(QString)));
     edtSearch->installEventFilter(this);
-    layout->setMargin(4);
+    layout->setContentsMargins(4,4,4,4);
     layout->addWidget(edtSearch);
 
     lvIndex = helpEngine.indexWidget();
@@ -502,7 +502,7 @@ namespace help
     QVBoxLayout* layout = new QVBoxLayout(widgetSearch);
     layout->addWidget(helpEngineInstance.searchEngine()->queryWidget());
     layout->addWidget(helpEngineInstance.searchEngine()->resultWidget(),1);
-    layout->setMargin(4);
+    layout->setContentsMargins(4,4,4,4);
     widgetSearch->setLayout(layout);
     dockWidgetSearch->setWidget(widgetSearch);
     dockWidgetSearch->setObjectName(dockWidgetSearch->windowTitle());
