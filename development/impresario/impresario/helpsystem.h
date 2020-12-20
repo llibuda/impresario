@@ -31,9 +31,10 @@ namespace help
   class System : public QObject
   {
     Q_OBJECT
+    Q_DISABLE_COPY_MOVE(System)
   public:
     System();
-    virtual ~System();
+    ~System() override;
 
     void initialize(const QString& helpCollectionFilePath, const QString& mainPageID);
 
@@ -45,7 +46,7 @@ namespace help
   signals:
 
   public slots:
-    void showHelpContents(const QString& helpID = QString());
+    void showHelpContents(const QString& helpID = QString{});
     void showHelpIndex();
     void closeHelp();
 
@@ -57,17 +58,17 @@ namespace help
     void helpWarning(const QString& msg);
 
   private:
-    void showHelpMainWindow(const QUrl url);
+    void showHelpMainWindow(const QUrl& url);
     void destroyHelpMainWindow();
     void destroyHelpEngine();
 
     static QWidget* findApplicationMainWindow();
     static void scanForHelpFiles(const QDir& directory, QStringList& helpFileList);
 
-    QHelpEngine*         ptrHelpEngine;
-    MainWindow*          ptrHelpMainWnd;
-    bool                 helpInitialized;
-    QUrl                 urlMainPage;
+    QHelpEngine* ptrHelpEngine{};
+    MainWindow*  ptrHelpMainWnd{};
+    bool         helpInitialized{};
+    QUrl         urlMainPage{};
   };
 
 }

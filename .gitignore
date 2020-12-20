@@ -60,8 +60,10 @@ Makefile*
 *-build-*
 
 # QtCreator
-
 *.autosave
+
+# clang
+.clang-tidy
 
 #QtCtreator Qml
 *.qmlproject.user

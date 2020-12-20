@@ -26,14 +26,13 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QRegularExpression>
-#include <QDebug>
 
 namespace help
 {
   //-----------------------------------------------------------------------
   // Class System
   //-----------------------------------------------------------------------
-  System::System() : QObject(0), ptrHelpEngine(0), ptrHelpMainWnd(0), helpInitialized(false), urlMainPage()
+  System::System() : QObject{nullptr}
   {
   }
 
@@ -137,7 +136,7 @@ namespace help
 
     // check whether we have main help
     QList<QHelpLink> hits = ptrHelpEngine->documentsForIdentifier(mainPageID);
-    if (hits.size() == 0)
+    if (hits.empty())
     {
       syslog::warning(QString(tr("Main help for application is not available due to missing help file.")),tr("Help System"));
     }
@@ -157,7 +156,7 @@ namespace help
       if (!helpID.isEmpty())
       {
         QList<QHelpLink> hits = ptrHelpEngine->documentsForIdentifier(helpID);
-        if (hits.count() > 0)
+        if (!hits.empty())
         {
           url = hits.first().url;
         }
@@ -214,7 +213,7 @@ namespace help
     syslog::warning(msg,tr("Help System"));
   }
 
-  void System::showHelpMainWindow(const QUrl url)
+  void System::showHelpMainWindow(const QUrl& url)
   {
     if (!ptrHelpMainWnd && ptrHelpEngine)
     {
@@ -243,7 +242,7 @@ namespace help
     {
       ptrHelpMainWnd->close();
       delete ptrHelpMainWnd;
-      ptrHelpMainWnd = 0;
+      ptrHelpMainWnd = nullptr;
     }
   }
 
@@ -251,7 +250,7 @@ namespace help
   {
     destroyHelpMainWindow();
     delete ptrHelpEngine;
-    ptrHelpEngine = 0;
+    ptrHelpEngine = nullptr;
     helpInitialized = false;
     urlMainPage = QUrl();
   }
@@ -261,13 +260,13 @@ namespace help
     QWidgetList widgetList = QApplication::topLevelWidgets();
     foreach(QWidget* widget, widgetList)
     {
-      QMainWindow* mainWindow = qobject_cast<QMainWindow*>(widget);
+      auto mainWindow = qobject_cast<QMainWindow*>(widget);
       if (mainWindow)
       {
         return mainWindow;
       }
     }
-    return 0;
+    return nullptr;
   }
 
   void System::scanForHelpFiles(const QDir& directory, QStringList& helpFileList)
