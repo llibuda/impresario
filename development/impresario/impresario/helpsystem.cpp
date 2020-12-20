@@ -56,6 +56,7 @@ namespace help
 
     // we need to call setupData() first, otherwise no qch file will be registered successfully
     disconnect(ptrHelpEngine,SIGNAL(setupFinished()),ptrHelpEngine->searchEngine(),SLOT(indexDocumentation()));
+    ptrHelpEngine->setUsesFilterEngine(true);
     ptrHelpEngine->setupData();
 
     QString errorMsg = ptrHelpEngine->error();
@@ -135,27 +136,15 @@ namespace help
     }
 
     // check whether we have main help
-//#if QT_VERSION < 0x050F00
-    QMap<QString,QUrl> hits = ptrHelpEngine->linksForIdentifier(mainPageID);
-    if (hits.count() == 0)
+    QList<QHelpLink> hits = ptrHelpEngine->documentsForIdentifier(mainPageID);
+    if (hits.size() == 0)
     {
       syslog::warning(QString(tr("Main help for application is not available due to missing help file.")),tr("Help System"));
     }
     else
     {
-      urlMainPage = hits.first();
+      urlMainPage = hits.first().url;
     }
-//#else
-//    QList<QHelpLink> hits = ptrHelpEngine->documentsForIdentifier(mainPageID);
-//    if (hits.size() == 0)
-//    {
-//      syslog::warning(QString(tr("Main help for application is not available due to missing help file.")),tr("Help System"));
-//    }
-//    else
-//    {
-//      urlMainPage = hits.first().url;
-//    }
-//#endif
     syslog::info(QString(tr("Online help initialized. Number of referenced help files: %1")).arg(registeredHelpFiles.count()),tr("Help System"));
     helpInitialized = true;
   }
@@ -167,19 +156,11 @@ namespace help
       QUrl url = urlMainPage;
       if (!helpID.isEmpty())
       {
-//#if QT_VERSION < 0x050F00
-        QMap<QString,QUrl> hits = ptrHelpEngine->linksForIdentifier(helpID);
+        QList<QHelpLink> hits = ptrHelpEngine->documentsForIdentifier(helpID);
         if (hits.count() > 0)
         {
-          url = hits.first();
+          url = hits.first().url;
         }
-//#else
-//        QList<QHelpLink> hits = ptrHelpEngine->documentsForIdentifier(helpID);
-//        if (hits.count() > 0)
-//        {
-//          url = hits.first().url;
-//        }
-//#endif
       }
       showHelpMainWindow(url);
     }

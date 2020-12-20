@@ -60,6 +60,12 @@ int main(int argc, char *argv[])
     arguments[i] = argv[i];
   arguments[argumentCount - 1] = const_cast<char*>(webEngineParameter);
 
+  /* For help files we have to register the qthelp scheme */
+  QWebEngineUrlScheme scheme("qthelp");
+  scheme.setSyntax(QWebEngineUrlScheme::Syntax::Path);
+  scheme.setFlags(QWebEngineUrlScheme::SecureScheme);
+  QWebEngineUrlScheme::registerScheme(scheme);
+
   /* Check for High DPI. We create a temporary QGuiApplication object to get
    * access to the screen. By default we enable High DPI but in case the
    * DPI value of the primary screen is lower than 100 we disable it

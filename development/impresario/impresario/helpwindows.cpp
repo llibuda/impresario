@@ -207,7 +207,7 @@ namespace help
   // Class DlgTopicSelection
   // Adapted from Qt Assistant source code
   //-----------------------------------------------------------------------
-  DlgTopicSelection::DlgTopicSelection(const QMap<QString,QUrl>& helpTopics, const QString& keyword, QWidget *parent) : QDialog(parent),
+  DlgTopicSelection::DlgTopicSelection(const QList<QHelpLink>& helpTopics, const QString& keyword, QWidget *parent) : QDialog(parent),
     url(), lblTopic(0), edtFilter(0), lvTopics(0), mdlFilter(0)
   {
     setWindowTitle(tr("Select Topic"));
@@ -225,12 +225,12 @@ namespace help
     connect(edtFilter,SIGNAL(textChanged(QString)),this,SLOT(setTopicFilter(QString)));
 
     QStandardItemModel* mdlItems = new QStandardItemModel(this);
-    QMap<QString,QUrl>::ConstIterator it;
+    QList<QHelpLink>::ConstIterator it;
     for(it = helpTopics.begin(); it != helpTopics.end(); ++it)
     {
-      QStandardItem* item = new QStandardItem(it.key());
-      item->setToolTip(it.value().toString());
-      item->setData(it.value());
+      QStandardItem* item = new QStandardItem(it->title);
+      item->setToolTip(it->url.toString());
+      item->setData(it->url);
       mdlItems->appendRow(item);
     }
 
@@ -332,8 +332,8 @@ namespace help
     lvIndex->installEventFilter(this);
     connect(helpEngine.indexModel(), SIGNAL(indexCreationStarted()), this, SLOT(disableSearchLineEdit()));
     connect(helpEngine.indexModel(), SIGNAL(indexCreated()), this, SLOT(enableSearchLineEdit()));
-    connect(lvIndex, SIGNAL(linkActivated(QUrl,QString)), this, SIGNAL(linkActivated(QUrl,QString)));
-    connect(lvIndex, SIGNAL(linksActivated(QMap<QString,QUrl>,QString)), this, SIGNAL(linksActivated(QMap<QString,QUrl>,QString)));
+    connect(lvIndex, SIGNAL(documentActivated(QHelpLink,QString)), this, SIGNAL(documentActivated(QHelpLink,QString)));
+    connect(lvIndex, SIGNAL(documentsActivated(QList<QHelpLink>,QString)), this, SIGNAL(documentsActivated(QList<QHelpLink>,QString)));
     connect(edtSearch, SIGNAL(returnPressed()), lvIndex, SLOT(activateCurrentItem()));
     layout->addWidget(lvIndex);
 
@@ -399,21 +399,6 @@ namespace help
         }
       }
     }
-#if QT_VERSION >= 0x050F00
-    else if (lvIndex && obj == lvIndex->viewport() && e->type() == QEvent::MouseButtonDblClick)
-    {
-      QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(e);
-      QModelIndex idx = lvIndex->indexAt(mouseEvent->pos());
-      if (idx.isValid())
-      {
-        Qt::MouseButtons button = mouseEvent->button();
-        if (button == Qt::LeftButton)
-        {
-          open(lvIndex, idx);
-        }
-      }
-    }
-#endif
     return QWidget::eventFilter(obj, e);
   }
 
@@ -448,14 +433,14 @@ namespace help
     if (model)
     {
       QString keyword = model->data(index, Qt::DisplayRole).toString();
-      QMap<QString, QUrl> links = model->linksForKeyword(keyword);
+      QList<QHelpLink> links = model->helpEngine()->documentsForKeyword(keyword);
       if (links.count() > 1)
       {
-        emit linksActivated(links,keyword);
+        emit documentsActivated(links,keyword);
       }
       else if (links.count() == 1)
       {
-        emit linkActivated(links.first(),keyword);
+        emit documentActivated(links.first(),keyword);
       }
     }
   }
@@ -586,8 +571,8 @@ namespace help
 
     // connect signals
     connect(ptrBrowser,SIGNAL(linkHovered(QString)),statusBar,SLOT(showMessage(QString)));
-    connect(indexWidget,SIGNAL(linkActivated(QUrl,QString)),this,SLOT(showPage(QUrl,QString)));
-    connect(indexWidget,SIGNAL(linksActivated(QMap<QString,QUrl>,QString)),this,SLOT(selectTopic(QMap<QString,QUrl>,QString)));
+    connect(indexWidget,SIGNAL(documentActivated(QHelpLink,QString)),this,SLOT(showPage(QHelpLink,QString)));
+    connect(indexWidget,SIGNAL(documentsActivated(QList<QHelpLink>,QString)), this,SLOT(selectTopic(QList<QHelpLink>,QString)));
     connect(helpEngineInstance.contentWidget(),SIGNAL(linkActivated(QUrl)),this,SLOT(showPage(QUrl)));
     connect(helpEngineInstance.searchEngine()->queryWidget(),SIGNAL(search()),this,SLOT(runSearch()));
     connect(helpEngineInstance.searchEngine()->resultWidget(),SIGNAL(requestShowLink(QUrl)),this,SLOT(showPage(QUrl)));
@@ -615,12 +600,12 @@ namespace help
     ptrBrowser->setUrl(url);
   }
 
-  void MainWindow::showPage(const QUrl &url, const QString& /*keyword*/)
+  void MainWindow::showPage(const QHelpLink &link, const QString& /*keyword*/)
   {
-    ptrBrowser->setUrl(url);
+    ptrBrowser->setUrl(link.url);
   }
 
-  void MainWindow::selectTopic(const QMap<QString,QUrl>& topicList, const QString& keyword)
+  void MainWindow::selectTopic(const QList<QHelpLink>& topicList, const QString& keyword)
   {
     DlgTopicSelection dlg(topicList,keyword,this);
     if (dlg.exec() > 0)

@@ -50,7 +50,7 @@ namespace help
   {
     Q_OBJECT
   public:
-    DlgTopicSelection(const QMap<QString,QUrl>& helpTopics, const QString& keyword, QWidget* parent);
+    DlgTopicSelection(const QList<QHelpLink>& helpTopics, const QString& keyword, QWidget* parent);
 
     QUrl link() const
     {
@@ -88,8 +88,8 @@ namespace help
     }
 
   signals:
-    void linkActivated(const QUrl &link, const QString &keyword);
-    void linksActivated(const QMap<QString, QUrl> &links, const QString &keyword);
+    void documentActivated(const QHelpLink &document, const QString &keyword);
+    void documentsActivated(const QList<QHelpLink> &documents, const QString &keyword);
     void escapePressed();
 
   private slots:
@@ -117,8 +117,8 @@ namespace help
   public slots:
     void runSearch();
     void showPage(const QUrl& url);
-    void showPage(const QUrl& url, const QString& keyword);
-    void selectTopic(const QMap<QString,QUrl>& topicList, const QString& keyword);
+    void showPage(const QHelpLink& link, const QString& keyword);
+    void selectTopic(const QList<QHelpLink>& topicList, const QString& keyword);
     void zoomIn();
     void zoomOut();
     void zoom100();

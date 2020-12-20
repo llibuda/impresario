@@ -31,6 +31,8 @@ QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2015-2020  Lars Libuda"
 }
 DESTDIR = $${IMPRESARIO_BIN_PATH}
 
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050F01
+
 win32 {
   QMAKE_POST_LINK = $$quote($${_PRO_FILE_PWD_}/../qt_deploy_win.bat) "$${DESTDIR}/$${TARGET}.exe"
   RC_ICONS += ../misc/impresario.ico
