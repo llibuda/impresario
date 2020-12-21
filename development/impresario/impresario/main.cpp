@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 
   /* Check for High DPI. We create a temporary QGuiApplication object to get
    * access to the screen. By default we enable High DPI but in case the
-   * device/pixel ration of the primary screen is lower than 1.25 we disable it
+   * DPI value of the primary screen is lower than 120.0 we disable it
    */
   bool enableHighDPISupport = true;
   {
