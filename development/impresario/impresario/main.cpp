@@ -74,7 +74,6 @@ int main(int argc, char *argv[])
   {
     QGuiApplication testApp{argc,argv};
     QScreen* screen = testApp.primaryScreen();
-    qDebug() << "DPI" << screen->physicalDotsPerInch();
     if (screen != nullptr && screen->physicalDotsPerInch() < 120.0)
     {
       enableHighDPISupport = false;
