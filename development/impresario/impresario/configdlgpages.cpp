@@ -528,14 +528,16 @@ namespace config
   {
     QString info;
     this->setInformation(info);
+    QFontMetrics fontMetrics{helpContent.font()};
     helpContent.setWordWrap(true);
     helpContent.setText(info);
+    helpContent.setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    helpContent.setFixedHeight(fontMetrics.height() * 3);
 
     QGroupBox* groupHelp = new QGroupBox(tr("Information"));
     QVBoxLayout* layoutGroupHelp = new QVBoxLayout;
     layoutGroupHelp->addWidget(&helpContent);
     groupHelp->setLayout(layoutGroupHelp);
-    groupHelp->setFixedHeight(70);
 
     QGroupBox* groupContent = new QGroupBox;
     this->setContent(groupContent);
