@@ -1,6 +1,4 @@
-**Please note: This project is work in progress! 
-And as I do this in my spare time besides other 
-interests it will develop steadily but slowly.**
+**Please note: The story of this project is told. As I don't have time to maintain and enhance it, there won't be further updates.**
 
 # Welcome to Impresario
 **Impresario** is the acronym for "**Im**age **Pr**ocessing **E**ngineering **S**ystem **A**pplying **R**eusable 
