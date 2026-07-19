@@ -393,7 +393,7 @@ namespace help
       if (idx.isValid())
       {
         Qt::MouseButtons button = mouseEvent->button();
-        if ((button == Qt::LeftButton && (mouseEvent->modifiers() & Qt::ControlModifier)) || button == Qt::MidButton)
+        if ((button == Qt::LeftButton && (mouseEvent->modifiers() & Qt::ControlModifier)) || button == Qt::MiddleButton)
         {
           open(lvIndex, idx);
         }
